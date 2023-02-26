@@ -12,6 +12,7 @@ include_directories(
 )
 
 add_executable(${PROJECT_NAME} 
+	src/Kind.cpp
 	src/Main.cpp
 )
 
