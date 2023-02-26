@@ -2,12 +2,12 @@
 
 #include <unordered_map>
 
-#include "Token.hpp"
+#include "Kind.hpp"
 
 namespace Lunasm {
 
-const std::unordered_map<Kind, std::string> MNEMONICS = {
-    {Kind::NOP, "NOP"},
+const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
+    {L16TokenKind::NOP, "NOP"},
 };
 
 }  // namespace Lunasm
