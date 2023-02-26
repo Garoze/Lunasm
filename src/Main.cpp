@@ -1,13 +1,11 @@
-#include <iostream>
-
-#include "Kind.hpp"
 #include "fmt/core.h"
+
+#include "Token.hpp"
 
 int main()
 {
-    Lunasm::Kind k(Lunasm::L16TokenKind::NOP);
-
-    fmt::print("Token: {}\n", k.as_string());
+    Lunasm::Token t(Lunasm::L16TokenKind::NOP, 1, 3, "NOP");
+    t.print();
 
     return EXIT_SUCCESS;
 }
