@@ -8,7 +8,8 @@ namespace Lunasm {
 class Lexer
 {
 public:
-		Lexer(const std::string&);
+    Lexer(const std::string&);
+
 private:
     std::size_t m_line;
     std::size_t m_index;
