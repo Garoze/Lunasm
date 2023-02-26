@@ -3,18 +3,16 @@
 #include <string>
 #include <unordered_map>
 
-namespace Lunasm {
+#include "Kind.hpp"
 
-enum class Kind {
-    NOP,
-};
+namespace Lunasm {
 
 class Token
 {
 public:
     Token(Kind, std::size_t, std::size_t, std::string_view);
 
-    std::string as_string() const;
+    void print() const;
 
 private:
     Kind m_kind;
