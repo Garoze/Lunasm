@@ -1,7 +1,10 @@
 #include <iostream>
 
-int main() {
-  std::cout << "Hello, World!\n";
+#include "fmt/core.h"
 
-  return EXIT_SUCCESS;
+int main()
+{
+    fmt::print("Hello, World!\n");
+
+    return EXIT_SUCCESS;
 }
