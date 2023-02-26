@@ -6,7 +6,7 @@
 
 namespace Lunasm {
 
-const std::unordered_map<Kind, std::string> mnemonics = {
+const std::unordered_map<Kind, std::string> MNEMONICS = {
     {Kind::NOP, "NOP"},
 };
 
