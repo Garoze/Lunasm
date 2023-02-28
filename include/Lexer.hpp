@@ -12,6 +12,8 @@ public:
 
 private:
     char eat();
+    void skip(std::size_t);
+    void skip(const std::string&);
 
 private:
     std::size_t m_line;
