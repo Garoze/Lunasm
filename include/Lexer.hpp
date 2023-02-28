@@ -19,6 +19,9 @@ private:
     char current_char() const;
 
 private:
+    bool is_empty() const;
+
+private:
     std::size_t m_line;
     std::size_t m_index;
     std::string m_source_code;

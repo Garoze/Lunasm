@@ -36,4 +36,9 @@ char Lexer::current_char() const
     return m_source_code.at(m_index);
 }
 
+bool Lexer::is_empty() const
+{
+    return m_index >= m_source_code.length();
+}
+
 }  // namespace Lunasm
