@@ -27,6 +27,7 @@ private:
     std::optional<char> peek(std::size_t) const;
 
 private:
+    Token Immediate();
     Token Identifier();
 
 private:

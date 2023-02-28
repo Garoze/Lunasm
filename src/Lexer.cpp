@@ -1,5 +1,7 @@
 #include <cctype>
 
+#include "fmt/core.h"
+
 #include "Lexer.hpp"
 #include "Token.hpp"
 
@@ -59,6 +61,30 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     }
 
     return {};
+}
+
+Token Lexer::Immediate()
+{
+    auto is_hex = std::isxdigit(peek().value());
+    if (!is_hex)
+    {
+        fmt::print("Exception missing immediate after $");
+        std::exit(1);
+    }
+
+    skip("Skipping the '$' character");
+
+    auto start = offset();
+
+    while (!is_empty() && std::isxdigit(current_char()))
+    {
+        step();
+    }
+
+    std::string_view text(m_source_code.c_str() + start, offset(start));
+
+    // FIXME: use the right kind <Immediate>
+    return Token(L16TokenKind::NOP, m_line, offset(), text);
 }
 
 Token Lexer::Identifier()
