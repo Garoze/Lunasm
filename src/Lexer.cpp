@@ -13,6 +13,11 @@ char Lexer::eat()
     return m_source_code.at(m_index++);
 }
 
+void Lexer::step()
+{
+    m_index++;
+}
+
 void Lexer::skip(std::size_t n = 1)
 {
     m_index += n;
