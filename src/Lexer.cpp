@@ -46,4 +46,16 @@ std::size_t Lexer::offset(std::size_t pos = 1) const
     return m_index - pos;
 }
 
+std::optional<char> Lexer::peek(std::size_t pos = 1) const
+{
+    auto index = m_index + pos;
+
+    if (index < m_source_code.length())
+    {
+        return m_source_code.at(index);
+    }
+
+    return {};
+}
+
 }  // namespace Lunasm
