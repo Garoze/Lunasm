@@ -13,7 +13,10 @@ Token::Token(Kind kind, std::size_t line, std::size_t offset, std::string_view t
 
 void Token::print() const
 {
-    fmt::print("Token( T: {:8} Kind: {:18} Line: {:2}, Offset: {:2d} )\n", m_text, m_kind.as_string(), m_line, m_offset);
+    auto text = fmt::format("\"{}\"", m_text);
+    auto kind = fmt::format("<{}>", m_kind.as_string());
+
+    fmt::print("Token( Kind: {:10} Text: {:8} Line: {:2d} Offset: {:2d})\n", kind, text, m_line, m_offset);
 }
 
 }  // namespace Lunasm
