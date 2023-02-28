@@ -1,10 +1,11 @@
 #include "fmt/core.h"
 
-#include "Token.hpp"
+#include "Lexer.hpp"
 
 int main()
 {
-    Lunasm::Token t(Lunasm::L16TokenKind::NOP, 1, 3, "NOP");
+    Lunasm::Lexer l("ldi r1, $05");
+    auto t = l.Identifier();
     t.print();
 
     return EXIT_SUCCESS;
