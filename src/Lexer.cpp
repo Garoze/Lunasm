@@ -1,4 +1,7 @@
+#include <cctype>
+
 #include "Lexer.hpp"
+#include "Token.hpp"
 
 namespace Lunasm {
 
@@ -41,7 +44,7 @@ bool Lexer::is_empty() const
     return m_index >= m_source_code.length();
 }
 
-std::size_t Lexer::offset(std::size_t pos = 1) const
+std::size_t Lexer::offset(std::size_t pos = 0) const
 {
     return m_index - pos;
 }
@@ -56,6 +59,22 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     }
 
     return {};
+}
+
+Token Lexer::Identifier()
+{
+    auto start = offset();
+
+    while (!is_empty() && std::isalnum(current_char()))
+    {
+        step();
+    }
+
+    std::string_view text(m_source_code.c_str() + start, offset(start));
+
+    // TODO: Verify if the text is a keyword/instruction or label
+    // FIXME: also use the right kind on the Token constructor
+    return Token(L16TokenKind::NOP, m_line, offset(), text);
 }
 
 }  // namespace Lunasm
