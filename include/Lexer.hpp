@@ -20,6 +20,7 @@ private:
 
 private:
     bool is_empty() const;
+    std::size_t offset(std::size_t) const;
 
 private:
     std::size_t m_line;

@@ -41,4 +41,9 @@ bool Lexer::is_empty() const
     return m_index >= m_source_code.length();
 }
 
+std::size_t Lexer::offset(std::size_t pos = 1) const
+{
+    return m_index - pos;
+}
+
 }  // namespace Lunasm
