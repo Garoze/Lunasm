@@ -63,12 +63,30 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     return {};
 }
 
+Token Lexer::Register()
+{
+    skip("Skipping the 'r' character.");
+
+    switch (current_char())
+    {
+        case '0' ... '7': {
+            std::string_view text(m_source_code.c_str() + offset(1), 2);
+
+            return Token(L16TokenKind::NOP, m_line, offset(), text);
+        }
+        default:
+            fmt::print("Invalid registe\n");
+            std::exit(1);
+            break;
+    }
+}
+
 Token Lexer::Immediate()
 {
     auto is_hex = std::isxdigit(peek().value());
     if (!is_hex)
     {
-        fmt::print("Exception missing immediate after $");
+        fmt::print("Exception missing immediate after '$'.\n");
         std::exit(1);
     }
 
