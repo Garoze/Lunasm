@@ -31,4 +31,9 @@ void Lexer::skip(const std::string& message)
     m_index++;
 }
 
+char Lexer::current_char() const
+{
+    return m_source_code.at(m_index);
+}
+
 }  // namespace Lunasm

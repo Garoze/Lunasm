@@ -16,6 +16,8 @@ private:
     void skip(std::size_t);
     void skip(const std::string&);
 
+    char current_char() const;
+
 private:
     std::size_t m_line;
     std::size_t m_index;
