@@ -32,6 +32,9 @@ private:
     Token Identifier();
 
 private:
+    Token next_token();
+
+private:
     std::size_t m_line;
     std::size_t m_index;
     std::string m_source_code;

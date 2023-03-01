@@ -67,10 +67,10 @@ Token Lexer::Register()
 {
     skip("Skipping the 'r' character.");
 
-    switch (current_char())
+    switch (char n = eat())
     {
         case '0' ... '7': {
-            std::string_view text(m_source_code.c_str() + offset(1), 2);
+            std::string_view text(m_source_code.c_str() + offset(2), 2);
 
             return Token(L16TokenKind::NOP, m_line, offset(), text);
         }
@@ -119,6 +119,28 @@ Token Lexer::Identifier()
     // TODO: Verify if the text is a keyword/instruction or label
     // FIXME: also use the right kind on the Token constructor
     return Token(L16TokenKind::NOP, m_line, offset(), text);
+}
+
+Token Lexer::next_token()
+{
+    while (!is_empty())
+    {
+        switch (current_char())
+        {
+            case ' ':
+            case '\t': skip(); break;
+            case '\n':
+                skip();
+                m_line++;
+                break;
+            case '$': return Immediate(); break;
+            case 'r': return Register(); break;
+            default: return Identifier(); break;
+        }
+    }
+
+    fmt::print("[ERROR] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
+    std::exit(1);
 }
 
 }  // namespace Lunasm
