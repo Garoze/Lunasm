@@ -19,6 +19,7 @@ public:
 private:
     char eat();
     void step();
+    void space();
     void skip(std::size_t);
     void skip(const std::string&);
 

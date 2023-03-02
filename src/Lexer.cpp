@@ -3,9 +3,9 @@
 
 #include "fmt/core.h"
 
+#include "Instructions.hpp"
 #include "Lexer.hpp"
 #include "Token.hpp"
-#include "Instructions.hpp"
 
 namespace Lunasm {
 
@@ -22,6 +22,16 @@ char Lexer::eat()
 
 void Lexer::step()
 {
+    m_index++;
+}
+
+void Lexer::space()
+{
+    if (current_char() == '\n')
+    {
+        m_line++;
+    }
+
     m_index++;
 }
 
@@ -131,12 +141,10 @@ Token Lexer::next_token()
     {
         switch (current_char())
         {
-            case '\n':
-                skip();
-                m_line++;
-                break;
             case ' ':
-            case '\t': skip(); break;
+            case '\t':
+            case '\n': space(); break;
+
             case '[':
                 step();
                 return Token(L16TokenKind::OpenBracket, m_line, offset(), "[");
@@ -161,13 +169,14 @@ Token Lexer::next_token()
                 step();
                 return Token(L16TokenKind::Colon, m_line, offset(), ":");
                 break;
+
             case '$': return Immediate(); break;
             case 'r': return Register(); break;
             default: return Identifier(); break;
         }
     }
 
-    fmt::print("[ERROR] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
+    fmt::print("[Lexer::Error] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
     std::exit(1);
 }
 
