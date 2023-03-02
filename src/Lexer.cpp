@@ -1,4 +1,5 @@
 #include <cctype>
+#include <vector>
 
 #include "fmt/core.h"
 
@@ -141,6 +142,20 @@ Token Lexer::next_token()
 
     fmt::print("[ERROR] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
     std::exit(1);
+}
+
+std::vector<Token> Lexer::Tokenizer()
+{
+    std::vector<Token> tokens;
+
+    while (!is_empty())
+    {
+        tokens.push_back(next_token());
+    }
+
+    tokens.push_back(Token(L16TokenKind::NOP, m_line, offset(), "EOF"));
+
+    return tokens;
 }
 
 }  // namespace Lunasm

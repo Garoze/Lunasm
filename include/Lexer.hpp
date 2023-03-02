@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 #include <optional>
 #include <string_view>
 
@@ -12,6 +13,8 @@ class Lexer
 {
 public:
     Lexer(const std::string&);
+
+    std::vector<Token> Tokenizer();
 
 private:
     char eat();
