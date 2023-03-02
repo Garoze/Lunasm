@@ -3,9 +3,9 @@
 
 #include "fmt/core.h"
 
-#include "Instructions.hpp"
-#include "Lexer.hpp"
-#include "Token.hpp"
+#include "Lexer/Lexer.hpp"
+#include "Lexer/Token.hpp"
+#include "Lexer/Instructions.hpp"
 
 namespace Lunasm {
 

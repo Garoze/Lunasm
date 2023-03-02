@@ -1,6 +1,6 @@
 #include "fmt/core.h"
 
-#include "Token.hpp"
+#include "Lexer/Token.hpp"
 
 namespace Lunasm {
 

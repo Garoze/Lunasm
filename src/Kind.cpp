@@ -1,5 +1,5 @@
-#include "Kind.hpp"
-#include "Mnemonics.hpp"
+#include "Lexer/Kind.hpp"
+#include "Lexer/Mnemonics.hpp"
 
 namespace Lunasm {
 

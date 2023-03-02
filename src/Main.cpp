@@ -1,6 +1,6 @@
 #include "fmt/core.h"
 
-#include "Lexer.hpp"
+#include "Lexer/Lexer.hpp"
 
 int main()
 {
