@@ -16,6 +16,14 @@ enum class L16TokenKind {
 
     Label,
 
+    OpenBracket,
+    CloseBracket,
+
+    AddOperation,
+    SubOperation,
+
+    Comma,
+
     END,
 };
 

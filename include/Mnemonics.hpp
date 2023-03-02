@@ -18,6 +18,14 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
 
     {L16TokenKind::Label, "Label"},
 
+    {L16TokenKind::OpenBracket, "OpenBracket"},
+    {L16TokenKind::CloseBracket, "CloseBracket"},
+
+    {L16TokenKind::AddOperation, "AddOperation"},
+    {L16TokenKind::SubOperation, "SubOperation"},
+
+    {L16TokenKind::Comma, "Comma"},
+
     {L16TokenKind::END, "EOF"},
 };
 
