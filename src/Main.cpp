@@ -4,7 +4,7 @@
 
 int main()
 {
-    Lunasm::Lexer l("ldi r1, $05\nldi r2, $00\ncmp r1, r2");
+    Lunasm::Lexer l("ldi r1, $05\nlda r2, [r1 + 10]");
 
     auto tokens = l.Tokenizer();
 
