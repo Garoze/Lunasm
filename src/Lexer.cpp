@@ -176,7 +176,7 @@ std::vector<Token> Lexer::Tokenizer()
         tokens.push_back(next_token());
     }
 
-    tokens.push_back(Token(L16TokenKind::NOP, m_line, offset(), "EOF"));
+    tokens.push_back(Token(L16TokenKind::END, m_line, offset(), "EOF"));
 
     return tokens;
 }
