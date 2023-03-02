@@ -12,6 +12,8 @@ enum class L16TokenKind {
 
     Register,
 
+    Label,
+
     END,
 };
 
