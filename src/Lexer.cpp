@@ -128,11 +128,31 @@ Token Lexer::next_token()
     {
         switch (current_char())
         {
-            case ' ':
-            case '\t': skip(); break;
             case '\n':
                 skip();
                 m_line++;
+                break;
+            case ' ':
+            case '\t': skip(); break;
+            case '[':
+                step();
+                return Token(L16TokenKind::NOP, m_line, offset(), "[");
+                break;
+            case ']':
+                step();
+                return Token(L16TokenKind::NOP, m_line, offset(), "]");
+                break;
+            case '+':
+                step();
+                return Token(L16TokenKind::NOP, m_line, offset(), "+");
+                break;
+            case '-':
+                step();
+                return Token(L16TokenKind::NOP, m_line, offset(), "-");
+                break;
+            case ',':
+                step();
+                return Token(L16TokenKind::NOP, m_line, offset(), ",");
                 break;
             case '$': return Immediate(); break;
             case 'r': return Register(); break;
