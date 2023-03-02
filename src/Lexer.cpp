@@ -157,6 +157,10 @@ Token Lexer::next_token()
                 step();
                 return Token(L16TokenKind::Comma, m_line, offset(), ",");
                 break;
+            case ':':
+                step();
+                return Token(L16TokenKind::Colon, m_line, offset(), ":");
+                break;
             case '$': return Immediate(); break;
             case 'r': return Register(); break;
             default: return Identifier(); break;

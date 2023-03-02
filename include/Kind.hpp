@@ -22,6 +22,7 @@ enum class L16TokenKind {
     AddOperation,
     SubOperation,
 
+    Colon,
     Comma,
 
     END,

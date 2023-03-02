@@ -24,6 +24,7 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::AddOperation, "AddOperation"},
     {L16TokenKind::SubOperation, "SubOperation"},
 
+    {L16TokenKind::Colon, "Colon"},
     {L16TokenKind::Comma, "Comma"},
 
     {L16TokenKind::END, "EOF"},
