@@ -123,8 +123,7 @@ Token Lexer::Identifier()
         return Token(INSTRUCTIONS.at(text), m_line, offset(), text);
     }
 
-    // TODO: Return a label
-    return Token(L16TokenKind::NOP, m_line, offset(), text);
+    return Token(L16TokenKind::Label, m_line, offset(), text);
 }
 
 Token Lexer::next_token()
