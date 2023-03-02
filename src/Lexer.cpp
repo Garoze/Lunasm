@@ -139,23 +139,23 @@ Token Lexer::next_token()
             case '\t': skip(); break;
             case '[':
                 step();
-                return Token(L16TokenKind::NOP, m_line, offset(), "[");
+                return Token(L16TokenKind::OpenBracket, m_line, offset(), "[");
                 break;
             case ']':
                 step();
-                return Token(L16TokenKind::NOP, m_line, offset(), "]");
+                return Token(L16TokenKind::CloseBracket, m_line, offset(), "]");
                 break;
             case '+':
                 step();
-                return Token(L16TokenKind::NOP, m_line, offset(), "+");
+                return Token(L16TokenKind::AddOperation, m_line, offset(), "+");
                 break;
             case '-':
                 step();
-                return Token(L16TokenKind::NOP, m_line, offset(), "-");
+                return Token(L16TokenKind::SubOperation, m_line, offset(), "-");
                 break;
             case ',':
                 step();
-                return Token(L16TokenKind::NOP, m_line, offset(), ",");
+                return Token(L16TokenKind::Comma, m_line, offset(), ",");
                 break;
             case '$': return Immediate(); break;
             case 'r': return Register(); break;
