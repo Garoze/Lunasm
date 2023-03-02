@@ -16,7 +16,7 @@ void Token::print() const
     auto text = fmt::format("\"{}\"", m_text);
     auto kind = fmt::format("<{}>", m_kind.as_string());
 
-    fmt::print("Token( Kind: {:18} Text: {:8} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
+    fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
 }
 
 }  // namespace Lunasm
