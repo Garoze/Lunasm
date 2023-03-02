@@ -110,7 +110,7 @@ Token Lexer::Identifier()
 {
     auto start = offset();
 
-    while (!is_empty() && std::isalnum(current_char()))
+    while (!is_empty() && std::isalnum(current_char()) || current_char() == '_')
     {
         step();
     }
