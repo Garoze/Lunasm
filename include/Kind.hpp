@@ -6,6 +6,13 @@ namespace Lunasm {
 
 enum class L16TokenKind {
     NOP,
+
+    LoadImmediate,
+    LoadAddress,
+
+    Register,
+
+    END,
 };
 
 class Kind
