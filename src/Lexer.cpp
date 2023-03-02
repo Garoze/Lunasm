@@ -5,6 +5,7 @@
 
 #include "Lexer.hpp"
 #include "Token.hpp"
+#include "Instructions.hpp"
 
 namespace Lunasm {
 
@@ -73,7 +74,7 @@ Token Lexer::Register()
         case '0' ... '7': {
             std::string_view text(m_source_code.c_str() + offset(2), 2);
 
-            return Token(L16TokenKind::NOP, m_line, offset(), text);
+            return Token(L16TokenKind::Register, m_line, offset(), text);
         }
         default:
             fmt::print("Invalid registe\n");
@@ -117,8 +118,12 @@ Token Lexer::Identifier()
 
     std::string_view text(m_source_code.c_str() + start, offset(start));
 
-    // TODO: Verify if the text is a keyword/instruction or label
-    // FIXME: also use the right kind on the Token constructor
+    if (is_instruction(text))
+    {
+        return Token(INSTRUCTIONS.at(text), m_line, offset(), text);
+    }
+
+    // TODO: Return a label
     return Token(L16TokenKind::NOP, m_line, offset(), text);
 }
 
