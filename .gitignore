@@ -48,7 +48,7 @@ _deps
 build/
 
 # Bin
-Lunasm
+bin/Lunasm
 
 # Cache 
 .cache/
