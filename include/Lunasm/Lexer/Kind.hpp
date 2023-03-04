@@ -26,6 +26,14 @@ enum class L16TokenKind {
     BitwiseXor,
     BitwiseNot,
 
+    // Compares
+    CmpImmediate,
+    CmpAddress,
+    CmpRegister,
+
+    // Jumps
+    Jump,
+
     // Lexer general stuff
     Register,
     Immediate,
