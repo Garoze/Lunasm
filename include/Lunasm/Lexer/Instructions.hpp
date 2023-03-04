@@ -31,6 +31,8 @@ const std::unordered_map<std::string_view, L16TokenKind> INSTRUCTIONS = {
     {"cmr", L16TokenKind::CmpRegister},
 
     {"jmp", L16TokenKind::Jump},
+    {"jeq", L16TokenKind::JumpEquals},
+    {"jnq", L16TokenKind::JumpNotEquals},
 };
 
 static bool is_instruction(std::string_view inst)

@@ -33,6 +33,8 @@ enum class L16TokenKind {
 
     // Jumps
     Jump,
+    JumpEquals,
+    JumpNotEquals,
 
     // Lexer general stuff
     Register,
