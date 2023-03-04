@@ -26,6 +26,9 @@ const std::unordered_map<std::string_view, L16TokenKind> INSTRUCTIONS = {
     {"xor", L16TokenKind::BitwiseXor},
     {"not", L16TokenKind::BitwiseNot},
 
+    {"inc", L16TokenKind::Increment},
+    {"dec", L16TokenKind::Decrement},
+
     {"cmi", L16TokenKind::CmpImmediate},
     {"cma", L16TokenKind::CmpAddress},
     {"cmr", L16TokenKind::CmpRegister},

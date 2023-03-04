@@ -26,6 +26,9 @@ enum class L16TokenKind {
     BitwiseXor,
     BitwiseNot,
 
+    Increment,
+    Decrement,
+
     // Compares
     CmpImmediate,
     CmpAddress,

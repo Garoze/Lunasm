@@ -25,6 +25,9 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::BitwiseXor, "BitwiseXOR"},
     {L16TokenKind::BitwiseNot, "BitwiseNOT"},
 
+    {L16TokenKind::Increment, "Increment"},
+    {L16TokenKind::Decrement, "Decrement"},
+
     {L16TokenKind::CmpImmediate, "CompareImmediate"},
     {L16TokenKind::CmpAddress, "CompareAddress"},
     {L16TokenKind::CmpRegister, "CompareRegister"},
