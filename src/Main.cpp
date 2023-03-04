@@ -4,7 +4,7 @@
 
 int main()
 {
-    Lunasm::Lexer l("psi $01\nldi r1, $05\npsa [ldi]\npsr r1\npop r2");
+    Lunasm::Lexer l("jsr [callback]");
 
     auto tokens = l.Tokenizer();
 
