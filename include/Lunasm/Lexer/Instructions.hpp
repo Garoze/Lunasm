@@ -26,6 +26,11 @@ const std::unordered_map<std::string_view, L16TokenKind> INSTRUCTIONS = {
     {"xor", L16TokenKind::BitwiseXor},
     {"not", L16TokenKind::BitwiseNot},
 
+    {"psi", L16TokenKind::PushImmediate},
+    {"psa", L16TokenKind::PushAddress},
+    {"psr", L16TokenKind::PushRegister},
+    {"pop", L16TokenKind::Pop},
+
     {"inc", L16TokenKind::Increment},
     {"dec", L16TokenKind::Decrement},
 

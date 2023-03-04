@@ -26,6 +26,12 @@ enum class L16TokenKind {
     BitwiseXor,
     BitwiseNot,
 
+    // Stack
+    PushImmediate,
+    PushAddress,
+    PushRegister,
+    Pop,
+
     Increment,
     Decrement,
 
