@@ -45,6 +45,9 @@ enum class L16TokenKind {
     JumpEquals,
     JumpNotEquals,
 
+
+    JumpSubroutine,
+
     // Lexer general stuff
     Register,
     Immediate,
