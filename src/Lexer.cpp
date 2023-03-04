@@ -145,37 +145,18 @@ Token Lexer::next_token()
             case '\t':
             case '\n': space(); break;
 
-            case '[':
-                step();
-                return Token(L16TokenKind::OpenBracket, m_line, offset(), "[");
-                break;
-            case ']':
-                step();
-                return Token(L16TokenKind::CloseBracket, m_line, offset(), "]");
-                break;
-            case '+':
-                step();
-                return Token(L16TokenKind::AddOperation, m_line, offset(), "+");
-                break;
-            case '-':
-                step();
-                return Token(L16TokenKind::SubOperation, m_line, offset(), "-");
-                break;
-            case ',':
-                step();
-                return Token(L16TokenKind::Comma, m_line, offset(), ",");
-                break;
-            case ':':
-                step();
-                return Token(L16TokenKind::Colon, m_line, offset(), ":");
-                break;
-
+            case '[': return Token(L16TokenKind::OpenBracket, m_line, offset(), "["); break;
+            case ']': return Token(L16TokenKind::CloseBracket, m_line, offset(), "]"); break;
+            case '+': return Token(L16TokenKind::AddOperation, m_line, offset(), "+"); break;
+            case '-': return Token(L16TokenKind::SubOperation, m_line, offset(), "-"); break;
+            case ',': return Token(L16TokenKind::Comma, m_line, offset(), ","); break;
+            case ':': return Token(L16TokenKind::Colon, m_line, offset(), ":"); break;
             case '$': return Immediate(); break;
             case 'r': return Register(); break;
             default: return Identifier(); break;
         }
+        is_empty() ? (void)0 : step();
     }
-
     fmt::print("[Lexer::Error] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
     std::exit(1);
 }
