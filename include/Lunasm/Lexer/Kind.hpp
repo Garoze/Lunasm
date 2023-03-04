@@ -21,6 +21,11 @@ enum class L16TokenKind {
     ShiftLeft,
     ShiftRight,
 
+    BitwiseAnd,
+    BitwiseOr,
+    BitwiseXor,
+    BitwiseNot,
+
     // Lexer general stuff
     Register,
     Immediate,
