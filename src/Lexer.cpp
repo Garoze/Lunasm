@@ -22,7 +22,10 @@ char Lexer::eat()
 
 void Lexer::step()
 {
-    m_index++;
+    if (m_index + 1 <= m_source_code.length())
+    {
+        m_index++;
+    }
 }
 
 void Lexer::space()
@@ -32,12 +35,15 @@ void Lexer::space()
         m_line++;
     }
 
-    m_index++;
+    step();
 }
 
 void Lexer::skip(std::size_t n = 1)
 {
-    m_index += n;
+    if (m_index + n <= m_source_code.length())
+    {
+        m_index += n;
+    }
 }
 
 void Lexer::skip(const std::string& message)
@@ -45,7 +51,7 @@ void Lexer::skip(const std::string& message)
 #ifdef __LEXER_DEBUG__
     fmt::print("DEBUG: {}\n", message);
 #endif
-    m_index++;
+    step();
 }
 
 char Lexer::current_char() const
@@ -67,7 +73,7 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
 {
     auto index = m_index + pos;
 
-    if (index < m_source_code.length())
+    if (index <= m_source_code.length())
     {
         return m_source_code.at(index);
     }
