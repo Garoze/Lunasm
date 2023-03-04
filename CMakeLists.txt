@@ -8,7 +8,7 @@ set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
 add_subdirectory(${CMAKE_SOURCE_DIR}/external/fmtlib/)
 
 include_directories(
-	${PROJECT_SOURCE_DIR}/include/
+	${PROJECT_SOURCE_DIR}/include/Lunasm/
 )
 
 add_executable(${PROJECT_NAME} 
