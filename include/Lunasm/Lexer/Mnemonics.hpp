@@ -17,6 +17,9 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::StoreAddress, "StoreAddress"},
     {L16TokenKind::StoreRegister, "StoreRegister"},
 
+    {L16TokenKind::ShiftLeft, "ShiftLeft"},
+    {L16TokenKind::ShiftRight, "ShiftRight"},
+
     {L16TokenKind::Register, "Register"},
 
     {L16TokenKind::Immediate, "Immediate"},

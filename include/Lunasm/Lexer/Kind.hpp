@@ -17,6 +17,10 @@ enum class L16TokenKind {
     StoreAddress,
     StoreRegister,
 
+    // Bitwise
+    ShiftLeft,
+    ShiftRight,
+
     // Lexer general stuff
     Register,
     Immediate,
