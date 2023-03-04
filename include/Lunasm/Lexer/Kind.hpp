@@ -7,15 +7,22 @@ namespace Lunasm {
 enum class L16TokenKind {
     NOP,
 
+    // Load instructions
     LoadImmediate,
     LoadAddress,
+    LoadRegister,
 
+    // Store instructions
+    StoreImmediate,
+    StoreAddress,
+    StoreRegister,
+
+    // Lexer general stuff
     Register,
-
     Immediate,
-
     Label,
 
+    // Literals
     OpenBracket,
     CloseBracket,
 
