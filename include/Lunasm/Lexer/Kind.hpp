@@ -5,7 +5,42 @@
 namespace Lunasm {
 
 enum class L16TokenKind {
+
+    // CPU Instructions
     NOP,
+    LoadInstruction,
+    StoreInstruction,
+
+    ShiftLeft,
+    ShiftRight,
+
+    BitAND,
+    BitOR,
+    BitXOR,
+    BitNOT,
+
+    Push,
+    Pop,
+
+    Increment,
+    Decrement,
+
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+
+    Compare,
+
+    Jump,
+    JumpEquals,
+    JumpNotEquals,
+
+    Subroutine,
+    Return,
+
+    Halt,
 
     // Lexer general stuff
     Register,
@@ -15,12 +50,12 @@ enum class L16TokenKind {
     // Literals
     OpenBracket,
     CloseBracket,
-
-    AddOperation,
-    SubOperation,
-
     Colon,
     Comma,
+
+    // Binary op
+    AddOperation,
+    SubOperation,
 
     END,
 };
