@@ -7,47 +7,6 @@ namespace Lunasm {
 enum class L16TokenKind {
     NOP,
 
-    // Load instructions
-    LoadImmediate,
-    LoadAddress,
-    LoadRegister,
-
-    // Store instructions
-    StoreImmediate,
-    StoreAddress,
-    StoreRegister,
-
-    // Bitwise
-    ShiftLeft,
-    ShiftRight,
-
-    BitwiseAnd,
-    BitwiseOr,
-    BitwiseXor,
-    BitwiseNot,
-
-    // Stack
-    PushImmediate,
-    PushAddress,
-    PushRegister,
-    Pop,
-
-    Increment,
-    Decrement,
-
-    // Compares
-    CmpImmediate,
-    CmpAddress,
-    CmpRegister,
-
-    // Jumps
-    Jump,
-    JumpEquals,
-    JumpNotEquals,
-
-
-    JumpSubroutine,
-
     // Lexer general stuff
     Register,
     Immediate,

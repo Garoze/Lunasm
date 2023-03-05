@@ -4,7 +4,7 @@
 
 int main()
 {
-    Lunasm::Lexer l("jsr");
+    Lunasm::Lexer l("");
 
     auto tokens = l.Tokenizer();
 
