@@ -22,7 +22,7 @@ char Lexer::eat()
 
 void Lexer::step()
 {
-    if (m_index + 1 <= m_source_code.length())
+    if ((m_index + 1) <= m_source_code.length())
     {
         m_index++;
     }
@@ -126,7 +126,7 @@ Token Lexer::Identifier()
 {
     auto start = offset();
 
-    while (!is_empty() && std::isalnum(current_char()) || current_char() == '_')
+    while (!is_empty() && (std::isalnum(current_char()) || current_char() == '_'))
     {
         step();
     }
