@@ -28,6 +28,11 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::Increment, "Increment"},
     {L16TokenKind::Decrement, "Decrement"},
 
+    {L16TokenKind::Add, "Add"},
+    {L16TokenKind::Sub, "Sub"},
+    {L16TokenKind::Mul, "Mul"},
+    {L16TokenKind::Mod, "Mod"},
+
     // Lexer things
     {L16TokenKind::Label, "Label"},
     {L16TokenKind::Register, "Register"},
