@@ -43,6 +43,8 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
 
     {L16TokenKind::Return, "Return"},
 
+    {L16TokenKind::Halt, "Halt"},
+
     // Lexer things
     {L16TokenKind::Label, "Label"},
     {L16TokenKind::Register, "Register"},
