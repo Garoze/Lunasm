@@ -177,7 +177,17 @@ Token Lexer::next_token()
                 break;
 
             case '$': return Immediate(); break;
-            case 'r': return Register(); break;
+            case 'r': {
+                if (std::isdigit(peek().value()))  // check if the next char is a number or not.
+                {
+                    return Register();
+                }
+                else
+                {
+                    return Identifier();
+                }
+            }
+            break;
             default: return Identifier(); break;
         }
     }
