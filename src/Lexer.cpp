@@ -182,12 +182,8 @@ Token Lexer::next_token()
                 {
                     return Register();
                 }
-                else
-                {
-                    return Identifier();
-                }
             }
-            break;
+                [[fallthrough]];
             default: return Identifier(); break;
         }
     }
