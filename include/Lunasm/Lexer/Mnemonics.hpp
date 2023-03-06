@@ -39,6 +39,8 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::JumpEquals, "JumpEquals"},
     {L16TokenKind::JumpNotEquals, "JumpNotEquals"},
 
+    {L16TokenKind::Subroutine, "Subroutine"},
+
     // Lexer things
     {L16TokenKind::Label, "Label"},
     {L16TokenKind::Register, "Register"},
