@@ -15,6 +15,11 @@ const std::unordered_map<std::string_view, L16TokenKind> INSTRUCTIONS = {
 
     {"shl", L16TokenKind::ShiftLeft},
     {"shr", L16TokenKind::ShiftRight},
+
+    {"and", L16TokenKind::BitAND},
+    {"bor", L16TokenKind::BitOR},
+    {"xor", L16TokenKind::BitXOR},
+    {"not", L16TokenKind::BitNOT},
 };
 
 static bool is_instruction(std::string_view inst)

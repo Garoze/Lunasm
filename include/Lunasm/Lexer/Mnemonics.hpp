@@ -17,6 +17,11 @@ const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
     {L16TokenKind::ShiftLeft, "ShiftLeft"},
     {L16TokenKind::ShiftRight, "ShiftRight"},
 
+    {L16TokenKind::BitAND, "BitwiseAND"},
+    {L16TokenKind::BitOR, "BitwiseOR"},
+    {L16TokenKind::BitXOR, "BitwiseXOR"},
+    {L16TokenKind::BitNOT, "BitwiseNOT"},
+
     // Lexer things
     {L16TokenKind::Label, "Label"},
     {L16TokenKind::Register, "Register"},
