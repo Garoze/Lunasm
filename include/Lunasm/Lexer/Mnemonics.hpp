@@ -7,14 +7,19 @@
 namespace Lunasm {
 
 const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
+
+    // CPU Instructions
     {L16TokenKind::NOP, "NOP"},
 
-    {L16TokenKind::Register, "Register"},
+    {L16TokenKind::LoadInstruction, "LoadInstruction"},
+    {L16TokenKind::StoreInstruction, "StoreInstruction"},
 
+    // Lexer things
+    {L16TokenKind::Label, "Label"},
+    {L16TokenKind::Register, "Register"},
     {L16TokenKind::Immediate, "Immediate"},
 
-    {L16TokenKind::Label, "Label"},
-
+    // Literals
     {L16TokenKind::OpenBracket, "OpenBracket"},
     {L16TokenKind::CloseBracket, "CloseBracket"},
 
