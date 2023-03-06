@@ -22,7 +22,7 @@ char Lexer::eat()
 
 void Lexer::step()
 {
-    if ((m_index + 1) <= m_source_code.length())
+    if ((m_index + 1) < m_source_code.length())
     {
         m_index++;
     }
@@ -40,7 +40,7 @@ void Lexer::space()
 
 void Lexer::skip(std::size_t n = 1)
 {
-    if (m_index + n <= m_source_code.length())
+    if ((m_index + n) < m_source_code.length())
     {
         m_index += n;
     }
