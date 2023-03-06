@@ -43,6 +43,6 @@ To run the project execute the binary inside `Lunasm/bin/Lunasm` or execute the 
 * [fmtlib](https://github.com/fmtlib/fmt) - a modern formatting library in
   the style of C++20 std::format _(contained in `external/fmt`)_
 
-### License
+## License
 
 This project in under the [MIT](https://mit-license.org/). You can check the file [here](LICENSE)
