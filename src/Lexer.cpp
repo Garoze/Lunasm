@@ -74,7 +74,7 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
 {
     auto index = m_index + pos;
 
-    if (index <= m_source_code.length())
+    if (index < m_source_code.length())
     {
         return m_source_code.at(index);
     }
@@ -99,10 +99,19 @@ Token Lexer::Register()
 
 Token Lexer::Immediate()
 {
-    auto is_hex = std::isxdigit(peek().value());
-    if (!is_hex)
+    // TODO: find a better way to deal with the error handling that this
+    if (!peek().has_value())
     {
-        throw std::runtime_error("Exception missing immediate after '$'.");
+        auto err = fmt::format("Missing immediate after '$' on line: {} offset: {}", m_line, offset());
+        throw std::runtime_error(err);
+    }
+    else
+    {
+        if (!std::isxdigit(peek().value()))
+        {
+            auto err = fmt::format("Missing valid Hexadecimal number after '$' on line: {} offset: {}", m_line, offset());
+            throw std::runtime_error(err);
+        }
     }
 
     skip("Skipping the '$' character");
