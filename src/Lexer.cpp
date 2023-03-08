@@ -1,5 +1,6 @@
 #include <cctype>
 #include <vector>
+#include <stdexcept>
 
 #include "fmt/core.h"
 
@@ -92,10 +93,7 @@ Token Lexer::Register()
 
             return Token(L16TokenKind::Register, m_line, offset(), text);
         }
-        default:
-            fmt::print("Invalid registe\n");
-            std::exit(1);
-            break;
+        default: throw std::runtime_error("Invalid Register."); break;
     }
 }
 
@@ -104,8 +102,7 @@ Token Lexer::Immediate()
     auto is_hex = std::isxdigit(peek().value());
     if (!is_hex)
     {
-        fmt::print("Exception missing immediate after '$'.\n");
-        std::exit(1);
+        throw std::runtime_error("Exception missing immediate after '$'.");
     }
 
     skip("Skipping the '$' character");
@@ -187,8 +184,9 @@ Token Lexer::next_token()
         }
     }
 
-    fmt::print("[Lexer::Error] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
-    std::exit(1);
+    auto err = fmt::format("[Lexer::Err] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
+
+    throw std::runtime_error(err);
 }
 
 std::vector<Token> Lexer::Tokenizer()
