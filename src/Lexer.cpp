@@ -99,22 +99,13 @@ Token Lexer::Register()
 
 Token Lexer::Immediate()
 {
-    // TODO: find a better way to deal with the error handling that this
-    if (!peek().has_value())
+    skip("Skipping the '$' character");
+
+    if (!peek(0).has_value() || !std::isxdigit(peek(0).value()))
     {
         auto err = fmt::format("Missing immediate after '$' on line: {} offset: {}", m_line, offset());
         throw std::runtime_error(err);
     }
-    else
-    {
-        if (!std::isxdigit(peek().value()))
-        {
-            auto err = fmt::format("Missing valid Hexadecimal number after '$' on line: {} offset: {}", m_line, offset());
-            throw std::runtime_error(err);
-        }
-    }
-
-    skip("Skipping the '$' character");
 
     auto start = offset();
 
