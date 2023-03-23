@@ -3,8 +3,6 @@
 
 #include "Lexer/Lexer.hpp"
 
-const std::string VERSION = "Lunasm version 0.0.1";
-
 int main(int argc, char* argv[])
 {
     argparse::ArgumentParser program("Lunasm", "Version: 0.0.1");
