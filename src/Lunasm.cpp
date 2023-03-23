@@ -1,5 +1,5 @@
 #include <fmt/core.h>
-#include <cxxopts.hpp>
+#include <argparse/argparse.hpp>
 
 #include "Lexer/Lexer.hpp"
 
@@ -7,28 +7,23 @@ const std::string VERSION = "Lunasm version 0.0.1";
 
 int main(int argc, char* argv[])
 {
-    cxxopts::Options options("Lunasm", "\nAssembly language for the Luna16 fantasy console.\n");
+    argparse::ArgumentParser program("Lunasm", "Version: 0.0.1");
 
-    // clang-format off
-    options.add_options()
-        ("f,file", "File name", cxxopts::value<std::string>())
-        ("R,repl", "Enable the REPL mode", cxxopts::value<bool>()->default_value("false"))
-        ("v,version", "Show the program version")
-        ("h,help", "Show usage menu");
-    // clang-format on
+    program  // Input file command
+        .add_argument("-f", "--file")
+        .default_value(false)
+        .implicit_value(true)
+        .help("Input file for Lunasm");
 
-    auto result = options.parse(argc, argv);
-
-    if (result.count("help"))
+    try
     {
-        fmt::print("USAGE: {}", options.help());
-        std::exit(0);
+        program.parse_args(argc, argv);
     }
-
-    if (result.count("version"))
+    catch (const std::runtime_error& err)
     {
-        fmt::print("Version: {}", VERSION);
-        std::exit(0);
+        std::cerr << err.what() << std::endl;
+        std::cerr << program;
+        std::exit(1);
     }
 
     return EXIT_SUCCESS;
