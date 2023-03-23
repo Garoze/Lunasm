@@ -1,6 +1,14 @@
 cmake_minimum_required(VERSION 3.24)
 
-project(Lunasm)
+project(
+	Lunasm 
+	VERSION 0.0.1 
+	DESCRIPTION "A simple assembly language written in C++17 for the Luna16 fantasy console."  
+	LANGUAGES CXX
+)
+
+# Update project submodules
+include(cmake/UpdateSubmodules.cmake)
 
 set(CMAKE_CXX_STANDARD 17)
 set(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR}/bin)
