@@ -40,8 +40,9 @@ To run the project execute the binary inside `Lunasm/bin/Lunasm` or execute the 
 
 ### Libraries
 
-* [fmtlib](https://github.com/fmtlib/fmt) - a modern formatting library in
-  the style of C++20 std::format _(contained in `external/fmt`)_
+* [fmtlib](https://github.com/fmtlib/fmt) - A modern formatting library in
+  the style of C++20 std::format _(contained in `external/fmtlib`)_
+* [argparse](https://github.com/p-ranav/argparse) - Argument Parser for Modern C++ _(contained in `external/argparse`)_
 
 ## License
 
