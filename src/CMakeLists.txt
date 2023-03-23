@@ -1,10 +1,10 @@
 add_executable(${PROJECT_NAME}
-  Main.cpp
+  Lunasm.cpp
 )
 
 target_sources(${PROJECT_NAME}
   PRIVATE 
-    Main.cpp
+    Lunasm.cpp
 )
 
 add_subdirectory(Lexer)
