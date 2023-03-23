@@ -21,7 +21,7 @@ int main(int argc, char* argv[])
 
     if (result.count("help"))
     {
-        fmt::print("{}", options.help());
+        fmt::print("USAGE: {}", options.help());
         std::exit(0);
     }
 
