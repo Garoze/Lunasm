@@ -43,6 +43,7 @@ To run the project execute the binary inside `Lunasm/bin/Lunasm` or execute the 
 * [fmtlib](https://github.com/fmtlib/fmt) - A modern formatting library in
   the style of C++20 std::format _(contained in `external/fmtlib`)_
 * [argparse](https://github.com/p-ranav/argparse) - Argument Parser for Modern C++ _(contained in `external/argparse`)_
+* [googletest](https://github.com/google/googletest) - GoogleTest - Google Testing and Mocking Framework _(contained in `external/googletest`)_
 
 ## License
 
