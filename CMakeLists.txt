@@ -7,6 +7,8 @@ project(
 	DESCRIPTION "A simple assembly language for the Luna16 fantasy console."  
 )
 
+include(CTest)
+
 # Update project submodules
 include(cmake/UpdateSubmodules.cmake)
 
@@ -19,6 +21,9 @@ set(EXECUTABLE_OUTPUT_PATH "${PROJECT_SOURCE_DIR}/bin")
 
 add_subdirectory(src)
 add_subdirectory(external)
+
+enable_testing()
+add_subdirectory(test)
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC include/Lunasm
