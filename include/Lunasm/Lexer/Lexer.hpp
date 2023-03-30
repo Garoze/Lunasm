@@ -12,6 +12,7 @@ namespace Lunasm {
 class Lexer
 {
 public:
+    Lexer();
     Lexer(const std::string&);
 
     std::vector<Token> Tokenizer();

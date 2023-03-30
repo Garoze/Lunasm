@@ -10,6 +10,11 @@
 
 namespace Lunasm {
 
+Lexer::Lexer()
+    : m_line(1)
+    , m_index(0)
+{}
+
 Lexer::Lexer(const std::string& source_code)
     : m_line(1)
     , m_index(0)
