@@ -9,7 +9,6 @@ int main(int argc, char* argv[])
 
     program  // Input file command
         .add_argument("-f", "--file")
-        .required()
         .help("Specify the input file");
 
     try
@@ -23,9 +22,11 @@ int main(int argc, char* argv[])
         std::exit(1);
     }
 
-    auto file = program.get<std::string>("--file");
-
-    fmt::print("File: {}\n", file);
+    if (program.present("--file"))
+    {
+        auto file = program.get<std::string>("--file");
+        fmt::print("File: {}\n", file);
+    }
 
     return EXIT_SUCCESS;
 }
