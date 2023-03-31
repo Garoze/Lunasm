@@ -14,7 +14,7 @@ public:
 
     void print() const;
 
-    L16TokenKind kind() const;
+    TokenKind kind() const;
 
     constexpr explicit operator bool() noexcept { return true; }
 

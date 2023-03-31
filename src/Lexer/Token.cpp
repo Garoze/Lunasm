@@ -20,7 +20,7 @@ void Token::print() const
     fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
 }
 
-L16TokenKind Token::kind() const
+TokenKind Token::kind() const
 {
     return m_kind.raw();
 }

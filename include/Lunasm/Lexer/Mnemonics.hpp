@@ -6,61 +6,61 @@
 
 namespace Lunasm {
 
-const std::unordered_map<L16TokenKind, std::string> MNEMONICS = {
+const std::unordered_map<TokenKind, std::string> MNEMONICS = {
 
     // CPU Instructions
-    {L16TokenKind::NOP, "NOP"},
+    {TokenKind::NOP, "NOP"},
 
-    {L16TokenKind::LoadInstruction, "LoadInstruction"},
-    {L16TokenKind::StoreInstruction, "StoreInstruction"},
+    {TokenKind::LoadInstruction, "LoadInstruction"},
+    {TokenKind::StoreInstruction, "StoreInstruction"},
 
-    {L16TokenKind::ShiftLeft, "ShiftLeft"},
-    {L16TokenKind::ShiftRight, "ShiftRight"},
+    {TokenKind::ShiftLeft, "ShiftLeft"},
+    {TokenKind::ShiftRight, "ShiftRight"},
 
-    {L16TokenKind::BitAND, "BitwiseAND"},
-    {L16TokenKind::BitOR, "BitwiseOR"},
-    {L16TokenKind::BitXOR, "BitwiseXOR"},
-    {L16TokenKind::BitNOT, "BitwiseNOT"},
+    {TokenKind::BitAND, "BitwiseAND"},
+    {TokenKind::BitOR, "BitwiseOR"},
+    {TokenKind::BitXOR, "BitwiseXOR"},
+    {TokenKind::BitNOT, "BitwiseNOT"},
 
-    {L16TokenKind::Push, "Push"},
-    {L16TokenKind::Pop, "Pop"},
+    {TokenKind::Push, "Push"},
+    {TokenKind::Pop, "Pop"},
 
-    {L16TokenKind::Increment, "Increment"},
-    {L16TokenKind::Decrement, "Decrement"},
+    {TokenKind::Increment, "Increment"},
+    {TokenKind::Decrement, "Decrement"},
 
-    {L16TokenKind::Add, "Add"},
-    {L16TokenKind::Sub, "Sub"},
-    {L16TokenKind::Mul, "Mul"},
-    {L16TokenKind::Mod, "Mod"},
+    {TokenKind::Add, "Add"},
+    {TokenKind::Sub, "Sub"},
+    {TokenKind::Mul, "Mul"},
+    {TokenKind::Mod, "Mod"},
 
-    {L16TokenKind::Compare, "Compare"},
+    {TokenKind::Compare, "Compare"},
 
-    {L16TokenKind::Jump, "Jump"},
-    {L16TokenKind::JumpEquals, "JumpEquals"},
-    {L16TokenKind::JumpNotEquals, "JumpNotEquals"},
+    {TokenKind::Jump, "Jump"},
+    {TokenKind::JumpEquals, "JumpEquals"},
+    {TokenKind::JumpNotEquals, "JumpNotEquals"},
 
-    {L16TokenKind::Subroutine, "Subroutine"},
+    {TokenKind::Subroutine, "Subroutine"},
 
-    {L16TokenKind::Return, "Return"},
+    {TokenKind::Return, "Return"},
 
-    {L16TokenKind::Halt, "Halt"},
+    {TokenKind::Halt, "Halt"},
 
     // Lexer things
-    {L16TokenKind::Label, "Label"},
-    {L16TokenKind::Register, "Register"},
-    {L16TokenKind::Immediate, "Immediate"},
+    {TokenKind::Label, "Label"},
+    {TokenKind::Register, "Register"},
+    {TokenKind::Immediate, "Immediate"},
 
     // Literals
-    {L16TokenKind::OpenBracket, "OpenBracket"},
-    {L16TokenKind::CloseBracket, "CloseBracket"},
+    {TokenKind::OpenBracket, "OpenBracket"},
+    {TokenKind::CloseBracket, "CloseBracket"},
 
-    {L16TokenKind::AddOperation, "AddOperation"},
-    {L16TokenKind::SubOperation, "SubOperation"},
+    {TokenKind::AddOperation, "AddOperation"},
+    {TokenKind::SubOperation, "SubOperation"},
 
-    {L16TokenKind::Colon, "Colon"},
-    {L16TokenKind::Comma, "Comma"},
+    {TokenKind::Colon, "Colon"},
+    {TokenKind::Comma, "Comma"},
 
-    {L16TokenKind::END, "EOF"},
+    {TokenKind::END, "EOF"},
 };
 
 }  // namespace Lunasm

@@ -4,7 +4,7 @@
 
 namespace Lunasm {
 
-enum class L16TokenKind {
+enum class TokenKind {
 
     // CPU Instructions
     NOP,
@@ -63,14 +63,14 @@ enum class L16TokenKind {
 class Kind
 {
 public:
-    Kind(L16TokenKind);
+    Kind(TokenKind);
 
     std::string as_string() const;
 
-    L16TokenKind raw() const;
+    TokenKind raw() const;
 
 private:
-    L16TokenKind m_kind;
+    TokenKind m_kind;
 };
 
 }  // namespace Lunasm

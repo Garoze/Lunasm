@@ -97,7 +97,7 @@ Token Lexer::Register()
         case '0' ... '7': {
             std::string_view text(m_source_code.c_str() + offset(2), 2);
 
-            return Token(L16TokenKind::Register, m_line, offset(), text);
+            return Token(TokenKind::Register, m_line, offset(), text);
         }
         default: throw std::runtime_error("Invalid Register."); break;
     }
@@ -122,7 +122,7 @@ Token Lexer::Immediate()
 
     std::string_view text(m_source_code.c_str() + start, offset(start));
 
-    return Token(L16TokenKind::Immediate, m_line, offset(), text);
+    return Token(TokenKind::Immediate, m_line, offset(), text);
 }
 
 Token Lexer::Identifier()
@@ -141,7 +141,7 @@ Token Lexer::Identifier()
         return Token(INSTRUCTIONS.at(text), m_line, offset(), text);
     }
 
-    return Token(L16TokenKind::Label, m_line, offset(), text);
+    return Token(TokenKind::Label, m_line, offset(), text);
 }
 
 Token Lexer::next_token()
@@ -157,27 +157,27 @@ Token Lexer::next_token()
 
             case '[':
                 step();
-                return Token(L16TokenKind::OpenBracket, m_line, offset(), "[");
+                return Token(TokenKind::OpenBracket, m_line, offset(), "[");
                 break;
             case ']':
                 step();
-                return Token(L16TokenKind::CloseBracket, m_line, offset(), "]");
+                return Token(TokenKind::CloseBracket, m_line, offset(), "]");
                 break;
             case '+':
                 step();
-                return Token(L16TokenKind::AddOperation, m_line, offset(), "+");
+                return Token(TokenKind::AddOperation, m_line, offset(), "+");
                 break;
             case '-':
                 step();
-                return Token(L16TokenKind::SubOperation, m_line, offset(), "-");
+                return Token(TokenKind::SubOperation, m_line, offset(), "-");
                 break;
             case ',':
                 step();
-                return Token(L16TokenKind::Comma, m_line, offset(), ",");
+                return Token(TokenKind::Comma, m_line, offset(), ",");
                 break;
             case ':':
                 step();
-                return Token(L16TokenKind::Colon, m_line, offset(), ":");
+                return Token(TokenKind::Colon, m_line, offset(), ":");
                 break;
 
             case '$': return Immediate(); break;
@@ -191,7 +191,7 @@ Token Lexer::next_token()
         }
     }
 
-    return Token(L16TokenKind::END, m_line, offset(), "EOF");
+    return Token(TokenKind::END, m_line, offset(), "EOF");
 }
 
 std::vector<Token> Lexer::Tokenizer()
@@ -200,7 +200,7 @@ std::vector<Token> Lexer::Tokenizer()
 
     while (auto token = next_token())
     {
-        if (token.kind() == L16TokenKind::END)
+        if (token.kind() == TokenKind::END)
             break;
 
         tokens.push_back(token);
