@@ -4,6 +4,7 @@
 
 #include "fmt/core.h"
 
+#include "Lexer/Kind.hpp"
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 #include "Lexer/Instructions.hpp"
@@ -155,6 +156,7 @@ Token Lexer::next_token()
         switch (current_char())
         {
             case ' ':
+            case '\r':
             case '\t':
             case '\n': space(); break;
 
@@ -194,21 +196,20 @@ Token Lexer::next_token()
         }
     }
 
-    auto err = fmt::format("[Lexer::Err] -> Line: {} Offset: {} Char: {}\n", m_line, m_index, current_char());
-
-    throw std::runtime_error(err);
+    return Token(L16TokenKind::END, m_line, offset(), "EOF");
 }
 
 std::vector<Token> Lexer::Tokenizer()
 {
     std::vector<Token> tokens;
 
-    while (!is_empty())
+    while (auto token = next_token())
     {
-        tokens.push_back(next_token());
-    }
+        if (token.kind() == L16TokenKind::END)
+            break;
 
-    tokens.push_back(Token(L16TokenKind::END, m_line, offset(), "EOF"));
+        tokens.push_back(token);
+    }
 
     return tokens;
 }
