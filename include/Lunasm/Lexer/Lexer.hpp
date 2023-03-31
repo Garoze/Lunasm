@@ -17,6 +17,8 @@ public:
 
     void source_code(std::string);
 
+    std::vector<Token> lex_source(std::string);
+
     std::vector<Token> Tokenizer();
 
 private:
