@@ -29,6 +29,8 @@ void Parser::tokens(std::vector<Token> tokens)
 
 void Parser::parse_file(std::filesystem::path const& path)
 {
+    std::stringstream ss;
+
     const std::ifstream file(path, std::ios::in);
 
     if (!file.good())
@@ -37,10 +39,7 @@ void Parser::parse_file(std::filesystem::path const& path)
         throw std::runtime_error(err);
     }
 
-    std::stringstream ss;
-
     ss << file.rdbuf();
-
     std::string source = ss.str();
 
     auto tokens = m_lexer->lex_source(source);
