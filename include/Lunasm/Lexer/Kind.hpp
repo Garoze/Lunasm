@@ -67,6 +67,8 @@ public:
 
     std::string as_string() const;
 
+    L16TokenKind raw() const;
+
 private:
     L16TokenKind m_kind;
 };
