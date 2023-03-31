@@ -6,17 +6,20 @@
 #include <algorithm>
 #include <stdexcept>
 
+#include <fmt/core.h>
+
 #include "Parser/Parser.hpp"
-#include "fmt/core.h"
 
 namespace Lunasm {
 
 Parser::Parser()
     : m_index(0)
+    , m_lexer(new Lexer())
 {}
 
 Parser::Parser(std::vector<Token> token)
     : m_index(0)
+    , m_lexer(new Lexer())
 {}
 
 void Parser::tokens(std::vector<Token> tokens)
@@ -40,7 +43,14 @@ void Parser::parse_file(std::filesystem::path const& path)
 
     std::string source = ss.str();
 
-    fmt::print("Code: {}\n", source);
+    m_lexer->source_code(source);
+
+    auto tokens = m_lexer->Tokenizer();
+
+    for (const auto& t : tokens)
+    {
+        t.print();
+    }
 }
 
 }  // namespace Lunasm
