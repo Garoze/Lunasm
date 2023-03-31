@@ -1,5 +1,6 @@
 #include "fmt/core.h"
 
+#include "Lexer/Kind.hpp"
 #include "Lexer/Token.hpp"
 
 namespace Lunasm {
@@ -17,6 +18,11 @@ void Token::print() const
     auto kind = fmt::format("<{}>", m_kind.as_string());
 
     fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
+}
+
+L16TokenKind Token::kind() const
+{
+    return m_kind.raw();
 }
 
 }  // namespace Lunasm

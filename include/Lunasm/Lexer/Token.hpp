@@ -14,6 +14,10 @@ public:
 
     void print() const;
 
+    L16TokenKind kind() const;
+
+    constexpr explicit operator bool() noexcept { return true; }
+
 private:
     Kind m_kind;
     std::size_t m_line;
