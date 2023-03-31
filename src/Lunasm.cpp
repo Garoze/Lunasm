@@ -2,6 +2,7 @@
 #include <argparse/argparse.hpp>
 
 #include "Lexer/Lexer.hpp"
+#include "Parser/Parser.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -25,7 +26,10 @@ int main(int argc, char* argv[])
     if (program.present("--file"))
     {
         auto file = program.get<std::string>("--file");
-        fmt::print("File: {}\n", file);
+
+        Lunasm::Parser p{};
+
+        p.parse_file(file);
     }
 
     return EXIT_SUCCESS;
