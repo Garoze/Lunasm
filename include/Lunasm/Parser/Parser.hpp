@@ -18,12 +18,9 @@ public:
 
     void parse_file(std::filesystem::path const&);
 
-    void tokens(std::vector<Token>);
-
 private:
     std::size_t m_index;
     std::unique_ptr<Lexer> m_lexer;
-    std::vector<Token> m_tokens;
 };
 
 }  // namespace Lunasm

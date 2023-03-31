@@ -22,11 +22,6 @@ Parser::Parser(std::vector<Token> token)
     , m_lexer(new Lexer())
 {}
 
-void Parser::tokens(std::vector<Token> tokens)
-{
-    m_tokens = std::move(tokens);
-}
-
 void Parser::parse_file(std::filesystem::path const& path)
 {
     std::stringstream ss;
