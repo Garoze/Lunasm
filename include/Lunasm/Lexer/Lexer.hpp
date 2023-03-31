@@ -15,6 +15,8 @@ public:
     Lexer();
     Lexer(const std::string&);
 
+    void source_code(std::string);
+
     std::vector<Token> Tokenizer();
 
 private:
