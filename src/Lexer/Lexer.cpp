@@ -209,7 +209,7 @@ std::vector<Token> Lexer::Tokenizer()
     return tokens;
 }
 
-std::vector<Token> Lexer::lex_source(std::string source_code)
+std::vector<Token> Lexer::Lex_source(std::string source_code)
 {
     m_source_code = source_code;
 

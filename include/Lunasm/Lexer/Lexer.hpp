@@ -16,7 +16,7 @@ public:
     Lexer(const std::string&);
 
     std::vector<Token> Tokenizer();
-    std::vector<Token> lex_source(std::string);
+    std::vector<Token> Lex_source(std::string);
 
 private:
     char eat();

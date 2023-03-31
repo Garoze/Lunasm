@@ -37,7 +37,7 @@ void Parser::parse_file(std::filesystem::path const& path)
     ss << file.rdbuf();
     std::string source = ss.str();
 
-    auto tokens = m_lexer->lex_source(source);
+    auto tokens = m_lexer->Lex_source(source);
 
     for (const auto& t : tokens)
     {
