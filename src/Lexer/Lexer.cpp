@@ -200,10 +200,10 @@ std::vector<Token> Lexer::Tokenizer()
 
     while (auto token = next_token())
     {
+        tokens.push_back(token);
+
         if (token.kind() == TokenKind::END)
             break;
-
-        tokens.push_back(token);
     }
 
     return tokens;
