@@ -8,8 +8,7 @@ enum class TokenKind {
 
     // CPU Instructions
     NOP,
-    LoadInstruction,
-    StoreInstruction,
+    MovInstruction,
 
     ShiftLeft,
     ShiftRight,

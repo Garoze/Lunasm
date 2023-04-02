@@ -10,8 +10,7 @@ namespace Lunasm {
 const std::unordered_map<std::string_view, TokenKind> INSTRUCTIONS = {
     {"nop", TokenKind::NOP},
 
-    {"lda", TokenKind::LoadInstruction},
-    {"sta", TokenKind::StoreInstruction},
+    {"mov", TokenKind::MovInstruction},
 
     {"shl", TokenKind::ShiftLeft},
     {"shr", TokenKind::ShiftRight},

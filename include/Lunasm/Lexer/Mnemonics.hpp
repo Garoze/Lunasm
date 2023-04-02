@@ -11,8 +11,7 @@ const std::unordered_map<TokenKind, std::string> MNEMONICS = {
     // CPU Instructions
     {TokenKind::NOP, "NOP"},
 
-    {TokenKind::LoadInstruction, "LoadInstruction"},
-    {TokenKind::StoreInstruction, "StoreInstruction"},
+    {TokenKind::MovInstruction, "MovInstruction"},
 
     {TokenKind::ShiftLeft, "ShiftLeft"},
     {TokenKind::ShiftRight, "ShiftRight"},
