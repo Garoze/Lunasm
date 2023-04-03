@@ -17,10 +17,18 @@ Parser::Parser()
     , m_lexer(new Lexer())
 {}
 
-Parser::Parser(std::vector<Token> token)
-    : m_index(0)
-    , m_lexer(new Lexer())
-{}
+void Parser::step()
+{
+    if ((m_index + 1) < m_tokens.size())
+    {
+        m_index++;
+    }
+}
+
+Token Parser::look_ahead()
+{
+    return m_tokens.at(m_index);
+}
 
 void Parser::parse_file(std::filesystem::path const& path)
 {
