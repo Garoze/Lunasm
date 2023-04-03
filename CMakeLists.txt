@@ -23,7 +23,7 @@ add_subdirectory(src)
 add_subdirectory(external)
 
 enable_testing()
-add_subdirectory(test)
+add_subdirectory(tests)
 
 target_include_directories(${PROJECT_NAME}
 	PUBLIC include/Lunasm
