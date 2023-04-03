@@ -25,9 +25,21 @@ void Parser::step()
     }
 }
 
-Token Parser::look_ahead()
+Token Parser::current_token() const
 {
     return m_tokens.at(m_index);
+}
+
+std::optional<Token> Parser::look_ahead(std::size_t pos = 1) const
+{
+    auto index = m_index + pos;
+
+    if (index < m_tokens.size())
+    {
+        return m_tokens.at(index);
+    }
+
+    return {};
 }
 
 void Parser::parse_file(std::filesystem::path const& path)
@@ -52,13 +64,13 @@ void Parser::parse_file(std::filesystem::path const& path)
 
 void Parser::Parse()
 {
-    while (auto t = look_ahead())
+    while (current_token().kind() != TokenKind::END)
     {
-        switch (t.kind())
+        switch (current_token().kind())
         {
             default:
-                fmt::print("Unimplemented token kind: {}\n", t.as_string());
-                std::exit(1);
+                fmt::print("[Parser] Unimplemented token kind: {}\n", current_token().as_string());
+                step();
                 break;
         }
     }

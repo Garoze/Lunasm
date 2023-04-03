@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <vector>
+#include <optional>
 #include <algorithm>
 #include <filesystem>
 
@@ -22,7 +23,8 @@ public:
 
 private:
     void step();
-    Token look_ahead();
+    Token current_token() const;
+    std::optional<Token> look_ahead(std::size_t) const;
 
 private:
     std::size_t m_index;
