@@ -45,11 +45,22 @@ void Parser::parse_file(std::filesystem::path const& path)
     ss << file.rdbuf();
     std::string source = ss.str();
 
-    auto tokens = m_lexer->Lex_source(source);
+    m_tokens = m_lexer->Lex_source(source);
 
-    for (const auto& t : tokens)
+    Parse();
+}
+
+void Parser::Parse()
+{
+    while (auto t = look_ahead())
     {
-        t.print();
+        switch (t.kind())
+        {
+            default:
+                fmt::print("Unimplemented token kind: {}\n", t.as_string());
+                std::exit(1);
+                break;
+        }
     }
 }
 
