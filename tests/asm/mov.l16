@@ -1,0 +1,1 @@
+mov r1, $05 ; LoadFromImmediate

@@ -1,7 +1,0 @@
-START:
-	MOV R1, $05
-LOOP:
-	SUB R1, $01
-	CMP R1, $00
-	JNE [LOOP]
-	HLT
