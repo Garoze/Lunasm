@@ -1,10 +1,9 @@
 #include <string>
-#include <sstream>
 #include <fstream>
+#include <sstream>
 #include <iterator>
-#include <streambuf>
-#include <algorithm>
 #include <stdexcept>
+#include <streambuf>
 
 #include <fmt/core.h>
 
