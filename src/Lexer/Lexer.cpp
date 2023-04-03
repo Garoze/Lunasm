@@ -1,6 +1,8 @@
 #include <cctype>
 #include <vector>
+#include <string>
 #include <stdexcept>
+#include <algorithm>
 
 #include "fmt/core.h"
 
@@ -144,6 +146,13 @@ Token Lexer::Identifier()
     return Token(TokenKind::Label, m_line, offset(), text);
 }
 
+std::string Lexer::sanitize_input(std::string input)
+{
+    std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) { return std::tolower(c); });
+
+    return input;
+}
+
 Token Lexer::next_token()
 {
     while (!is_empty())
@@ -211,7 +220,7 @@ std::vector<Token> Lexer::Tokenizer()
 
 std::vector<Token> Lexer::Lex_source(std::string source_code)
 {
-    m_source_code = source_code;
+    m_source_code = sanitize_input(source_code);
 
     return Tokenizer();
 }

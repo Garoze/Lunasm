@@ -33,6 +33,9 @@ private:
     std::optional<char> peek(std::size_t) const;
 
 private:
+    std::string sanitize_input(std::string);
+
+private:
     Token Register();
     Token Immediate();
     Token Identifier();
