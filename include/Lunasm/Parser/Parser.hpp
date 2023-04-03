@@ -17,14 +17,18 @@ public:
     Parser();
 
     void Parse();
-
-public:
     void parse_file(std::filesystem::path const&);
 
 private:
     void step();
     Token current_token() const;
     std::optional<Token> look_ahead(std::size_t) const;
+
+private:
+    void mov_instruction();
+
+private:
+    bool expect(TokenKind);
 
 private:
     std::size_t m_index;
