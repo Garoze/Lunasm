@@ -1,0 +1,7 @@
+start:
+	mov r1, $05
+loop:
+	sub r1, $01
+	cmp r1, $00
+	jne [loop]
+	hlt
