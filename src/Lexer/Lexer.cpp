@@ -146,6 +146,16 @@ Token Lexer::Identifier()
     return Token(TokenKind::Label, m_line, offset(), text);
 }
 
+void Lexer::Comment()
+{
+    skip("Skipping the ';' character");
+
+    while (!is_empty() && current_char() != '\n')
+    {
+        step();
+    }
+}
+
 std::string Lexer::sanitize_input(std::string input)
 {
     std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) { return std::tolower(c); });
@@ -189,6 +199,7 @@ Token Lexer::next_token()
                 return Token(TokenKind::Colon, m_line, offset(), ":");
                 break;
 
+            case ';': Comment(); break;
             case '$': return Immediate(); break;
             case 'r':
                 if (std::isdigit(peek().value()))  // check if the next char is a number or not.

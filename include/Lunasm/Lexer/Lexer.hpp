@@ -39,6 +39,7 @@ private:
     Token Register();
     Token Immediate();
     Token Identifier();
+    void Comment();
 
 private:
     Token next_token();
