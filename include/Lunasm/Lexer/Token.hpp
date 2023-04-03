@@ -16,6 +16,8 @@ public:
 
     TokenKind kind() const;
 
+    std::string as_string() const;
+
     constexpr explicit operator bool() noexcept { return true; }
 
 private:

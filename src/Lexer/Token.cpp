@@ -25,4 +25,8 @@ TokenKind Token::kind() const
     return m_kind.raw();
 }
 
+std::string Token::as_string() const {
+    return m_kind.as_string();
+}
+
 }  // namespace Lunasm
