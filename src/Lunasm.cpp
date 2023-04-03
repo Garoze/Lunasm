@@ -1,16 +1,15 @@
 #include <fmt/core.h>
 #include <argparse/argparse.hpp>
 
-#include "Lexer/Lexer.hpp"
 #include "Parser/Parser.hpp"
 
 int main(int argc, char* argv[])
 {
     argparse::ArgumentParser program("Lunasm", "Version: 0.0.1");
 
-    program  // Input file command
-        .add_argument("-f", "--file")
-        .help("Specify the input file");
+    program                               //
+        .add_argument("-f", "--file")     //
+        .help("Specify the input file");  //
 
     try
     {
