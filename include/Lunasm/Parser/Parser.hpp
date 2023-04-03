@@ -14,12 +14,19 @@ class Parser
 {
 public:
     Parser();
-    Parser(std::vector<Token>);
 
+    void Parse();
+
+public:
     void parse_file(std::filesystem::path const&);
 
 private:
+    void step();
+    Token look_ahead();
+
+private:
     std::size_t m_index;
+    std::vector<Token> m_tokens;
     std::unique_ptr<Lexer> m_lexer;
 };
 
