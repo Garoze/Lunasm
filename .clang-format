@@ -20,8 +20,10 @@ BraceWrapping:
   SplitEmptyRecord: false 
   SplitEmptyNamespace: false 
 BreakConstructorInitializers: BeforeComma
-AllowShortCaseLabelsOnASingleLine: true
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortEnumsOnASingleLine: false
 ConstructorInitializerAllOnOneLineOrOnePerLine: false
 IndentPPDirectives: None
 SortIncludes: false
+Cpp11BracedListStyle: false
 ...
