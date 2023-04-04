@@ -79,45 +79,71 @@ bool Parser::expect(TokenKind kind)
     }
 }
 
+bool Parser::parse_address(std::optional<TokenKind> k = {})
+{
+    if (k.has_value())
+        expect(k.value());
+
+    expect(TokenKind::OpenBracket);
+    expect(TokenKind::Immediate);
+    expect(TokenKind::CloseBracket);
+
+    return true;
+}
+
+bool Parser::parse_register(std::optional<TokenKind> k = {})
+{
+    if (k.has_value())
+        expect(k.value());
+
+    expect(TokenKind::Register);
+    expect(TokenKind::Comma);
+
+    return true;
+}
+
 void Parser::mov_instruction()
 {
     switch (look_ahead(1)->kind())
     {
         case TokenKind::Register:
-            expect(TokenKind::MovInstruction);
-            expect(TokenKind::Register);
-            expect(TokenKind::Comma);
+            parse_register(TokenKind::MovInstruction);
             switch (look_ahead()->kind())
             {
                 case TokenKind::Immediate:
                     expect(TokenKind::Immediate);
-                    fmt::print("Load from immediate\n");
+                    fmt::print("Load from Immediate\n");
                     break;
                 case TokenKind::Register:
                     expect(TokenKind::Register);
-                    fmt::print("Load from register\n");
+                    fmt::print("Load from Register\n");
                     break;
+                case TokenKind::OpenBracket:
+                    parse_address();
+                    fmt::print("Load from Address\n");
+                    break;
+
                 default: break;
             }
             break;
-        // mov [$100], $05
-        // mov [$100], r1
         case TokenKind::OpenBracket:
-            expect(TokenKind::MovInstruction);
-            expect(TokenKind::OpenBracket);
-            expect(TokenKind::Immediate);
-            expect(TokenKind::CloseBracket);
+            parse_address(TokenKind::MovInstruction);
             expect(TokenKind::Comma);
             switch (look_ahead()->kind())
             {
                 case TokenKind::Immediate:
                     expect(TokenKind::Immediate);
-                    fmt::print("Store from immediate\n");
+                    fmt::print("Store from Immediate\n");
                     break;
                 case TokenKind::Register:
                     expect(TokenKind::Register);
-                    fmt::print("Store from register\n");
+                    fmt::print("Store from Register\n");
                     break;
+                case TokenKind::OpenBracket:
+                    parse_address();
+                    fmt::print("Store from Address\n");
+                    break;
+
                 default: break;
             }
             break;

@@ -25,6 +25,10 @@ private:
     std::optional<Token> look_ahead(std::size_t);
 
 private:
+    bool parse_address(std::optional<TokenKind>);
+    bool parse_register(std::optional<TokenKind>);
+
+private:
     void mov_instruction();
 
 private:
