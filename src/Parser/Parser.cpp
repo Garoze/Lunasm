@@ -1,14 +1,14 @@
-#include <string>
 #include <fstream>
-#include <sstream>
 #include <iterator>
+#include <sstream>
 #include <stdexcept>
 #include <streambuf>
+#include <string>
 
 #include <fmt/core.h>
 
-#include "Parser/Parser.hpp"
 #include "Lexer/Mnemonics.hpp"
+#include "Parser/Parser.hpp"
 
 namespace Lunasm {
 
@@ -79,43 +79,46 @@ bool Parser::expect(TokenKind kind)
     }
 }
 
-bool Parser::parse_address(std::optional<TokenKind> k = {})
+bool Parser::parse_immediate()
 {
-    if (k.has_value())
-        expect(k.value());
-
-    expect(TokenKind::OpenBracket);
     expect(TokenKind::Immediate);
+
+    return true;
+}
+
+bool Parser::parse_address()
+{
+    expect(TokenKind::OpenBracket);
+    parse_immediate();
     expect(TokenKind::CloseBracket);
 
     return true;
 }
 
-bool Parser::parse_register(std::optional<TokenKind> k = {})
+bool Parser::parse_register()
 {
-    if (k.has_value())
-        expect(k.value());
-
     expect(TokenKind::Register);
-    expect(TokenKind::Comma);
 
     return true;
 }
 
 void Parser::mov_instruction()
 {
-    switch (look_ahead(1)->kind())
+    expect(TokenKind::MovInstruction);
+
+    switch (look_ahead()->kind())
     {
         case TokenKind::Register:
-            parse_register(TokenKind::MovInstruction);
+            parse_register();
+            expect(TokenKind::Comma);
             switch (look_ahead()->kind())
             {
                 case TokenKind::Immediate:
-                    expect(TokenKind::Immediate);
+                    parse_immediate();
                     fmt::print("Load from Immediate\n");
                     break;
                 case TokenKind::Register:
-                    expect(TokenKind::Register);
+                    parse_register();
                     fmt::print("Load from Register\n");
                     break;
                 case TokenKind::OpenBracket:
@@ -123,20 +126,21 @@ void Parser::mov_instruction()
                     fmt::print("Load from Address\n");
                     break;
 
-                default: break;
+                default:
+                    break;
             }
             break;
         case TokenKind::OpenBracket:
-            parse_address(TokenKind::MovInstruction);
+            parse_address();
             expect(TokenKind::Comma);
             switch (look_ahead()->kind())
             {
                 case TokenKind::Immediate:
-                    expect(TokenKind::Immediate);
+                    parse_immediate();
                     fmt::print("Store from Immediate\n");
                     break;
                 case TokenKind::Register:
-                    expect(TokenKind::Register);
+                    parse_register();
                     fmt::print("Store from Register\n");
                     break;
                 case TokenKind::OpenBracket:
@@ -144,10 +148,12 @@ void Parser::mov_instruction()
                     fmt::print("Store from Address\n");
                     break;
 
-                default: break;
+                default:
+                    break;
             }
             break;
-        default: break;
+        default:
+            break;
     }
 }
 
@@ -157,7 +163,9 @@ void Parser::Parse()
     {
         switch (look_ahead()->kind())
         {
-            case TokenKind::MovInstruction: mov_instruction(); break;
+            case TokenKind::MovInstruction:
+                mov_instruction();
+                break;
 
             default:
                 fmt::print("[Parser] Unimplemented token kind: {}\n", look_ahead()->as_string());
