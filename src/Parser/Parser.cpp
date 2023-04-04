@@ -146,6 +146,7 @@ void Parser::mov_instruction()
                     break;
             }
             break;
+
         case TokenKind::OpenBracket:
             parse_address();
             expect(TokenKind::Comma);
@@ -165,6 +166,7 @@ void Parser::mov_instruction()
                     break;
             }
             break;
+
         default:
             break;
     }
@@ -187,7 +189,7 @@ void Parser::Parse()
         }
     }
 
-    fmt::print("Finish parsing\n");
+    fmt::print("[Parser] Finished the parser, no error reported.\n");
 }
 
 }  // namespace Lunasm
