@@ -81,19 +81,19 @@ bool Parser::expect(TokenKind kind)
     return false;
 }
 
-// TODO: find a better name for this function, cause this one suck
-bool Parser::expect_any(TokenKind l, TokenKind r)
+template <typename... Kinds>
+bool Parser::expect_any(Kinds... kinds)
 {
-    if (look_ahead()->kind() == l)
+    static_assert((std::is_same_v<Kinds, TokenKind> && ...), "must pass TokenKind values");
+
+    auto current = look_ahead()->kind();
+
+    if (((current == kinds) || ...))
     {
-        return expect(l);
+        return expect(current);
     }
-    else if (look_ahead()->kind() == r)
-    {
-        return expect(r);
-    }
-    else
-        return false;
+
+    return false;
 }
 
 bool Parser::parse_immediate()
@@ -106,7 +106,7 @@ bool Parser::parse_immediate()
 bool Parser::parse_address()
 {
     expect(TokenKind::OpenBracket);
-    expect_any(TokenKind::Immediate, TokenKind::Register);
+    expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
     expect(TokenKind::CloseBracket);
 
     return true;
@@ -132,15 +132,12 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate:
                     parse_immediate();
-                    fmt::print("Load from Immediate\n");
                     break;
                 case TokenKind::Register:
                     parse_register();
-                    fmt::print("Load from Register\n");
                     break;
                 case TokenKind::OpenBracket:
                     parse_address();
-                    fmt::print("Load from Address\n");
                     break;
 
                 default:
@@ -154,15 +151,12 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate:
                     parse_immediate();
-                    fmt::print("Store from Immediate\n");
                     break;
                 case TokenKind::Register:
                     parse_register();
-                    fmt::print("Store from Register\n");
                     break;
                 case TokenKind::OpenBracket:
                     parse_address();
-                    fmt::print("Store from Address\n");
                     break;
 
                 default:

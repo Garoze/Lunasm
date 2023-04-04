@@ -34,7 +34,9 @@ private:
 
 private:
     bool expect(TokenKind);
-    bool expect_any(TokenKind, TokenKind);
+
+    template <typename... Kinds>
+    bool expect_any(Kinds... kinds);
 
 private:
     std::size_t m_index;
