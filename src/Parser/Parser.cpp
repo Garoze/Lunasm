@@ -77,6 +77,23 @@ bool Parser::expect(TokenKind kind)
         auto err = fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n", MNEMONICS.at(kind), look_ahead()->as_string());
         throw std::runtime_error(err);
     }
+
+    return false;
+}
+
+// TODO: find a better name for this function, cause this one suck
+bool Parser::expect_any(TokenKind l, TokenKind r)
+{
+    if (look_ahead()->kind() == l)
+    {
+        return expect(l);
+    }
+    else if (look_ahead()->kind() == r)
+    {
+        return expect(r);
+    }
+    else
+        return false;
 }
 
 bool Parser::parse_immediate()
@@ -89,7 +106,7 @@ bool Parser::parse_immediate()
 bool Parser::parse_address()
 {
     expect(TokenKind::OpenBracket);
-    parse_immediate();
+    expect_any(TokenKind::Immediate, TokenKind::Register);
     expect(TokenKind::CloseBracket);
 
     return true;

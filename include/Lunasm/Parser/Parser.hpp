@@ -34,6 +34,7 @@ private:
 
 private:
     bool expect(TokenKind);
+    bool expect_any(TokenKind, TokenKind);
 
 private:
     std::size_t m_index;
