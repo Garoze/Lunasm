@@ -71,7 +71,7 @@ bool Parser::expect(TokenKind kind)
     }
     else
     {
-        auto err = fmt::format("Invalid kind expected {} and got {}\n", MNEMONICS.at(kind), MNEMONICS.at(current_token().kind()));
+        auto err = fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n", MNEMONICS.at(kind), current_token().as_string());
         throw std::runtime_error(err);
     }
 }
