@@ -25,12 +25,15 @@ void Parser::step()
     }
 }
 
-Token Parser::current_token() const
+void Parser::skip(const std::string& message)
 {
-    return m_tokens.at(m_index);
+#ifdef __PARSER_DEBUG__
+    fmt::print("DEBUG: {}\n", message);
+#endif
+    step();
 }
 
-std::optional<Token> Parser::look_ahead(std::size_t pos = 1) const
+std::optional<Token> Parser::look_ahead(std::size_t pos = 0)
 {
     auto index = m_index + pos;
 
@@ -64,47 +67,74 @@ void Parser::parse_file(std::filesystem::path const& path)
 
 bool Parser::expect(TokenKind kind)
 {
-    if (current_token().kind() == kind)
+    if (look_ahead()->kind() == kind)
     {
         step();
         return true;
     }
     else
     {
-        auto err = fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n", MNEMONICS.at(kind), current_token().as_string());
+        auto err = fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n", MNEMONICS.at(kind), look_ahead()->as_string());
         throw std::runtime_error(err);
     }
 }
 
 void Parser::mov_instruction()
 {
-    switch (look_ahead()->kind())
+    switch (look_ahead(1)->kind())
     {
         case TokenKind::Register:
             expect(TokenKind::MovInstruction);
             expect(TokenKind::Register);
             expect(TokenKind::Comma);
+            switch (look_ahead()->kind())
+            {
+                case TokenKind::Immediate:
+                    expect(TokenKind::Immediate);
+                    fmt::print("Load from immediate\n");
+                    break;
+                case TokenKind::Register:
+                    expect(TokenKind::Register);
+                    fmt::print("Load from register\n");
+                    break;
+                default: break;
+            }
+            break;
+        // mov [$100], $05
+        // mov [$100], r1
+        case TokenKind::OpenBracket:
+            expect(TokenKind::MovInstruction);
+            expect(TokenKind::OpenBracket);
             expect(TokenKind::Immediate);
-            fmt::print("Parsed mov from immediate\n");
+            expect(TokenKind::CloseBracket);
+            expect(TokenKind::Comma);
+            switch (look_ahead()->kind())
+            {
+                case TokenKind::Immediate:
+                    expect(TokenKind::Immediate);
+                    fmt::print("Store from immediate\n");
+                    break;
+                case TokenKind::Register:
+                    expect(TokenKind::Register);
+                    fmt::print("Store from register\n");
+                    break;
+                default: break;
+            }
             break;
-
-        default:
-            fmt::print("Invalid mov instruction\n");
-            std::exit(1);
-            break;
+        default: break;
     }
 }
 
 void Parser::Parse()
 {
-    while (current_token().kind() != TokenKind::END)
+    while (look_ahead()->kind() != TokenKind::END)
     {
-        switch (current_token().kind())
+        switch (look_ahead()->kind())
         {
             case TokenKind::MovInstruction: mov_instruction(); break;
 
             default:
-                fmt::print("[Parser] Unimplemented token kind: {}\n", current_token().as_string());
+                fmt::print("[Parser] Unimplemented token kind: {}\n", look_ahead()->as_string());
                 step();
                 break;
         }

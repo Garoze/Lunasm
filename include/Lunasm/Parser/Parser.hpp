@@ -21,8 +21,8 @@ public:
 
 private:
     void step();
-    Token current_token() const;
-    std::optional<Token> look_ahead(std::size_t) const;
+    void skip(const std::string&);
+    std::optional<Token> look_ahead(std::size_t);
 
 private:
     void mov_instruction();
