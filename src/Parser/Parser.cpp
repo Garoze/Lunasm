@@ -1,9 +1,10 @@
+#include <string>
+#include <sstream>
 #include <fstream>
 #include <iterator>
-#include <sstream>
 #include <stdexcept>
 #include <streambuf>
-#include <string>
+#include <initializer_list>
 
 #include <fmt/core.h>
 
@@ -86,11 +87,12 @@ bool Parser::expect_any(Kinds... kinds)
 {
     static_assert((std::is_same_v<Kinds, TokenKind> && ...), "must pass TokenKind values");
 
-    auto current = look_ahead()->kind();
-
-    if (((current == kinds) || ...))
+    for (TokenKind k : { kinds... })
     {
-        return expect(current);
+        if (look_ahead()->kind() == k)
+        {
+            return expect(k);
+        }
     }
 
     return false;
@@ -184,6 +186,8 @@ void Parser::Parse()
                 break;
         }
     }
+
+    fmt::print("Finish parsing\n");
 }
 
 }  // namespace Lunasm
