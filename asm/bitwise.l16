@@ -1,2 +1,7 @@
 shl r1, $01
 shr r1, $0A
+
+and r1, $01
+bor r1, $01
+xor r1, $01
+not r1
