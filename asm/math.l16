@@ -16,6 +16,12 @@ mul r1, [$100]
 mul r1, [r2]
 mul r1, [label]
 
+div r1, $10
+div r1, r2
+div r1, [$100]
+div r1, [r2]
+div r1, [label]
+
 mod r1, $10
 mod r1, r2
 mod r1, [$100]
