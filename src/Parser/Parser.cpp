@@ -193,6 +193,36 @@ void Parser::shr_instruction()
     parse_immediate();
 }
 
+void Parser::and_instruction()
+{
+    expect(TokenKind::BitAND);
+    parse_register();
+    expect(TokenKind::Comma);
+    parse_immediate();
+}
+
+void Parser::bor_instruction()
+{
+    expect(TokenKind::BitOR);
+    parse_register();
+    expect(TokenKind::Comma);
+    parse_immediate();
+}
+
+void Parser::xor_instruction()
+{
+    expect(TokenKind::BitXOR);
+    parse_register();
+    expect(TokenKind::Comma);
+    parse_immediate();
+}
+
+void Parser::not_instruction()
+{
+    expect(TokenKind::BitNOT);
+    parse_register();
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -213,6 +243,22 @@ void Parser::Parse()
 
             case TokenKind::ShiftRight:
                 shr_instruction();
+                break;
+
+            case TokenKind::BitAND:
+                and_instruction();
+                break;
+
+            case TokenKind::BitOR:
+                bor_instruction();
+                break;
+
+            case TokenKind::BitXOR:
+                xor_instruction();
+                break;
+
+            case TokenKind::BitNOT:
+                not_instruction();
                 break;
 
             default:
