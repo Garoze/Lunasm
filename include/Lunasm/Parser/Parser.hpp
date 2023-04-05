@@ -48,6 +48,8 @@ private:
     void inc_instruction();
     void dec_instruction();
 
+    void add_instruction();
+
 private:
     bool expect(TokenKind);
 
