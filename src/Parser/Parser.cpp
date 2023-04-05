@@ -121,6 +121,11 @@ bool Parser::parse_register()
     return true;
 }
 
+void Parser::nop_instruction()
+{
+    expect(TokenKind::NOP);
+}
+
 void Parser::mov_instruction()
 {
     expect(TokenKind::MovInstruction);
@@ -178,6 +183,10 @@ void Parser::Parse()
     {
         switch (look_ahead()->kind())
         {
+            case TokenKind::NOP:
+                nop_instruction();
+                break;
+
             case TokenKind::MovInstruction:
                 mov_instruction();
                 break;

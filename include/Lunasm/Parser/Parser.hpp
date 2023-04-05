@@ -30,6 +30,7 @@ private:
     bool parse_register();
 
 private:
+    void nop_instruction();
     void mov_instruction();
 
 private:
