@@ -56,6 +56,10 @@ private:
 
     void cmp_instruction();
 
+    void jmp_instruction();
+    void jeq_instruction();
+    void jne_instruction();
+
 private:
     bool expect(TokenKind);
 

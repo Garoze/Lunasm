@@ -392,6 +392,24 @@ void Parser::cmp_instruction()
     }
 }
 
+void Parser::jmp_instruction()
+{
+    expect(TokenKind::Jump);
+    parse_address();
+}
+
+void Parser::jeq_instruction()
+{
+    expect(TokenKind::JumpEquals);
+    parse_address();
+}
+
+void Parser::jne_instruction()
+{
+    expect(TokenKind::JumpNotEquals);
+    parse_address();
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -468,6 +486,18 @@ void Parser::Parse()
 
             case TokenKind::Compare:
                 cmp_instruction();
+                break;
+
+            case TokenKind::Jump:
+                jmp_instruction();
+                break;
+
+            case TokenKind::JumpEquals:
+                jeq_instruction();
+                break;
+
+            case TokenKind::JumpNotEquals:
+                jne_instruction();
                 break;
 
             default:
