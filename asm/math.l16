@@ -1,0 +1,5 @@
+add r1, $10
+add r1, r2
+add r1, [$100]
+add r1, [r2]
+add r1, [label]
