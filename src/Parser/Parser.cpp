@@ -181,6 +181,7 @@ void Parser::shl_instruction()
 {
     expect(TokenKind::ShiftLeft);
     parse_register();
+    expect(TokenKind::Comma);
     parse_immediate();
 }
 
@@ -188,6 +189,7 @@ void Parser::shr_instruction()
 {
     expect(TokenKind::ShiftRight);
     parse_register();
+    expect(TokenKind::Comma);
     parse_immediate();
 }
 
@@ -203,6 +205,14 @@ void Parser::Parse()
 
             case TokenKind::MovInstruction:
                 mov_instruction();
+                break;
+
+            case TokenKind::ShiftLeft:
+                shl_instruction();
+                break;
+
+            case TokenKind::ShiftRight:
+                shr_instruction();
                 break;
 
             default:
