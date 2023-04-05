@@ -326,6 +326,28 @@ void Parser::mul_instruction()
     }
 }
 
+void Parser::div_instruction()
+{
+    expect(TokenKind::Div);
+    parse_register();
+    expect(TokenKind::Comma);
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate:
+            parse_immediate();
+            break;
+        case TokenKind::Register:
+            parse_register();
+            break;
+        case TokenKind::OpenBracket:
+            parse_address();
+            break;
+        default:
+            break;
+    }
+}
+
 void Parser::mod_instruction()
 {
     expect(TokenKind::Mod);
@@ -412,6 +434,10 @@ void Parser::Parse()
 
             case TokenKind::Mul:
                 mul_instruction();
+                break;
+
+            case TokenKind::Div:
+                div_instruction();
                 break;
 
             case TokenKind::Mod:
