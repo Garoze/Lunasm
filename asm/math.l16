@@ -9,3 +9,9 @@ sub r1, r2
 sub r1, [$100]
 sub r1, [r2]
 sub r1, [label]
+
+mul r1, $10
+mul r1, r2
+mul r1, [$100]
+mul r1, [r2]
+mul r1, [label]
