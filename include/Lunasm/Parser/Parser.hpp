@@ -54,6 +54,8 @@ private:
     void div_instruction();
     void mod_instruction();
 
+    void cmp_instruction();
+
 private:
     bool expect(TokenKind);
 

@@ -370,6 +370,28 @@ void Parser::mod_instruction()
     }
 }
 
+void Parser::cmp_instruction()
+{
+    expect(TokenKind::Compare);
+    parse_register();
+    expect(TokenKind::Comma);
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate:
+            parse_immediate();
+            break;
+        case TokenKind::Register:
+            parse_register();
+            break;
+        case TokenKind::OpenBracket:
+            parse_address();
+            break;
+        default:
+            break;
+    }
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -442,6 +464,10 @@ void Parser::Parse()
 
             case TokenKind::Mod:
                 mod_instruction();
+                break;
+
+            case TokenKind::Compare:
+                cmp_instruction();
                 break;
 
             default:
