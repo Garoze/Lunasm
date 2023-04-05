@@ -1,0 +1,5 @@
+cmp r1, $01
+cmp r1, r2
+cmp r1, [$100]
+cmp r1, [r2]
+cmp r1, [label]
