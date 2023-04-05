@@ -1,0 +1,5 @@
+jsr [$100]
+jsr [r1]
+jsr [label]
+
+ret
