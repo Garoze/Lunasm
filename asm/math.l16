@@ -3,3 +3,9 @@ add r1, r2
 add r1, [$100]
 add r1, [r2]
 add r1, [label]
+
+sub r1, $10
+sub r1, r2
+sub r1, [$100]
+sub r1, [r2]
+sub r1, [label]
