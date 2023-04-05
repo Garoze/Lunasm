@@ -1,0 +1,8 @@
+jmp [$100]
+jmp [label]
+
+jeq [$100]
+jeq [label]
+
+jne [$100]
+jne [label]
