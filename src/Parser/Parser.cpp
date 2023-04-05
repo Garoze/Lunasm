@@ -248,6 +248,18 @@ void Parser::pop_instruction()
     parse_register();
 }
 
+void Parser::inc_instruction()
+{
+    expect(TokenKind::Increment);
+    parse_register();
+}
+
+void Parser::dec_instruction()
+{
+    expect(TokenKind::Decrement);
+    parse_register();
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -292,6 +304,14 @@ void Parser::Parse()
 
             case TokenKind::Pop:
                 pop_instruction();
+                break;
+
+            case TokenKind::Increment:
+                inc_instruction();
+                break;
+
+            case TokenKind::Decrement:
+                dec_instruction();
                 break;
 
             default:

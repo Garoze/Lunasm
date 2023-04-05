@@ -45,6 +45,9 @@ private:
     void psh_instruction();
     void pop_instruction();
 
+    void inc_instruction();
+    void dec_instruction();
+
 private:
     bool expect(TokenKind);
 
