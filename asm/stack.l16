@@ -1,0 +1,7 @@
+psh $100
+psh r1
+psh [r1]
+psh [$100]
+psh [label]
+
+pop r1
