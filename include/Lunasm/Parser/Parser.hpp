@@ -32,6 +32,8 @@ private:
 private:
     void nop_instruction();
     void mov_instruction();
+    void shl_instruction();
+    void shr_instruction();
 
 private:
     bool expect(TokenKind);

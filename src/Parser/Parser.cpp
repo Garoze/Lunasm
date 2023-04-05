@@ -177,6 +177,20 @@ void Parser::mov_instruction()
     }
 }
 
+void Parser::shl_instruction()
+{
+    expect(TokenKind::ShiftLeft);
+    parse_register();
+    parse_immediate();
+}
+
+void Parser::shr_instruction()
+{
+    expect(TokenKind::ShiftRight);
+    parse_register();
+    parse_immediate();
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
