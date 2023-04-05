@@ -63,6 +63,8 @@ private:
     void jsr_instruction();
     void ret_instruction();
 
+    void hlt_instruction();
+
 private:
     bool expect(TokenKind);
 

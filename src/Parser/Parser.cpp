@@ -421,6 +421,11 @@ void Parser::ret_instruction()
     expect(TokenKind::Return);
 }
 
+void Parser::hlt_instruction()
+{
+    expect(TokenKind::Halt);
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -517,6 +522,10 @@ void Parser::Parse()
 
             case TokenKind::Return:
                 ret_instruction();
+                break;
+
+            case TokenKind::Halt:
+                hlt_instruction();
                 break;
 
             default:
