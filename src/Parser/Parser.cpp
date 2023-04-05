@@ -410,6 +410,17 @@ void Parser::jne_instruction()
     parse_address();
 }
 
+void Parser::jsr_instruction()
+{
+    expect(TokenKind::Subroutine);
+    parse_address();
+}
+
+void Parser::ret_instruction()
+{
+    expect(TokenKind::Return);
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -498,6 +509,14 @@ void Parser::Parse()
 
             case TokenKind::JumpNotEquals:
                 jne_instruction();
+                break;
+
+            case TokenKind::Subroutine:
+                jsr_instruction();
+                break;
+
+            case TokenKind::Return:
+                ret_instruction();
                 break;
 
             default:

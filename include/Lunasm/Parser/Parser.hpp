@@ -60,6 +60,9 @@ private:
     void jeq_instruction();
     void jne_instruction();
 
+    void jsr_instruction();
+    void ret_instruction();
+
 private:
     bool expect(TokenKind);
 
