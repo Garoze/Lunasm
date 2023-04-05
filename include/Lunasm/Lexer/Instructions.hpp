@@ -8,40 +8,42 @@
 namespace Lunasm {
 
 const std::unordered_map<std::string_view, TokenKind> INSTRUCTIONS = {
-    {"nop", TokenKind::NOP},
 
-    {"mov", TokenKind::MovInstruction},
+    { "nop", TokenKind::NOP },
 
-    {"shl", TokenKind::ShiftLeft},
-    {"shr", TokenKind::ShiftRight},
+    { "mov", TokenKind::MovInstruction },
 
-    {"and", TokenKind::BitAND},
-    {"bor", TokenKind::BitOR},
-    {"xor", TokenKind::BitXOR},
-    {"not", TokenKind::BitNOT},
+    { "shl", TokenKind::ShiftLeft },
+    { "shr", TokenKind::ShiftRight },
 
-    {"psh", TokenKind::Push},
-    {"pop", TokenKind::Pop},
+    { "and", TokenKind::BitAND },
+    { "bor", TokenKind::BitOR },
+    { "xor", TokenKind::BitXOR },
+    { "not", TokenKind::BitNOT },
 
-    {"inc", TokenKind::Increment},
-    {"dec", TokenKind::Decrement},
+    { "psh", TokenKind::Push },
+    { "pop", TokenKind::Pop },
 
-    {"add", TokenKind::Add},
-    {"sub", TokenKind::Sub},
-    {"mul", TokenKind::Mul},
-    {"mod", TokenKind::Mod},
+    { "inc", TokenKind::Increment },
+    { "dec", TokenKind::Decrement },
 
-    {"cmp", TokenKind::Compare},
+    { "add", TokenKind::Add },
+    { "sub", TokenKind::Sub },
+    { "mul", TokenKind::Mul },
+    { "div", TokenKind::Div },
+    { "mod", TokenKind::Mod },
 
-    {"jmp", TokenKind::Jump},
-    {"jeq", TokenKind::JumpEquals},
-    {"jne", TokenKind::JumpNotEquals},
+    { "cmp", TokenKind::Compare },
 
-    {"jsr", TokenKind::Subroutine},
+    { "jmp", TokenKind::Jump },
+    { "jeq", TokenKind::JumpEquals },
+    { "jne", TokenKind::JumpNotEquals },
 
-    {"ret", TokenKind::Return},
+    { "jsr", TokenKind::Subroutine },
 
-    {"hlt", TokenKind::Halt},
+    { "ret", TokenKind::Return },
+
+    { "hlt", TokenKind::Halt },
 };
 
 static bool is_instruction(std::string_view inst)

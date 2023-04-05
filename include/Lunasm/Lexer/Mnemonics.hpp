@@ -9,57 +9,58 @@ namespace Lunasm {
 const std::unordered_map<TokenKind, std::string> MNEMONICS = {
 
     // CPU Instructions
-    {TokenKind::NOP, "NOP"},
+    { TokenKind::NOP, "NOP" },
 
-    {TokenKind::MovInstruction, "MovInstruction"},
+    { TokenKind::MovInstruction, "MovInstruction" },
 
-    {TokenKind::ShiftLeft, "ShiftLeft"},
-    {TokenKind::ShiftRight, "ShiftRight"},
+    { TokenKind::ShiftLeft, "ShiftLeft" },
+    { TokenKind::ShiftRight, "ShiftRight" },
 
-    {TokenKind::BitAND, "BitwiseAND"},
-    {TokenKind::BitOR, "BitwiseOR"},
-    {TokenKind::BitXOR, "BitwiseXOR"},
-    {TokenKind::BitNOT, "BitwiseNOT"},
+    { TokenKind::BitAND, "BitwiseAND" },
+    { TokenKind::BitOR, "BitwiseOR" },
+    { TokenKind::BitXOR, "BitwiseXOR" },
+    { TokenKind::BitNOT, "BitwiseNOT" },
 
-    {TokenKind::Push, "Push"},
-    {TokenKind::Pop, "Pop"},
+    { TokenKind::Push, "Push" },
+    { TokenKind::Pop, "Pop" },
 
-    {TokenKind::Increment, "Increment"},
-    {TokenKind::Decrement, "Decrement"},
+    { TokenKind::Increment, "Increment" },
+    { TokenKind::Decrement, "Decrement" },
 
-    {TokenKind::Add, "Add"},
-    {TokenKind::Sub, "Sub"},
-    {TokenKind::Mul, "Mul"},
-    {TokenKind::Mod, "Mod"},
+    { TokenKind::Add, "Add" },
+    { TokenKind::Sub, "Sub" },
+    { TokenKind::Mul, "Mul" },
+    { TokenKind::Div, "Div" },
+    { TokenKind::Mod, "Mod" },
 
-    {TokenKind::Compare, "Compare"},
+    { TokenKind::Compare, "Compare" },
 
-    {TokenKind::Jump, "Jump"},
-    {TokenKind::JumpEquals, "JumpEquals"},
-    {TokenKind::JumpNotEquals, "JumpNotEquals"},
+    { TokenKind::Jump, "Jump" },
+    { TokenKind::JumpEquals, "JumpEquals" },
+    { TokenKind::JumpNotEquals, "JumpNotEquals" },
 
-    {TokenKind::Subroutine, "Subroutine"},
+    { TokenKind::Subroutine, "Subroutine" },
 
-    {TokenKind::Return, "Return"},
+    { TokenKind::Return, "Return" },
 
-    {TokenKind::Halt, "Halt"},
+    { TokenKind::Halt, "Halt" },
 
     // Lexer things
-    {TokenKind::Label, "Label"},
-    {TokenKind::Register, "Register"},
-    {TokenKind::Immediate, "Immediate"},
+    { TokenKind::Label, "Label" },
+    { TokenKind::Register, "Register" },
+    { TokenKind::Immediate, "Immediate" },
 
     // Literals
-    {TokenKind::OpenBracket, "OpenBracket"},
-    {TokenKind::CloseBracket, "CloseBracket"},
+    { TokenKind::OpenBracket, "OpenBracket" },
+    { TokenKind::CloseBracket, "CloseBracket" },
 
-    {TokenKind::AddOperation, "AddOperation"},
-    {TokenKind::SubOperation, "SubOperation"},
+    { TokenKind::AddOperation, "AddOperation" },
+    { TokenKind::SubOperation, "SubOperation" },
 
-    {TokenKind::Colon, "Colon"},
-    {TokenKind::Comma, "Comma"},
+    { TokenKind::Colon, "Colon" },
+    { TokenKind::Comma, "Comma" },
 
-    {TokenKind::END, "EOF"},
+    { TokenKind::END, "EOF" },
 };
 
 }  // namespace Lunasm
