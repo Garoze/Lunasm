@@ -223,6 +223,31 @@ void Parser::not_instruction()
     parse_register();
 }
 
+void Parser::psh_instruction()
+{
+    expect(TokenKind::Push);
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate:
+            parse_immediate();
+            break;
+        case TokenKind::Register:
+            parse_register();
+            break;
+        case TokenKind::OpenBracket:
+            parse_address();
+        default:
+            break;
+    }
+}
+
+void Parser::pop_instruction()
+{
+    expect(TokenKind::Pop);
+    parse_register();
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -259,6 +284,14 @@ void Parser::Parse()
 
             case TokenKind::BitNOT:
                 not_instruction();
+                break;
+
+            case TokenKind::Push:
+                psh_instruction();
+                break;
+
+            case TokenKind::Pop:
+                pop_instruction();
                 break;
 
             default:

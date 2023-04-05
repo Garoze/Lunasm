@@ -42,6 +42,9 @@ private:
     void xor_instruction();
     void not_instruction();
 
+    void psh_instruction();
+    void pop_instruction();
+
 private:
     bool expect(TokenKind);
 
