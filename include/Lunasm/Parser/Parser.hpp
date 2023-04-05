@@ -50,6 +50,7 @@ private:
 
     void add_instruction();
     void sub_instruction();
+    void mul_instruction();
 
 private:
     bool expect(TokenKind);
