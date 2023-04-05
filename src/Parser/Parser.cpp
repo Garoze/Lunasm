@@ -282,6 +282,28 @@ void Parser::add_instruction()
     }
 }
 
+void Parser::sub_instruction()
+{
+    expect(TokenKind::Sub);
+    parse_register();
+    expect(TokenKind::Comma);
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate:
+            parse_immediate();
+            break;
+        case TokenKind::Register:
+            parse_register();
+            break;
+        case TokenKind::OpenBracket:
+            parse_address();
+            break;
+        default:
+            break;
+    }
+}
+
 void Parser::Parse()
 {
     while (look_ahead()->kind() != TokenKind::END)
@@ -338,6 +360,10 @@ void Parser::Parse()
 
             case TokenKind::Add:
                 add_instruction();
+                break;
+
+            case TokenKind::Sub:
+                sub_instruction();
                 break;
 
             default:
