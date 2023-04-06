@@ -21,7 +21,6 @@ public:
 
 private:
     void step();
-    void skip(const std::string&);
     std::optional<Token> look_ahead(std::size_t);
 
 private:

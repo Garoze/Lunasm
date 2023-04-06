@@ -1,3 +1,4 @@
+#include <memory>
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -15,7 +16,7 @@ namespace Lunasm {
 
 Parser::Parser()
     : m_index(0)
-    , m_lexer(new Lexer())
+    , m_lexer(std::make_unique<Lexer>())
 {}
 
 void Parser::step()
@@ -24,14 +25,6 @@ void Parser::step()
     {
         m_index++;
     }
-}
-
-void Parser::skip(const std::string& message)
-{
-#ifdef __PARSER_DEBUG__
-    fmt::print("DEBUG: {}\n", message);
-#endif
-    step();
 }
 
 std::optional<Token> Parser::look_ahead(std::size_t pos = 0)
