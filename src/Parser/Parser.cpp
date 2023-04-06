@@ -129,6 +129,25 @@ bool Parser::parse_label()
     return true;
 }
 
+void Parser::parse_modes()
+{
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate:
+            parse_immediate();
+            break;
+        case TokenKind::Register:
+            parse_register();
+            break;
+        case TokenKind::OpenBracket:
+            parse_address();
+            break;
+
+        default:
+            break;
+    }
+}
+
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
@@ -143,41 +162,13 @@ void Parser::mov_instruction()
         case TokenKind::Register:
             parse_register();
             expect(TokenKind::Comma);
-            switch (look_ahead()->kind())
-            {
-                case TokenKind::Immediate:
-                    parse_immediate();
-                    break;
-                case TokenKind::Register:
-                    parse_register();
-                    break;
-                case TokenKind::OpenBracket:
-                    parse_address();
-                    break;
-
-                default:
-                    break;
-            }
+            parse_modes();
             break;
 
         case TokenKind::OpenBracket:
             parse_address();
             expect(TokenKind::Comma);
-            switch (look_ahead()->kind())
-            {
-                case TokenKind::Immediate:
-                    parse_immediate();
-                    break;
-                case TokenKind::Register:
-                    parse_register();
-                    break;
-                case TokenKind::OpenBracket:
-                    parse_address();
-                    break;
-
-                default:
-                    break;
-            }
+            parse_modes();
             break;
 
         default:
@@ -234,20 +225,7 @@ void Parser::not_instruction()
 void Parser::psh_instruction()
 {
     expect(TokenKind::Push);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::pop_instruction()
@@ -273,21 +251,7 @@ void Parser::add_instruction()
     expect(TokenKind::Add);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::sub_instruction()
@@ -295,21 +259,7 @@ void Parser::sub_instruction()
     expect(TokenKind::Sub);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::mul_instruction()
@@ -317,21 +267,7 @@ void Parser::mul_instruction()
     expect(TokenKind::Mul);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::div_instruction()
@@ -339,21 +275,7 @@ void Parser::div_instruction()
     expect(TokenKind::Div);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::mod_instruction()
@@ -361,21 +283,7 @@ void Parser::mod_instruction()
     expect(TokenKind::Mod);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::cmp_instruction()
@@ -383,21 +291,7 @@ void Parser::cmp_instruction()
     expect(TokenKind::Compare);
     parse_register();
     expect(TokenKind::Comma);
-
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
-        default:
-            break;
-    }
+    parse_modes();
 }
 
 void Parser::jmp_instruction()
