@@ -28,6 +28,9 @@ private:
     bool parse_immediate();
     bool parse_address();
     bool parse_register();
+    bool parse_label();
+
+    void parse_modes();
 
 private:
     void nop_instruction();

@@ -121,6 +121,14 @@ bool Parser::parse_register()
     return true;
 }
 
+bool Parser::parse_label()
+{
+    expect(TokenKind::Label);
+    expect(TokenKind::Colon);
+
+    return true;
+}
+
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
@@ -432,6 +440,10 @@ void Parser::Parse()
     {
         switch (look_ahead()->kind())
         {
+            case TokenKind::Label:
+                parse_label();
+                break;
+
             case TokenKind::NOP:
                 nop_instruction();
                 break;
