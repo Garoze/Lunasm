@@ -1,3 +1,4 @@
+#include <charconv>
 #include <memory>
 #include <string>
 #include <sstream>
@@ -107,11 +108,15 @@ bool Parser::parse_address()
     return true;
 }
 
-bool Parser::parse_register()
+std::uint8_t Parser::parse_register()
 {
+    std::uint8_t r;
+    auto reg = look_ahead();
     expect(TokenKind::Register);
 
-    return true;
+    std::from_chars(reg->text().data() + 1, reg->text().data() + reg->text().size(), r);
+
+    return r;
 }
 
 bool Parser::parse_label()
@@ -152,11 +157,13 @@ void Parser::mov_instruction()
 
     switch (look_ahead()->kind())
     {
-        case TokenKind::Register:
-            parse_register();
+        case TokenKind::Register: {
+            auto dst = parse_register();
+            fmt::print("Register: {}\n", dst);
             expect(TokenKind::Comma);
             parse_modes();
-            break;
+        }
+        break;
 
         case TokenKind::OpenBracket:
             parse_address();

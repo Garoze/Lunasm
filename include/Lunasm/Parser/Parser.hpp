@@ -26,7 +26,7 @@ private:
 private:
     bool parse_immediate();
     bool parse_address();
-    bool parse_register();
+    std::uint8_t parse_register();
     bool parse_label();
 
     void parse_modes();
