@@ -29,4 +29,8 @@ std::string Token::as_string() const {
     return m_kind.as_string();
 }
 
+std::string_view Token::text() const {
+    return m_text;
+}
+
 }  // namespace Lunasm

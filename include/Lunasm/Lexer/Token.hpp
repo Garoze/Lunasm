@@ -1,11 +1,14 @@
 #pragma once
 
 #include <string>
+#include <variant>
 #include <unordered_map>
 
 #include "Kind.hpp"
 
 namespace Lunasm {
+
+using Value = std::variant<std::string_view, std::uint8_t, std::uint16_t>;
 
 class Token
 {
@@ -17,6 +20,8 @@ public:
     TokenKind kind() const;
 
     std::string as_string() const;
+
+    std::string_view text() const;
 
     constexpr explicit operator bool() noexcept { return true; }
 
