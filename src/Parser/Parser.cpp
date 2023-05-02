@@ -92,14 +92,19 @@ bool Parser::expect_any(Kinds... kinds)
     return false;
 }
 
-bool Parser::parse_immediate()
+std::uint16_t Parser::parse_immediate()
 {
+    auto imm = look_ahead();
     expect(TokenKind::Immediate);
 
-    return true;
+    std::uint16_t i;
+
+    std::from_chars(imm->text().data(), imm->text().data() + imm->text().size(), i);
+
+    return i;
 }
 
-bool Parser::parse_address()
+std::uint16_t Parser::parse_address()
 {
     expect(TokenKind::OpenBracket);
     expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
@@ -159,9 +164,26 @@ void Parser::mov_instruction()
     {
         case TokenKind::Register: {
             auto dst = parse_register();
-            fmt::print("Register: {}\n", dst);
             expect(TokenKind::Comma);
-            parse_modes();
+
+            switch (look_ahead()->kind())
+            {
+                case TokenKind::Immediate: {
+                    auto src = parse_immediate();
+                    fmt::print("LoadImmediate ( 0x01 {})\n", fmt::format("{:#04x} {:#04x} ", dst, src));
+                }
+                break;
+
+                case TokenKind::Register:
+                    parse_register();
+                    break;
+                case TokenKind::OpenBracket:
+                    parse_address();
+                    break;
+
+                default:
+                    break;
+            }
         }
         break;
 

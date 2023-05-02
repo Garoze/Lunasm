@@ -24,8 +24,8 @@ private:
     std::optional<Token> look_ahead(std::size_t);
 
 private:
-    bool parse_immediate();
-    bool parse_address();
+    std::uint16_t parse_immediate();
+    std::uint16_t parse_address();
     std::uint8_t parse_register();
     bool parse_label();
 
