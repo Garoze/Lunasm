@@ -1,16 +1,18 @@
-#include <charconv>
 #include <memory>
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <charconv>
 #include <iterator>
 #include <stdexcept>
 #include <streambuf>
 #include <initializer_list>
 
 #include <fmt/core.h>
+#include <fmt/ranges.h>
 
 #include "Lexer/Mnemonics.hpp"
+
 #include "Parser/Parser.hpp"
 
 namespace Lunasm {
@@ -170,7 +172,6 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate: {
                     auto src = parse_immediate();
-                    fmt::print("LoadImmediate ( 0x01 {})\n", fmt::format("{:#04x} {:#04x} ", dst, src));
                 }
                 break;
 
@@ -463,7 +464,7 @@ void Parser::Parse()
         }
     }
 
-    fmt::print("[Parser] Finished the parser, no error reported.\n");
+    fmt::print("[Parser] Finished the parser, no errors reported.\n");
 }
 
 }  // namespace Lunasm
