@@ -4,16 +4,17 @@
 namespace Lunasm {
 
 Kind::Kind(TokenKind kind)
-    : m_kind(kind)
+    : m_value(kind)
 {}
 
-TokenKind Kind::raw() const {
-    return m_kind;
+TokenKind Kind::raw() const
+{
+    return m_value;
 }
 
 std::string Kind::as_string() const
 {
-    return MNEMONICS.at(m_kind);
+    return MNEMONICS.at(m_value);
 }
 
 }  // namespace Lunasm

@@ -67,7 +67,7 @@ public:
     std::string as_string() const;
 
 private:
-    TokenKind m_kind;
+    TokenKind m_value;
 };
 
 }  // namespace Lunasm
