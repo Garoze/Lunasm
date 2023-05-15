@@ -42,7 +42,7 @@ std::optional<Token> Parser::look_ahead(std::size_t pos = 0)
     return {};
 }
 
-void Parser::parse_file(std::filesystem::path const& path)
+void Parser::parse_file(std::filesystem::path const& path, bool debug)
 {
     std::stringstream ss;
 
@@ -57,6 +57,7 @@ void Parser::parse_file(std::filesystem::path const& path)
     ss << file.rdbuf();
     std::string source = ss.str();
 
+    m_lexer->enable_debug(debug);
     m_tokens = m_lexer->Lex_source(source);
 
     Parse();
@@ -96,14 +97,9 @@ bool Parser::expect_any(Kinds... kinds)
 
 std::uint16_t Parser::parse_immediate()
 {
-    auto imm = look_ahead();
     expect(TokenKind::Immediate);
 
-    std::uint16_t i;
-
-    std::from_chars(imm->text().data(), imm->text().data() + imm->text().size(), i);
-
-    return i;
+    return 0;
 }
 
 std::uint16_t Parser::parse_address()
@@ -115,15 +111,11 @@ std::uint16_t Parser::parse_address()
     return true;
 }
 
-std::uint8_t Parser::parse_register()
+uint8_t Parser::parse_register()
 {
-    std::uint8_t r;
-    auto reg = look_ahead();
     expect(TokenKind::Register);
 
-    std::from_chars(reg->text().data() + 1, reg->text().data() + reg->text().size(), r);
-
-    return r;
+    return 0;
 }
 
 bool Parser::parse_label()

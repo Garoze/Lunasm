@@ -17,7 +17,7 @@ public:
     Parser();
 
     void Parse();
-    void parse_file(std::filesystem::path const&);
+    void parse_file(std::filesystem::path const&, bool = false);
 
 private:
     void step();
