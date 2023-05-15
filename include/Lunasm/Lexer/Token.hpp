@@ -2,32 +2,32 @@
 
 #include <string>
 #include <variant>
-#include <unordered_map>
 
 #include "Kind.hpp"
+
+using TokenValue = std::variant<std::string_view, std::uint8_t, std::uint16_t>;
 
 namespace Lunasm {
 
 class Token
 {
 public:
-    Token(Kind, std::size_t, std::size_t, std::string_view);
+    Token(Kind, TokenValue, std::size_t, std::size_t);
 
     void print() const;
 
     TokenKind kind() const;
-
+    TokenValue value() const;
     std::string as_string() const;
 
-    std::string_view text() const;
-
+public:
     constexpr explicit operator bool() noexcept { return true; }
 
 private:
     Kind m_kind;
+    TokenValue m_value;
     std::size_t m_line;
     std::size_t m_offset;
-    std::string_view m_text;
 };
 
 }  // namespace Lunasm
