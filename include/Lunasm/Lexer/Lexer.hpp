@@ -38,11 +38,11 @@ private:
     std::string sanitize_input(std::string);
 
 private:
+    void Comment();
     Token Register();
     Token Immediate();
     Token Identifier();
 
-    void Comment();
 
 private:
     Token next_token();

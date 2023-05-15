@@ -95,6 +95,16 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     return {};
 }
 
+void Lexer::Comment()
+{
+    skip("Skipping the ';' character");
+
+    while (!is_empty() && current_char() != '\n')
+    {
+        step();
+    }
+}
+
 Token Lexer::Register()
 {
     skip("Skipping the 'r' character.");
@@ -102,9 +112,11 @@ Token Lexer::Register()
     switch (char n = eat())
     {
         case '0' ... '7': {
-            std::string_view text(m_source_code.c_str() + offset(2), 2);
+            std::string_view text(m_source_code.c_str() + offset(1), 1);
 
-            return Token(TokenKind::Register, text, m_line, offset());
+            auto value = static_cast<std::uint8_t>(std::stoi(text.data()));
+
+            return Token(TokenKind::Register, value, m_line, offset());
         }
         default:
             throw std::runtime_error("Invalid Register.");
@@ -131,7 +143,9 @@ Token Lexer::Immediate()
 
     std::string_view text(m_source_code.c_str() + start, offset(start));
 
-    return Token(TokenKind::Immediate, text, m_line, offset());
+    auto value = static_cast<std::uint16_t>(std::stoi(text.data()));
+
+    return Token(TokenKind::Immediate, value, m_line, offset());
 }
 
 Token Lexer::Identifier()
@@ -151,16 +165,6 @@ Token Lexer::Identifier()
     }
 
     return Token(TokenKind::Label, text, m_line, offset());
-}
-
-void Lexer::Comment()
-{
-    skip("Skipping the ';' character");
-
-    while (!is_empty() && current_char() != '\n')
-    {
-        step();
-    }
 }
 
 std::string Lexer::sanitize_input(std::string input)
