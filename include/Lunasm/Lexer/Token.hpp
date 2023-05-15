@@ -17,7 +17,7 @@ public:
     void print() const;
 
     TokenKind kind() const;
-    TokenValue value() const;
+    TokenValue raw_value() const;
     std::string as_text() const;
     std::string as_string() const;
 

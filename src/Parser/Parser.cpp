@@ -107,7 +107,7 @@ uint8_t Parser::parse_register()
 {
     auto r = expect(TokenKind::Register);
 
-    return std::get<std::uint8_t>(r.value());
+    return std::get<std::uint8_t>(r.raw_value());
 }
 
 std::uint16_t Parser::parse_address()
@@ -123,7 +123,7 @@ std::uint16_t Parser::parse_immediate()
 {
     auto i = expect(TokenKind::Immediate);
 
-    return std::get<std::uint16_t>(i.value());
+    return std::get<std::uint16_t>(i.raw_value());
 }
 
 void Parser::parse_modes()

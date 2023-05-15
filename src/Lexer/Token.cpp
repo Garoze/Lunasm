@@ -38,7 +38,7 @@ TokenKind Token::kind() const
     return m_kind.raw();
 }
 
-TokenValue Token::value() const
+TokenValue Token::raw_value() const
 {
     return m_value;
 }
