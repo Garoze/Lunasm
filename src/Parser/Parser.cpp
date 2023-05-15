@@ -95,9 +95,17 @@ bool Parser::expect_any(Kinds... kinds)
     return false;
 }
 
-std::uint16_t Parser::parse_immediate()
+bool Parser::parse_label()
 {
-    expect(TokenKind::Immediate);
+    expect(TokenKind::Label);
+    expect(TokenKind::Colon);
+
+    return true;
+}
+
+uint8_t Parser::parse_register()
+{
+    expect(TokenKind::Register);
 
     return 0;
 }
@@ -111,19 +119,11 @@ std::uint16_t Parser::parse_address()
     return true;
 }
 
-uint8_t Parser::parse_register()
+std::uint16_t Parser::parse_immediate()
 {
-    expect(TokenKind::Register);
+    expect(TokenKind::Immediate);
 
     return 0;
-}
-
-bool Parser::parse_label()
-{
-    expect(TokenKind::Label);
-    expect(TokenKind::Colon);
-
-    return true;
 }
 
 void Parser::parse_modes()
