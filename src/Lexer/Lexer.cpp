@@ -73,6 +73,11 @@ bool Lexer::is_empty() const
     return m_index >= m_source_code.length();
 }
 
+void Lexer::enable_debug(bool b = false)
+{
+    m_debug = b;
+}
+
 std::size_t Lexer::offset(std::size_t pos = 0) const
 {
     return m_index - pos;
@@ -99,9 +104,11 @@ Token Lexer::Register()
         case '0' ... '7': {
             std::string_view text(m_source_code.c_str() + offset(2), 2);
 
-            return Token(TokenKind::Register, m_line, offset(), text);
+            return Token(TokenKind::Register, text, m_line, offset());
         }
-        default: throw std::runtime_error("Invalid Register."); break;
+        default:
+            throw std::runtime_error("Invalid Register.");
+            break;
     }
 }
 
@@ -124,7 +131,7 @@ Token Lexer::Immediate()
 
     std::string_view text(m_source_code.c_str() + start, offset(start));
 
-    return Token(TokenKind::Immediate, m_line, offset(), text);
+    return Token(TokenKind::Immediate, text, m_line, offset());
 }
 
 Token Lexer::Identifier()
@@ -140,10 +147,10 @@ Token Lexer::Identifier()
 
     if (is_instruction(text))
     {
-        return Token(INSTRUCTIONS.at(text), m_line, offset(), text);
+        return Token(INSTRUCTIONS.at(text), text, m_line, offset());
     }
 
-    return Token(TokenKind::Label, m_line, offset(), text);
+    return Token(TokenKind::Label, text, m_line, offset());
 }
 
 void Lexer::Comment()
@@ -172,46 +179,54 @@ Token Lexer::next_token()
             case ' ':
             case '\r':
             case '\t':
-            case '\n': space(); break;
+            case '\n':
+                space();
+                break;
 
             case '[':
                 step();
-                return Token(TokenKind::OpenBracket, m_line, offset(), "[");
+                return Token(TokenKind::OpenBracket, "[", m_line, offset());
                 break;
             case ']':
                 step();
-                return Token(TokenKind::CloseBracket, m_line, offset(), "]");
+                return Token(TokenKind::CloseBracket, "]", m_line, offset());
                 break;
             case '+':
                 step();
-                return Token(TokenKind::AddOperation, m_line, offset(), "+");
+                return Token(TokenKind::AddOperation, "+", m_line, offset());
                 break;
             case '-':
                 step();
-                return Token(TokenKind::SubOperation, m_line, offset(), "-");
+                return Token(TokenKind::SubOperation, "-", m_line, offset());
                 break;
             case ',':
                 step();
-                return Token(TokenKind::Comma, m_line, offset(), ",");
+                return Token(TokenKind::Comma, ",", m_line, offset());
                 break;
             case ':':
                 step();
-                return Token(TokenKind::Colon, m_line, offset(), ":");
+                return Token(TokenKind::Colon, ":", m_line, offset());
                 break;
 
-            case ';': Comment(); break;
-            case '$': return Immediate(); break;
+            case ';':
+                Comment();
+                break;
+            case '$':
+                return Immediate();
+                break;
             case 'r':
                 if (std::isdigit(peek().value()))  // check if the next char is a number or not.
                 {
                     return Register();
                 }
 
-            default: return Identifier(); break;
+            default:
+                return Identifier();
+                break;
         }
     }
 
-    return Token(TokenKind::END, m_line, offset(), "EOF");
+    return Token(TokenKind::END, "EOF", m_line, offset());
 }
 
 std::vector<Token> Lexer::Tokenizer()
@@ -224,6 +239,14 @@ std::vector<Token> Lexer::Tokenizer()
 
         if (token.kind() == TokenKind::END)
             break;
+    }
+
+    if (m_debug == true)
+    {
+        for (const auto& t : tokens)
+        {
+            t.print();
+        }
     }
 
     return tokens;

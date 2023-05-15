@@ -18,6 +18,8 @@ public:
     std::vector<Token> Tokenizer();
     std::vector<Token> Lex_source(std::string);
 
+    void enable_debug(bool);
+
 private:
     char eat();
     void step();
@@ -39,12 +41,14 @@ private:
     Token Register();
     Token Immediate();
     Token Identifier();
+
     void Comment();
 
 private:
     Token next_token();
 
 private:
+    bool m_debug;
     std::size_t m_line;
     std::size_t m_index;
     std::string m_source_code;
