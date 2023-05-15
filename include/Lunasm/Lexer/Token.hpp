@@ -18,6 +18,7 @@ public:
 
     TokenKind kind() const;
     TokenValue value() const;
+    std::string as_text() const;
     std::string as_string() const;
 
 public:
