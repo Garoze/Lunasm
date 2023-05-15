@@ -5,7 +5,6 @@
 namespace Lunasm {
 
 enum class TokenKind {
-
     // CPU Instructions
     NOP,
     MovInstruction,
@@ -64,9 +63,8 @@ class Kind
 public:
     Kind(TokenKind);
 
-    std::string as_string() const;
-
     TokenKind raw() const;
+    std::string as_string() const;
 
 private:
     TokenKind m_kind;
