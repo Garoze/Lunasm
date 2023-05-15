@@ -63,20 +63,19 @@ void Parser::parse_file(std::filesystem::path const& path, bool debug)
     Parse();
 }
 
-bool Parser::expect(TokenKind kind)
+Token Parser::expect(TokenKind kind)
 {
-    if (look_ahead()->kind() == kind)
+    auto t = look_ahead();
+    if (t.has_value() && t->kind() == kind)
     {
         step();
-        return true;
+        return t.value();
     }
     else
     {
         auto err = fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n", MNEMONICS.at(kind), look_ahead()->as_string());
         throw std::runtime_error(err);
     }
-
-    return false;
 }
 
 template <typename... Kinds>
@@ -88,7 +87,8 @@ bool Parser::expect_any(Kinds... kinds)
     {
         if (look_ahead()->kind() == k)
         {
-            return expect(k);
+            expect(k);
+            return true;
         }
     }
 
@@ -105,9 +105,9 @@ bool Parser::parse_label()
 
 uint8_t Parser::parse_register()
 {
-    expect(TokenKind::Register);
+    auto r = expect(TokenKind::Register);
 
-    return 0;
+    return std::get<std::uint8_t>(r.value());
 }
 
 std::uint16_t Parser::parse_address()
@@ -121,9 +121,9 @@ std::uint16_t Parser::parse_address()
 
 std::uint16_t Parser::parse_immediate()
 {
-    expect(TokenKind::Immediate);
+    auto i = expect(TokenKind::Immediate);
 
-    return 0;
+    return std::get<std::uint16_t>(i.value());
 }
 
 void Parser::parse_modes()
@@ -164,6 +164,7 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate: {
                     auto src = parse_immediate();
+                    fmt::print("( LoadImmediate r{} ${:02x} )\n", dst, src);
                 }
                 break;
 

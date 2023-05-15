@@ -68,7 +68,7 @@ private:
     void hlt_instruction();
 
 private:
-    bool expect(TokenKind);
+    Token expect(TokenKind);
 
     template <typename... Kinds>
     bool expect_any(Kinds... kinds);
