@@ -18,16 +18,9 @@ Token::Token(Kind kind, TokenValue value, std::size_t line, std::size_t offset)
 
 void Token::print() const
 {
-    std::string text;
-    if (m_kind.raw() == TokenKind::Register)
-    {
-        text = fmt::format("\"r{}\"", as_text());
-    }
-    else
-    {
-        text = fmt::format("\"{}\"", as_text());
-    }
+    std::string r = m_kind.raw() == TokenKind::Register ? "r" : "";
 
+    auto text = fmt::format("\"{}{}\"", r, as_text());
     auto kind = fmt::format("<{}>", m_kind.as_string());
 
     fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
