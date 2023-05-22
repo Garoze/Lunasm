@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <unordered_map>
 #include <vector>
 #include <optional>
 #include <algorithm>
@@ -71,12 +72,13 @@ private:
     Token expect(TokenKind);
 
     template <typename... Kinds>
-    bool expect_any(Kinds... kinds);
+    std::optional<Token> expect_any(Kinds... kinds);
 
 private:
     std::size_t m_index;
     std::vector<Token> m_tokens;
     std::unique_ptr<Lexer> m_lexer;
+    std::unordered_map<std::string, std::uint16_t> m_labels_table;
 };
 
 }  // namespace Lunasm

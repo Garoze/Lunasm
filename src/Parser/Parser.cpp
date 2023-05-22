@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <streambuf>
 #include <initializer_list>
+#include <tuple>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -79,7 +80,7 @@ Token Parser::expect(TokenKind kind)
 }
 
 template <typename... Kinds>
-bool Parser::expect_any(Kinds... kinds)
+std::optional<Token> Parser::expect_any(Kinds... kinds)
 {
     static_assert((std::is_same_v<Kinds, TokenKind> && ...), "must pass TokenKind values");
 
@@ -87,18 +88,20 @@ bool Parser::expect_any(Kinds... kinds)
     {
         if (look_ahead()->kind() == k)
         {
-            expect(k);
-            return true;
+            return expect(k);
         }
     }
 
-    return false;
+    return {};
 }
 
 bool Parser::parse_label()
 {
-    expect(TokenKind::Label);
+    auto label = expect(TokenKind::Label);
     expect(TokenKind::Colon);
+
+    auto identifier = std::get<std::string_view>(label.raw_value());
+    fmt::print("Label: {} Offset: {}\n", identifier, m_index);
 
     return true;
 }
@@ -116,7 +119,7 @@ std::uint16_t Parser::parse_address()
     expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
     expect(TokenKind::CloseBracket);
 
-    return true;
+    return false;
 }
 
 std::uint16_t Parser::parse_immediate()
@@ -168,12 +171,17 @@ void Parser::mov_instruction()
                 }
                 break;
 
-                case TokenKind::Register:
-                    parse_register();
-                    break;
-                case TokenKind::OpenBracket:
-                    parse_address();
-                    break;
+                case TokenKind::Register: {
+                    auto src = parse_register();
+                    fmt::print("( LoadRegister r{} r{} )\n", dst, src);
+                }
+                break;
+
+                case TokenKind::OpenBracket: {
+                    auto src = parse_address();
+                    fmt::print("( LoadAddress r{} ${:04x} )\n", dst, src);
+                }
+                break;
 
                 default:
                     break;
