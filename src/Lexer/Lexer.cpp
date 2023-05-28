@@ -241,16 +241,11 @@ std::vector<Token> Lexer::Tokenizer()
     {
         tokens.push_back(token);
 
+        if (m_debug == true)
+            token.print();
+
         if (token.kind() == TokenKind::END)
             break;
-    }
-
-    if (m_debug == true)
-    {
-        for (const auto& t : tokens)
-        {
-            t.print();
-        }
     }
 
     return tokens;
