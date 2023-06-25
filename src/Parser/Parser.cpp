@@ -1,20 +1,22 @@
 #include <memory>
 #include <string>
 #include <sstream>
+#include <cstdint>
 #include <fstream>
 #include <charconv>
 #include <iterator>
 #include <stdexcept>
 #include <streambuf>
 #include <initializer_list>
-#include <tuple>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
 
 #include "Lexer/Mnemonics.hpp"
 
+#include "Parser/Instruction.hpp"
 #include "Parser/Parser.hpp"
+#include "Parser/Opcodes.hpp"
 
 namespace Lunasm {
 
@@ -101,7 +103,8 @@ bool Parser::parse_label()
     expect(TokenKind::Colon);
 
     auto identifier = std::get<std::string_view>(label.raw_value());
-    fmt::print("Label: {} Offset: {}\n", identifier, m_index);
+
+    // fmt::print("[LABEL `{}`]: 0x{:04X}\n", identifier, m_asll->index());
 
     return true;
 }
@@ -160,26 +163,29 @@ void Parser::mov_instruction()
     switch (look_ahead()->kind())
     {
         case TokenKind::Register: {
-            auto dst = parse_register();
+            std::uint8_t dst = parse_register();
             expect(TokenKind::Comma);
 
             switch (look_ahead()->kind())
             {
                 case TokenKind::Immediate: {
-                    auto src = parse_immediate();
-                    fmt::print("( LoadImmediate r{} ${:02x} )\n", dst, src);
+                    std::uint16_t src = parse_immediate();
+
+                    m_instructions.push_back(Instruction(Opcode::LoadImmediate, dst, src, 4));
                 }
                 break;
 
                 case TokenKind::Register: {
                     auto src = parse_register();
-                    fmt::print("( LoadRegister r{} r{} )\n", dst, src);
+
+                    m_instructions.push_back(Instruction(Opcode::LoadRegister, dst, src, 3));
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     auto src = parse_address();
-                    fmt::print("( LoadAddress r{} ${:04x} )\n", dst, src);
+
+                    m_instructions.push_back(Instruction(Opcode::LoadAddress, dst, src, 4));
                 }
                 break;
 
@@ -465,7 +471,16 @@ void Parser::Parse()
         }
     }
 
+    debug_instruction();
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
+}
+
+void Parser::debug_instruction() const
+{
+    for (auto i : m_instructions)
+    {
+        i.print();
+    }
 }
 
 }  // namespace Lunasm
