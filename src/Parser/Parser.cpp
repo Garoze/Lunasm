@@ -171,21 +171,21 @@ void Parser::mov_instruction()
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
 
-                    m_instructions.push_back(Instruction(Opcode::LoadImmediate, dst, src, 4));
+                    m_instructions.push_back(Instruction(Opcode::LoadImmediate, 4, dst, src));
                 }
                 break;
 
                 case TokenKind::Register: {
                     auto src = parse_register();
 
-                    m_instructions.push_back(Instruction(Opcode::LoadRegister, dst, src, 3));
+                    m_instructions.push_back(Instruction(Opcode::LoadRegister, 3, dst, src));
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     auto src = parse_address();
 
-                    m_instructions.push_back(Instruction(Opcode::LoadAddress, dst, src, 4));
+                    m_instructions.push_back(Instruction(Opcode::LoadAddress, 4, dst, src));
                 }
                 break;
 

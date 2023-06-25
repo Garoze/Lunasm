@@ -13,7 +13,7 @@ using Operand = std::variant<std::monostate, std::uint8_t, std::uint16_t>;
 class Instruction
 {
 public:
-    Instruction(Opcode op, Operand dst, Operand src, std::size_t size);
+    Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
 
     void print() const;
     std::size_t size() const;
@@ -21,9 +21,9 @@ public:
 
 private:
     Opcode m_opcode;
+    std::size_t m_size;
     Operand m_dst;
     Operand m_src;
-    std::size_t m_size;
 };
 
 }  // namespace Lunasm
