@@ -13,8 +13,15 @@ namespace Lunasm {
 const std::unordered_map<Opcode, std::string> OP_MNEMONICS = {
     { Opcode::NOP, "NOP" },
     { Opcode::LoadImmediate, "LoadImmediate" },
-    { Opcode::LoadRegister, "LoadRegister" },
     { Opcode::LoadAddress, "LoadAddress" },
+    { Opcode::LoadRegister, "LoadRegister" },
+
+    {Opcode::StoreImmediate,"StoreImmediate" },
+    {Opcode::StoreAddress, "StoreAddress"},
+    {Opcode::StoreRegister, "StoreRegister" },
+
+    {Opcode::ShiftLeft, "ShiftLeft" },
+    {Opcode::ShiftRight, "ShiftRight" },
 };
 
 Instruction::Instruction(Opcode op, std::size_t size)
