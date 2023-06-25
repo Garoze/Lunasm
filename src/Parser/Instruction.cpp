@@ -29,6 +29,12 @@ Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {}, Operand 
     , m_src(src)
 {}
 
+Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {})
+    : m_opcode(op)
+    , m_size(size)
+    , m_dst(dst)
+{}
+
 void Instruction::print() const
 {
     auto mem = fmt::format("{::02x}", eval());

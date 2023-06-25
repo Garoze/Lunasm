@@ -14,6 +14,7 @@ class Instruction
 {
 public:
     Instruction(Opcode op, std::size_t size);
+    Instruction(Opcode op, std::size_t size, Operand dst);
     Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
 
     void print() const;
