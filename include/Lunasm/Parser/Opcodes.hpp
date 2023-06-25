@@ -6,9 +6,17 @@ namespace Lunasm {
 
 enum class Opcode : std::uint8_t {
     NOP,
+
     LoadImmediate,
-    LoadRegister,
     LoadAddress,
+    LoadRegister,
+
+    StoreImmediate,
+    StoreAddress,
+    StoreRegister,
+
+    ShiftLeft,
+    ShiftRight,
 };
 
 }  // namespace Lunasm
