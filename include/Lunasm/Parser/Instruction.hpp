@@ -13,6 +13,7 @@ using Operand = std::variant<std::monostate, std::uint8_t, std::uint16_t>;
 class Instruction
 {
 public:
+    Instruction(Opcode op, std::size_t size);
     Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
 
     void print() const;

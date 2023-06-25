@@ -17,6 +17,11 @@ const std::unordered_map<Opcode, std::string> OP_MNEMONICS = {
     { Opcode::LoadAddress, "LoadAddress" },
 };
 
+Instruction::Instruction(Opcode op, std::size_t size)
+    : m_opcode(op)
+    , m_size(size)
+{}
+
 Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {}, Operand src = {})
     : m_opcode(op)
     , m_size(size)
