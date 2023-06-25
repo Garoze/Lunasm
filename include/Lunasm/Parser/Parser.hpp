@@ -1,16 +1,25 @@
 #pragma once
 
 #include <memory>
-#include <unordered_map>
 #include <vector>
 #include <optional>
 #include <algorithm>
 #include <filesystem>
+#include <unordered_map>
 
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
+#include "Parser/Instruction.hpp"
+
 namespace Lunasm {
+
+enum class ParserStatus {
+    ParsingLabels,
+    ParsingInstructions,
+    OutputFile,
+    End,
+};
 
 class Parser
 {
@@ -19,6 +28,8 @@ public:
 
     void Parse();
     void parse_file(std::filesystem::path const&, bool = false);
+
+    void debug_instruction() const;
 
 private:
     void step();
@@ -78,7 +89,7 @@ private:
     std::size_t m_index;
     std::vector<Token> m_tokens;
     std::unique_ptr<Lexer> m_lexer;
-    std::unordered_map<std::string, std::uint16_t> m_labels_table;
+    std::vector<Instruction> m_instructions;
 };
 
 }  // namespace Lunasm
