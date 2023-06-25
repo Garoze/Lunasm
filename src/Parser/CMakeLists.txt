@@ -1,4 +1,5 @@
 add_library(Parser
+  Instruction.cpp
   Parser.cpp
 )
 
