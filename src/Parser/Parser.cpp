@@ -154,6 +154,7 @@ void Parser::parse_modes()
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
+    m_instructions.push_back(Instruction(Opcode::NOP, 1));
 }
 
 void Parser::mov_instruction()
