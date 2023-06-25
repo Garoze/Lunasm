@@ -210,17 +210,21 @@ void Parser::mov_instruction()
 void Parser::shl_instruction()
 {
     expect(TokenKind::ShiftLeft);
-    parse_register();
+    std::uint8_t reg = parse_register();
     expect(TokenKind::Comma);
-    parse_immediate();
+    std::uint16_t imm = parse_immediate();
+
+    m_instructions.push_back(Instruction(Opcode::ShiftLeft, 4, reg, imm));
 }
 
 void Parser::shr_instruction()
 {
     expect(TokenKind::ShiftRight);
-    parse_register();
+    std::uint8_t reg = parse_register();
     expect(TokenKind::Comma);
-    parse_immediate();
+    std::uint16_t imm = parse_immediate();
+
+    m_instructions.push_back(Instruction(Opcode::ShiftRight, 4, reg, imm));
 }
 
 void Parser::and_instruction()
