@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <variant>
 #include <vector>
 #include <optional>
 #include <algorithm>
@@ -11,8 +12,11 @@
 #include "Lexer/Token.hpp"
 
 #include "Parser/Instruction.hpp"
+#include "Parser/Label.hpp"
 
 namespace Lunasm {
+
+using Inst = std::variant<Instruction, Label>;
 
 enum class ParserStatus {
     ParsingLabels,
@@ -89,7 +93,7 @@ private:
     std::size_t m_index;
     std::vector<Token> m_tokens;
     std::unique_ptr<Lexer> m_lexer;
-    std::vector<Instruction> m_instructions;
+    std::vector<Inst> m_instructions;
 };
 
 }  // namespace Lunasm

@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <streambuf>
 #include <initializer_list>
+#include <variant>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -482,10 +483,24 @@ void Parser::Parse()
 
 void Parser::debug_instruction() const
 {
+    auto visitor = [&](auto arg) {
+        using T = decltype(arg);
+
+        if constexpr (std::is_same_v<T, Instruction>)
+        {
+            auto p = fmt::format("{::02x}", arg.eval());
+            fmt::print("{} ", p);
+        }
+        else if constexpr (std::is_same_v<T, Label>)
+        {
+            auto p = fmt::format("{::02x}", arg.address());
+            fmt::print("{} ", p);
+        }
+    };
+
     for (auto i : m_instructions)
     {
-        auto p = fmt::format("{::02x}", i.eval());
-        fmt::print("{} ", p);
+        std::visit(visitor, i);
     }
     fmt::print("\n");
 }
