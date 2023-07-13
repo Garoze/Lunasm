@@ -232,31 +232,39 @@ void Parser::shr_instruction()
 void Parser::and_instruction()
 {
     expect(TokenKind::BitAND);
-    parse_register();
+    std::uint8_t reg = parse_register();
     expect(TokenKind::Comma);
-    parse_immediate();
+    std::uint16_t imm = parse_immediate();
+
+    m_instructions.push_back(Instruction(Opcode::BitwiseAND, 4, reg, imm));
 }
 
 void Parser::bor_instruction()
 {
     expect(TokenKind::BitOR);
-    parse_register();
+    std::uint8_t reg = parse_register();
     expect(TokenKind::Comma);
-    parse_immediate();
+    std::uint16_t imm = parse_immediate();
+
+    m_instructions.push_back(Instruction(Opcode::BitwiseOR, 4, reg, imm));
 }
 
 void Parser::xor_instruction()
 {
     expect(TokenKind::BitXOR);
-    parse_register();
+    std::uint8_t reg = parse_register();
     expect(TokenKind::Comma);
-    parse_immediate();
+    std::uint16_t imm = parse_immediate();
+
+    m_instructions.push_back(Instruction(Opcode::BitwiseXOR, 4, reg, imm));
 }
 
 void Parser::not_instruction()
 {
     expect(TokenKind::BitNOT);
-    parse_register();
+    std::uint8_t reg = parse_register();
+
+    m_instructions.push_back(Instruction(Opcode::BitwiseNOT, 2, reg));
 }
 
 void Parser::psh_instruction()
