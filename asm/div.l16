@@ -1,0 +1,5 @@
+div r1, $10
+div r1, r2
+div r1, [$100]
+div r1, [r2]
+div r1, [label]
