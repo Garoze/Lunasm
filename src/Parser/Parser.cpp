@@ -494,8 +494,7 @@ void Parser::debug_instruction() const
         }
         else if constexpr (std::is_same_v<T, Label>)
         {
-            auto p = fmt::format("{::02x}", arg.address());
-            fmt::print("{} ", p);
+            fmt::print("[ {} ] ", arg.label());
         }
     };
 
