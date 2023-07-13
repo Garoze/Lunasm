@@ -270,13 +270,41 @@ void Parser::not_instruction()
 void Parser::psh_instruction()
 {
     expect(TokenKind::Push);
-    parse_modes();
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Immediate: {
+            std::uint16_t src = parse_immediate();
+
+            m_instructions.push_back(Instruction(Opcode::PushImmediate, 3, src));
+        }
+        break;
+
+        case TokenKind::Register: {
+            auto src = parse_register();
+
+            m_instructions.push_back(Instruction(Opcode::PushRegister, 3, src));
+        }
+        break;
+
+        case TokenKind::OpenBracket: {
+            auto src = parse_address();
+
+            m_instructions.push_back(Instruction(Opcode::PushAddress, 4, src));
+        }
+        break;
+
+        default:
+            break;
+    }
 }
 
 void Parser::pop_instruction()
 {
     expect(TokenKind::Pop);
-    parse_register();
+    std::uint8_t reg = parse_register();
+
+    m_instructions.push_back(Instruction(Opcode::Pop, 1, reg));
 }
 
 void Parser::inc_instruction()
