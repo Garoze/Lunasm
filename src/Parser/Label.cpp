@@ -18,7 +18,7 @@ Label::Label(std::string_view label, std::uint16_t address)
 
 void Label::print() const
 {
-    fmt::print("( {} :: {:04x} )\n", m_label, m_address);
+    fmt::print("[ {} :: {:04x} ]\n", m_label, m_address);
 }
 
 void Label::set_address(std::uint16_t address)
