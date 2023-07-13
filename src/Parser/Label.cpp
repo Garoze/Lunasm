@@ -2,14 +2,12 @@
 
 namespace Lunasm {
 
-Label::Label(Opcode op, std::string label)
-    : m_opcode(op)
-    , m_label(label)
+Label::Label(std::string label)
+    : m_label(label)
 {}
 
-Label::Label(Opcode op, std::string label, std::uint16_t address)
-    : m_opcode(op)
-    , m_label(label)
+Label::Label(std::string label, std::uint16_t address)
+    : m_label(label)
     , m_address(address)
 {}
 
