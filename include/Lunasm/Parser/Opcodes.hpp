@@ -1,11 +1,12 @@
 #pragma once
 
-#include <sys/wait.h>
 #include <cstdint>
+#include <sys/wait.h>
 
 namespace Lunasm {
 
-enum class Opcode : std::uint8_t {
+enum class Opcode : std::uint8_t
+{
     NOP,
 
     LoadImmediate,
@@ -65,4 +66,4 @@ enum class Opcode : std::uint8_t {
     Halt,
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

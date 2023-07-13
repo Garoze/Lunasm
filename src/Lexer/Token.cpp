@@ -23,7 +23,8 @@ void Token::print() const
     auto text = fmt::format("\"{}{}\"", r, as_text());
     auto kind = fmt::format("<{}>", m_kind.as_string());
 
-    fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n", kind, text, m_line, m_offset);
+    fmt::print("Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d} )\n",
+               kind, text, m_line, m_offset);
 }
 
 TokenKind Token::kind() const
@@ -47,7 +48,7 @@ std::string Token::as_text() const
         return std::to_string(*u8);
     }
 
-    std::string str{ std::get<std::string_view>(m_value) };
+    std::string str{std::get<std::string_view>(m_value)};
 
     return str;
 }
@@ -57,4 +58,4 @@ std::string Token::as_string() const
     return m_kind.as_string();
 }
 
-}  // namespace Lunasm
+} // namespace Lunasm

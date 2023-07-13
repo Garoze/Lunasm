@@ -32,4 +32,4 @@ std::string_view Label::label() const
     return m_label;
 }
 
-}  // namespace Lunasm
+} // namespace Lunasm

@@ -1,8 +1,8 @@
 #pragma once
 
-#include <vector>
-#include <variant>
 #include <cstdint>
+#include <variant>
+#include <vector>
 
 #include "Parser/Opcodes.hpp"
 
@@ -28,4 +28,4 @@ private:
     Operand m_src;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

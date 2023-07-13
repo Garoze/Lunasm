@@ -1,5 +1,5 @@
-#include <fmt/core.h>
 #include <argparse/argparse.hpp>
+#include <fmt/core.h>
 
 #include "Parser/Parser.hpp"
 
@@ -7,15 +7,15 @@ int main(int argc, char* argv[])
 {
     argparse::ArgumentParser program("Lunasm", "Version: 0.0.1");
 
-    program                               //
-        .add_argument("-f", "--file")     //
-        .help("Specify the input file");  //
-
     program                              //
-        .add_argument("-D", "--debug")   //
-        .default_value(false)            //
-        .implicit_value(true)            //
-        .help("enable the debug mode");  //
+        .add_argument("-f", "--file")    //
+        .help("Specify the input file"); //
+
+    program                             //
+        .add_argument("-D", "--debug")  //
+        .default_value(false)           //
+        .implicit_value(true)           //
+        .help("enable the debug mode"); //
 
     try
     {

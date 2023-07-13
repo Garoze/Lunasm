@@ -24,7 +24,10 @@ public:
     std::string as_string() const;
 
 public:
-    constexpr explicit operator bool() noexcept { return true; }
+    constexpr explicit operator bool() noexcept
+    {
+        return true;
+    }
 
 private:
     Kind m_kind;
@@ -33,4 +36,4 @@ private:
     std::size_t m_offset;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

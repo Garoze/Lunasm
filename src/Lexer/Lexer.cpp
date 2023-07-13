@@ -1,15 +1,15 @@
-#include <cctype>
-#include <vector>
-#include <string>
-#include <stdexcept>
 #include <algorithm>
+#include <cctype>
+#include <stdexcept>
+#include <string>
+#include <vector>
 
 #include "fmt/core.h"
 
+#include "Lexer/Instructions.hpp"
 #include "Lexer/Kind.hpp"
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
-#include "Lexer/Instructions.hpp"
 
 namespace Lunasm {
 
@@ -130,7 +130,9 @@ Token Lexer::Immediate()
 
     if (!peek(0).has_value() || !std::isxdigit(peek(0).value()))
     {
-        auto err = fmt::format("Missing immediate after '$' on line: {} offset: {}", m_line, offset());
+        auto err =
+            fmt::format("Missing immediate after '$' on line: {} offset: {}",
+                        m_line, offset());
         throw std::runtime_error(err);
     }
 
@@ -152,7 +154,8 @@ Token Lexer::Identifier()
 {
     auto start = offset();
 
-    while (!is_empty() && (std::isalnum(current_char()) || current_char() == '_'))
+    while (!is_empty() &&
+           (std::isalnum(current_char()) || current_char() == '_'))
     {
         step();
     }
@@ -169,7 +172,8 @@ Token Lexer::Identifier()
 
 std::string Lexer::sanitize_input(std::string input)
 {
-    std::transform(input.begin(), input.end(), input.begin(), [](unsigned char c) { return std::tolower(c); });
+    std::transform(input.begin(), input.end(), input.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
 
     return input;
 }
@@ -219,7 +223,8 @@ Token Lexer::next_token()
                 return Immediate();
                 break;
             case 'r':
-                if (std::isdigit(peek().value()))  // check if the next char is a number or not.
+                if (std::isdigit(peek().value())) // check if the next char is a
+                                                  // number or not.
                 {
                     return Register();
                 }
@@ -258,4 +263,4 @@ std::vector<Token> Lexer::Lex_source(std::string source_code)
     return Tokenizer();
 }
 
-}  // namespace Lunasm
+} // namespace Lunasm

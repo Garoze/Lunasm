@@ -1,7 +1,7 @@
-#include <variant>
-#include <vector>
 #include <cstdint>
 #include <unordered_map>
+#include <variant>
+#include <vector>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -11,62 +11,62 @@
 namespace Lunasm {
 
 const std::unordered_map<Opcode, std::string> OP_MNEMONICS = {
-    { Opcode::NOP, "NOP" },
-    { Opcode::LoadImmediate, "LoadImmediate" },
-    { Opcode::LoadAddress, "LoadAddress" },
-    { Opcode::LoadRegister, "LoadRegister" },
+    {Opcode::NOP, "NOP"},
+    {Opcode::LoadImmediate, "LoadImmediate"},
+    {Opcode::LoadAddress, "LoadAddress"},
+    {Opcode::LoadRegister, "LoadRegister"},
 
-    { Opcode::StoreImmediate, "StoreImmediate" },
-    { Opcode::StoreAddress, "StoreAddress" },
-    { Opcode::StoreRegister, "StoreRegister" },
+    {Opcode::StoreImmediate, "StoreImmediate"},
+    {Opcode::StoreAddress, "StoreAddress"},
+    {Opcode::StoreRegister, "StoreRegister"},
 
-    { Opcode::ShiftLeft, "ShiftLeft" },
-    { Opcode::ShiftRight, "ShiftRight" },
+    {Opcode::ShiftLeft, "ShiftLeft"},
+    {Opcode::ShiftRight, "ShiftRight"},
 
-    { Opcode::BitwiseAND, "BitwiseAND" },
-    { Opcode::BitwiseOR, "BitwiseOR" },
-    { Opcode::BitwiseNOT, "BitwiseNOT" },
-    { Opcode::BitwiseXOR, "BitwiseXOR" },
+    {Opcode::BitwiseAND, "BitwiseAND"},
+    {Opcode::BitwiseOR, "BitwiseOR"},
+    {Opcode::BitwiseNOT, "BitwiseNOT"},
+    {Opcode::BitwiseXOR, "BitwiseXOR"},
 
-    { Opcode::PushImmediate, "PushImmediate" },
-    { Opcode::PushAddress, "PushAddress" },
-    { Opcode::PushRegister, "PushRegister" },
-    { Opcode::Pop, "Pop" },
+    {Opcode::PushImmediate, "PushImmediate"},
+    {Opcode::PushAddress, "PushAddress"},
+    {Opcode::PushRegister, "PushRegister"},
+    {Opcode::Pop, "Pop"},
 
-    { Opcode::Increment, "Increment" },
-    { Opcode::Decrement, "Decrement" },
+    {Opcode::Increment, "Increment"},
+    {Opcode::Decrement, "Decrement"},
 
-    { Opcode::AddImmediate, "AddImmediate" },
-    { Opcode::AddAddress, "AddAddress" },
-    { Opcode::AddRegister, "AddRegister" },
+    {Opcode::AddImmediate, "AddImmediate"},
+    {Opcode::AddAddress, "AddAddress"},
+    {Opcode::AddRegister, "AddRegister"},
 
-    { Opcode::SubImmediate, "SubImmediate" },
-    { Opcode::SubAddress, "SubAddress" },
-    { Opcode::SubRegister, "SubRegister" },
+    {Opcode::SubImmediate, "SubImmediate"},
+    {Opcode::SubAddress, "SubAddress"},
+    {Opcode::SubRegister, "SubRegister"},
 
-    { Opcode::MulImmediate, "MulImmediate" },
-    { Opcode::MulAddress, "MulAddress" },
-    { Opcode::MulRegister, "MulRegister" },
+    {Opcode::MulImmediate, "MulImmediate"},
+    {Opcode::MulAddress, "MulAddress"},
+    {Opcode::MulRegister, "MulRegister"},
 
-    { Opcode::DivImmediate, "DivImmediate" },
-    { Opcode::DivAddress, "DivAddress" },
-    { Opcode::DivRegister, "DivRegister" },
+    {Opcode::DivImmediate, "DivImmediate"},
+    {Opcode::DivAddress, "DivAddress"},
+    {Opcode::DivRegister, "DivRegister"},
 
-    { Opcode::ModImmediate, "ModImmediate" },
-    { Opcode::ModAddress, "ModAddress" },
-    { Opcode::ModRegister, "ModRegister" },
+    {Opcode::ModImmediate, "ModImmediate"},
+    {Opcode::ModAddress, "ModAddress"},
+    {Opcode::ModRegister, "ModRegister"},
 
-    { Opcode::CompareImmediate, "CompareImmediate" },
-    { Opcode::CompareAddress, "CompareAddress" },
-    { Opcode::CompareRegister, "CompareRegister" },
+    {Opcode::CompareImmediate, "CompareImmediate"},
+    {Opcode::CompareAddress, "CompareAddress"},
+    {Opcode::CompareRegister, "CompareRegister"},
 
-    { Opcode::Jump, "Jump" },
-    { Opcode::JumpEquals, "JumpIfEquals" },
-    { Opcode::JumpNotEquals, "JumpIfNotEquals" },
+    {Opcode::Jump, "Jump"},
+    {Opcode::JumpEquals, "JumpIfEquals"},
+    {Opcode::JumpNotEquals, "JumpIfNotEquals"},
 
-    { Opcode::Subroutine, "Subroutine" },
-    { Opcode::Return, "Return" },
-    { Opcode::Halt, "Halt" },
+    {Opcode::Subroutine, "Subroutine"},
+    {Opcode::Return, "Return"},
+    {Opcode::Halt, "Halt"},
 };
 
 Instruction::Instruction(Opcode op, std::size_t size)
@@ -74,7 +74,8 @@ Instruction::Instruction(Opcode op, std::size_t size)
     , m_size(size)
 {}
 
-Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {}, Operand src = {})
+Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {},
+                         Operand src = {})
     : m_opcode(op)
     , m_size(size)
     , m_dst(dst)
@@ -126,4 +127,4 @@ std::vector<std::uint8_t> Instruction::eval() const
     return output;
 }
 
-}  // namespace Lunasm
+} // namespace Lunasm

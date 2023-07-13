@@ -4,7 +4,8 @@
 
 namespace Lunasm {
 
-enum class TokenKind {
+enum class TokenKind
+{
     // CPU Instructions
     NOP,
     MovInstruction,
@@ -70,4 +71,4 @@ private:
     TokenKind m_value;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

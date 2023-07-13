@@ -24,4 +24,4 @@ private:
     std::uint16_t m_address;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

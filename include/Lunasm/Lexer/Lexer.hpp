@@ -1,9 +1,9 @@
 #pragma once
 
-#include <string>
-#include <vector>
 #include <optional>
+#include <string>
 #include <string_view>
+#include <vector>
 
 #include "Token.hpp"
 
@@ -43,7 +43,6 @@ private:
     Token Immediate();
     Token Identifier();
 
-
 private:
     Token next_token();
 
@@ -54,4 +53,4 @@ private:
     std::string m_source_code;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

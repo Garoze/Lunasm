@@ -1,12 +1,12 @@
 #pragma once
 
-#include <memory>
-#include <variant>
-#include <vector>
-#include <optional>
 #include <algorithm>
 #include <filesystem>
+#include <memory>
+#include <optional>
 #include <unordered_map>
+#include <variant>
+#include <vector>
 
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
@@ -18,7 +18,8 @@ namespace Lunasm {
 
 using Inst = std::variant<Instruction, Label>;
 
-enum class ParserStatus {
+enum class ParserStatus
+{
     ParsingLabels,
     ParsingInstructions,
     OutputFile,
@@ -96,4 +97,4 @@ private:
     std::vector<Inst> m_instructions;
 };
 
-}  // namespace Lunasm
+} // namespace Lunasm

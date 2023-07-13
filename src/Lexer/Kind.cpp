@@ -17,4 +17,4 @@ std::string Kind::as_string() const
     return MNEMONICS.at(m_value);
 }
 
-}  // namespace Lunasm
+} // namespace Lunasm
