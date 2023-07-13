@@ -484,8 +484,10 @@ void Parser::debug_instruction() const
 {
     for (auto i : m_instructions)
     {
-        i.print();
+        auto p = fmt::format("{::02x}", i.eval());
+        fmt::print("{} ", p);
     }
+    fmt::print("\n");
 }
 
 }  // namespace Lunasm
