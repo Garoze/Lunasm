@@ -1,5 +1,6 @@
 #include <memory>
 #include <string>
+#include <variant>
 #include <sstream>
 #include <cstdint>
 #include <fstream>
@@ -8,7 +9,6 @@
 #include <stdexcept>
 #include <streambuf>
 #include <initializer_list>
-#include <variant>
 
 #include <fmt/core.h>
 #include <fmt/ranges.h>
@@ -16,6 +16,7 @@
 #include "Lexer/Mnemonics.hpp"
 
 #include "Parser/Instruction.hpp"
+#include "Parser/Label.hpp"
 #include "Parser/Parser.hpp"
 #include "Parser/Opcodes.hpp"
 
@@ -105,7 +106,7 @@ bool Parser::parse_label()
 
     auto identifier = std::get<std::string_view>(label.raw_value());
 
-    // fmt::print("[LABEL `{}`]: 0x{:04X}\n", identifier, m_asll->index());
+    m_instructions.push_back(Label(identifier));
 
     return true;
 }
