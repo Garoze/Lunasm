@@ -15,6 +15,7 @@
 
 #include "Lexer/Mnemonics.hpp"
 
+#include "Parser/ASLL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Opcodes.hpp"
@@ -25,6 +26,7 @@ namespace Lunasm {
 Parser::Parser()
     : m_index(0)
     , m_lexer(std::make_unique<Lexer>())
+    , m_asll(std::make_unique<ASLL>())
 {}
 
 void Parser::step()
@@ -659,28 +661,28 @@ void Parser::hlt_instruction()
     m_instructions.push_back(Instruction(Opcode::Halt, 1));
 }
 
-void Parser::debug_instruction() const
-{
-    auto visitor = [&](auto arg) {
-        using T = decltype(arg);
-
-        if constexpr (std::is_same_v<T, Instruction>)
-        {
-            auto p = fmt::format("{::02x}", arg.eval());
-            fmt::print("{} ", p);
-        }
-        else if constexpr (std::is_same_v<T, Label>)
-        {
-            fmt::print("[ {}: {} ] ", arg.label(), arg.address());
-        }
-    };
-
-    for (auto i : m_instructions)
-    {
-        std::visit(visitor, i);
-    }
-    fmt::print("\n");
-}
+// void Parser::debug_instruction() const
+// {
+//     auto visitor = [&](auto arg) {
+//         using T = decltype(arg);
+//
+//         if constexpr (std::is_same_v<T, Instruction>)
+//         {
+//             auto p = fmt::format("{::02x}", arg.eval());
+//             fmt::print("{} ", p);
+//         }
+//         else if constexpr (std::is_same_v<T, Label>)
+//         {
+//             fmt::print("[ {}: {} ] ", arg.label(), arg.address());
+//         }
+//     };
+//
+//     for (auto i : m_instructions)
+//     {
+//         std::visit(visitor, i);
+//     }
+//     fmt::print("\n");
+// }
 
 void Parser::Parse()
 {
@@ -796,8 +798,10 @@ void Parser::Parse()
         }
     }
 
-    debug_instruction();
+    // debug_instruction();
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
+
+    m_asll->handle_instructions(m_instructions);
 }
 
 } // namespace Lunasm
