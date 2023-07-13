@@ -16,12 +16,12 @@ const std::unordered_map<Opcode, std::string> OP_MNEMONICS = {
     { Opcode::LoadAddress, "LoadAddress" },
     { Opcode::LoadRegister, "LoadRegister" },
 
-    {Opcode::StoreImmediate,"StoreImmediate" },
-    {Opcode::StoreAddress, "StoreAddress"},
-    {Opcode::StoreRegister, "StoreRegister" },
+    { Opcode::StoreImmediate, "StoreImmediate" },
+    { Opcode::StoreAddress, "StoreAddress" },
+    { Opcode::StoreRegister, "StoreRegister" },
 
-    {Opcode::ShiftLeft, "ShiftLeft" },
-    {Opcode::ShiftRight, "ShiftRight" },
+    { Opcode::ShiftLeft, "ShiftLeft" },
+    { Opcode::ShiftRight, "ShiftRight" },
 };
 
 Instruction::Instruction(Opcode op, std::size_t size)
@@ -58,44 +58,25 @@ std::vector<std::uint8_t> Instruction::eval() const
     std::vector<std::uint8_t> output;
     output.push_back(static_cast<std::uint8_t>(m_opcode));
 
-    if (auto dst = std::get_if<std::uint8_t>(&m_dst))
-    {
-        output.push_back(*dst);
+    auto visitor = [&](auto arg) {
+        using T = decltype(arg);
 
-        if (auto src = std::get_if<std::uint8_t>(&m_src))
+        if constexpr (std::is_same_v<T, std::uint8_t>)
         {
-            output.push_back(*src);
+            output.push_back(arg);
         }
-        else if (auto src = std::get_if<std::uint16_t>(&m_src))
+        else if constexpr (std::is_same_v<T, std::uint16_t>)
         {
-            std::uint8_t LSB = (*src & 0x00FF);
-            std::uint8_t MSB = (*src & 0xFF00) >> 8;
+            std::uint8_t LSB = (arg & 0x00FF);
+            std::uint8_t MSB = (arg & 0xFF00) >> 8;
 
             output.push_back(LSB);
             output.push_back(MSB);
         }
-    }
-    else if (auto dst = std::get_if<std::uint16_t>(&m_dst))
-    {
-        std::uint8_t LSB = (*dst & 0x00FF);
-        std::uint8_t MSB = (*dst & 0xFF00) >> 8;
+    };
 
-        output.push_back(LSB);
-        output.push_back(MSB);
-
-        if (auto src = std::get_if<std::uint8_t>(&m_src))
-        {
-            output.push_back(*src);
-        }
-        else if (auto src = std::get_if<std::uint16_t>(&m_src))
-        {
-            std::uint8_t LSB = (*src & 0x00FF);
-            std::uint8_t MSB = (*src & 0xFF00) >> 8;
-
-            output.push_back(LSB);
-            output.push_back(MSB);
-        }
-    }
+    std::visit(visitor, m_dst);
+    std::visit(visitor, m_src);
 
     return output;
 }
