@@ -4,6 +4,7 @@ namespace Lunasm {
 
 Label::Label(std::string_view label)
     : m_label(label)
+    , m_address(0)
 {}
 
 Label::Label(std::string_view label, std::uint16_t address)
