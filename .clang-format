@@ -11,7 +11,7 @@ AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: true
 AllowShortBlocksOnASingleLine: false
 AllowShortCaseLabelsOnASingleLine: false
-AllowShortFunctionsOnASingleLine: All
+AllowShortFunctionsOnASingleLine: None # All
 AllowShortIfStatementsOnASingleLine: false
 AllowShortLoopsOnASingleLine: false
 AlwaysBreakAfterDefinitionReturnType: None
@@ -20,27 +20,27 @@ AlwaysBreakBeforeMultilineStrings: false
 AlwaysBreakTemplateDeclarations: true # false
 BinPackArguments: true
 BinPackParameters: true
+BreakBeforeBraces: Custom # Allman # Attach
 BraceWrapping:   
   AfterClass:      true # false
   AfterControlStatement: true # false
   AfterEnum:       true # false
   AfterFunction:   true # false
-  AfterNamespace:  true # false
+  AfterNamespace:  false # false
   AfterObjCDeclaration: true # false
   AfterStruct:     true # false
   AfterUnion:      true # false
   AfterExternBlock: true # false
   BeforeCatch:     true # false
   BeforeElse:      true # false
-  IndentBraces:    true # false
-  SplitEmptyFunction: true
-  SplitEmptyRecord: true
-  SplitEmptyNamespace: true
+  IndentBraces:    false # false
+  SplitEmptyFunction: false #true
+  SplitEmptyRecord: false # true
+  SplitEmptyNamespace: false # true
 BreakBeforeBinaryOperators: None
-BreakBeforeBraces: Allman # Attach
 BreakBeforeInheritanceComma: false
 BreakBeforeTernaryOperators: true
-BreakConstructorInitializersBeforeComma: false
+BreakConstructorInitializersBeforeComma: true # false
 BreakConstructorInitializers: BeforeColon
 BreakAfterJavaFieldAnnotations: false
 BreakStringLiterals: true
