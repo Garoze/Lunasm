@@ -1,0 +1,5 @@
+mod r1, $10
+mod r1, r2
+mod r1, [$100]
+mod r1, [r2]
+mod r1, [label]
