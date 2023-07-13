@@ -310,13 +310,18 @@ void Parser::pop_instruction()
 void Parser::inc_instruction()
 {
     expect(TokenKind::Increment);
-    parse_register();
+    std::uint8_t reg = parse_register();
+
+    m_instructions.push_back(Instruction(Opcode::Increment, 2, reg));
 }
 
 void Parser::dec_instruction()
 {
     expect(TokenKind::Decrement);
-    parse_register();
+
+    std::uint8_t reg = parse_register();
+
+    m_instructions.push_back(Instruction(Opcode::Decrement, 2, reg));
 }
 
 void Parser::add_instruction()
