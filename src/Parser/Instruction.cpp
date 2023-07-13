@@ -95,7 +95,7 @@ std::size_t Instruction::size() const
 
 void Instruction::print() const
 {
-    fmt::print("({} size: {}) -> {}\n", OP_MNEMONICS.at(m_opcode), m_size);
+    fmt::print("( {} :: {} )\n", OP_MNEMONICS.at(m_opcode), m_size);
 }
 
 void Instruction::eval(std::vector<std::uint8_t>& output) const
