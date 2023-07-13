@@ -591,25 +591,33 @@ void Parser::cmp_instruction()
 void Parser::jmp_instruction()
 {
     expect(TokenKind::Jump);
-    parse_address();
+    std::uint16_t addr = parse_address();
+
+    m_instructions.push_back(Instruction(Opcode::Jump, 4, addr));
 }
 
 void Parser::jeq_instruction()
 {
     expect(TokenKind::JumpEquals);
-    parse_address();
+    std::uint16_t addr = parse_address();
+
+    m_instructions.push_back(Instruction(Opcode::JumpEquals, 4, addr));
 }
 
 void Parser::jne_instruction()
 {
     expect(TokenKind::JumpNotEquals);
-    parse_address();
+    std::uint16_t addr = parse_address();
+
+    m_instructions.push_back(Instruction(Opcode::JumpNotEquals, 4, addr));
 }
 
 void Parser::jsr_instruction()
 {
     expect(TokenKind::Subroutine);
-    parse_address();
+    std::uint16_t addr = parse_address();
+
+    m_instructions.push_back(Instruction(Opcode::Jump, 3, addr));
 }
 
 void Parser::ret_instruction()
