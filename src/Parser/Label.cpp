@@ -2,33 +2,33 @@
 
 namespace Lunasm {
 
-Label::Label(std::string label)
+Label::Label(std::string_view label)
     : m_label(label)
 {}
 
-Label::Label(std::string label, std::uint16_t address)
+Label::Label(std::string_view label, std::uint16_t address)
     : m_label(label)
     , m_address(address)
 {}
-
-void Label::set_label(std::string label)
-{
-    m_label = label;
-}
 
 void Label::set_address(std::uint16_t address)
 {
     m_address = address;
 }
 
-std::string Label::label() const
+void Label::set_label(std::string_view label)
 {
-    return m_label;
+    m_label = label;
 }
 
 std::uint16_t Label::address() const
 {
     return m_address;
+}
+
+std::string_view Label::label() const
+{
+    return m_label;
 }
 
 }  // namespace Lunasm
