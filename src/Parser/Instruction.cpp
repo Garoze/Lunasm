@@ -3,8 +3,8 @@
 #include <variant>
 #include <vector>
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include "fmt/core.h"
+#include "fmt/ranges.h"
 
 #include "Parser/Instruction.hpp"
 
@@ -88,20 +88,18 @@ Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {})
     , m_dst(dst)
 {}
 
-void Instruction::print() const
-{
-    auto mem = fmt::format("{::02x}", eval());
-    fmt::print("({} size: {}) -> {}\n", OP_MNEMONICS.at(m_opcode), m_size, mem);
-}
-
 std::size_t Instruction::size() const
 {
     return m_size;
 }
 
-std::vector<std::uint8_t> Instruction::eval() const
+void Instruction::print() const
 {
-    std::vector<std::uint8_t> output;
+    fmt::print("({} size: {}) -> {}\n", OP_MNEMONICS.at(m_opcode), m_size);
+}
+
+void Instruction::eval(std::vector<std::uint8_t>& output) const
+{
     output.push_back(static_cast<std::uint8_t>(m_opcode));
 
     auto visitor = [&](auto arg) {
@@ -123,8 +121,6 @@ std::vector<std::uint8_t> Instruction::eval() const
 
     std::visit(visitor, m_dst);
     std::visit(visitor, m_src);
-
-    return output;
 }
 
 } // namespace Lunasm

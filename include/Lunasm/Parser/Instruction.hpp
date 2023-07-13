@@ -19,7 +19,7 @@ public:
 
     void print() const;
     std::size_t size() const;
-    std::vector<std::uint8_t> eval() const;
+    void eval(std::vector<std::uint8_t>& out) const;
 
 private:
     Opcode m_opcode;
