@@ -623,11 +623,38 @@ void Parser::jsr_instruction()
 void Parser::ret_instruction()
 {
     expect(TokenKind::Return);
+
+    m_instructions.push_back(Instruction(Opcode::Return, 1));
 }
 
 void Parser::hlt_instruction()
 {
     expect(TokenKind::Halt);
+
+    m_instructions.push_back(Instruction(Opcode::Halt, 1));
+}
+
+void Parser::debug_instruction() const
+{
+    auto visitor = [&](auto arg) {
+        using T = decltype(arg);
+
+        if constexpr (std::is_same_v<T, Instruction>)
+        {
+            auto p = fmt::format("{::02x}", arg.eval());
+            fmt::print("{} ", p);
+        }
+        else if constexpr (std::is_same_v<T, Label>)
+        {
+            fmt::print("[ {}: {} ] ", arg.label(), arg.address());
+        }
+    };
+
+    for (auto i : m_instructions)
+    {
+        std::visit(visitor, i);
+    }
+    fmt::print("\n");
 }
 
 void Parser::Parse()
@@ -745,29 +772,6 @@ void Parser::Parse()
 
     debug_instruction();
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
-}
-
-void Parser::debug_instruction() const
-{
-    auto visitor = [&](auto arg) {
-        using T = decltype(arg);
-
-        if constexpr (std::is_same_v<T, Instruction>)
-        {
-            auto p = fmt::format("{::02x}", arg.eval());
-            fmt::print("{} ", p);
-        }
-        else if constexpr (std::is_same_v<T, Label>)
-        {
-            fmt::print("[ {}: {} ] ", arg.label(), arg.address());
-        }
-    };
-
-    for (auto i : m_instructions)
-    {
-        std::visit(visitor, i);
-    }
-    fmt::print("\n");
 }
 
 }  // namespace Lunasm
