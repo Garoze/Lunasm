@@ -327,9 +327,51 @@ void Parser::dec_instruction()
 void Parser::add_instruction()
 {
     expect(TokenKind::Add);
-    parse_register();
-    expect(TokenKind::Comma);
-    parse_modes();
+
+    switch (look_ahead()->kind())
+    {
+        case TokenKind::Register: {
+            std::uint8_t dst = parse_register();
+            expect(TokenKind::Comma);
+
+            switch (look_ahead()->kind())
+            {
+                case TokenKind::Immediate: {
+                    std::uint16_t src = parse_immediate();
+
+                    m_instructions.push_back(Instruction(Opcode::AddImmediate, 4, dst, src));
+                }
+                break;
+
+                case TokenKind::Register: {
+                    auto src = parse_register();
+
+                    m_instructions.push_back(Instruction(Opcode::AddRegister, 3, dst, src));
+                }
+                break;
+
+                case TokenKind::OpenBracket: {
+                    auto src = parse_address();
+
+                    m_instructions.push_back(Instruction(Opcode::AddAddress, 4, dst, src));
+                }
+                break;
+
+                default:
+                    break;
+            }
+        }
+        break;
+
+        case TokenKind::OpenBracket:
+            parse_address();
+            expect(TokenKind::Comma);
+            parse_modes();
+            break;
+
+        default:
+            break;
+    }
 }
 
 void Parser::sub_instruction()
