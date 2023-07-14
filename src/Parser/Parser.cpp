@@ -170,6 +170,27 @@ void Parser::handle_address(Opcode op, std::size_t size, Address addr)
         addr);
 }
 
+void Parser::handle_address(Opcode op, std::size_t size, std::uint8_t dst,
+                            Address src)
+{
+    std::visit(
+        [&](auto& arg) {
+            using T = std::remove_reference_t<decltype(arg)>;
+
+            if constexpr (std::is_same_v<T, std::string_view>)
+            {
+                m_instructions.push_back(Instruction(op, size, arg));
+
+                m_instructions.push_back(Label(arg));
+            }
+            else
+            {
+                m_instructions.push_back(Instruction(op, size, arg));
+            }
+        },
+        src);
+}
+
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
@@ -639,12 +660,7 @@ void Parser::cmp_instruction()
                 case TokenKind::OpenBracket: {
                     Address src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(Instruction(
-                                Opcode::CompareAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::CompareAddress, 4, dst, src);
                 }
                 break;
 
