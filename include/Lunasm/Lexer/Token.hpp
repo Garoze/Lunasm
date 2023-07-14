@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 #include <variant>
 
 #include "Kind.hpp"
 
-using TokenValue = std::variant<std::string_view, std::uint8_t, std::uint16_t>;
+using TokenValue = std::variant<std::uint8_t, std::uint16_t, std::string_view>;
 
 namespace Lunasm {
 
