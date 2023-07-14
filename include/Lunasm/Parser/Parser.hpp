@@ -48,6 +48,7 @@ private:
     std::uint16_t parse_immediate();
 
     Address parse_address();
+    void handle_address(Opcode op, std::size_t size, Address addr);
 
 private:
     void nop_instruction();

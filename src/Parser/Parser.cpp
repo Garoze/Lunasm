@@ -150,6 +150,26 @@ Address Parser::parse_address()
     return addr->raw_value();
 }
 
+void Parser::handle_address(Opcode op, std::size_t size, Address addr)
+{
+    std::visit(
+        [&](auto& arg) {
+            using T = std::remove_reference_t<decltype(arg)>;
+
+            if constexpr (std::is_same_v<T, std::string_view>)
+            {
+                m_instructions.push_back(Instruction(op, size, arg));
+
+                m_instructions.push_back(Label(arg));
+            }
+            else
+            {
+                m_instructions.push_back(Instruction(op, size, arg));
+            }
+        },
+        addr);
+}
+
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
@@ -668,24 +688,7 @@ void Parser::jne_instruction()
     expect(TokenKind::JumpNotEquals);
     Address src = parse_address();
 
-    std::visit(
-        [&](auto& arg) {
-            using T = std::remove_reference_t<decltype(arg)>;
-
-            if constexpr (std::is_same_v<T, std::string_view>)
-            {
-                m_instructions.push_back(
-                    Instruction(Opcode::JumpNotEquals, 3, arg));
-
-                m_instructions.push_back(Label(arg));
-            }
-            else
-            {
-                m_instructions.push_back(
-                    Instruction(Opcode::JumpNotEquals, 3, arg));
-            }
-        },
-        src);
+    handle_address(Opcode::JumpNotEquals, 3, src);
 }
 
 void Parser::jsr_instruction()
