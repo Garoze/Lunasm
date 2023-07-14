@@ -10,8 +10,9 @@
 #include <string>
 #include <variant>
 
-#include <fmt/core.h>
-#include <fmt/ranges.h>
+#include "Lexer/Token.hpp"
+#include "fmt/core.h"
+#include "fmt/ranges.h"
 
 #include "Lexer/Mnemonics.hpp"
 
@@ -83,6 +84,7 @@ Token Parser::expect(TokenKind kind)
         auto err =
             fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n",
                         MNEMONICS.at(kind), look_ahead()->as_string());
+
         throw std::runtime_error(err);
     }
 }
@@ -93,43 +95,20 @@ std::optional<Token> Parser::expect_any(Kinds... kinds)
     static_assert((std::is_same_v<Kinds, TokenKind> && ...),
                   "must pass TokenKind values");
 
-    for (TokenKind k : {kinds...})
+    auto t = look_ahead();
+    if (t.has_value())
     {
-        if (look_ahead()->kind() == k)
+        for (TokenKind k : {kinds...})
         {
-            return expect(k);
+            if (t->kind() == k)
+            {
+                step();
+                return t.value();
+            }
         }
     }
 
     return {};
-}
-
-bool Parser::parse_label()
-{
-    auto label = expect(TokenKind::Label);
-    expect(TokenKind::Colon);
-
-    auto identifier = std::get<std::string_view>(label.raw_value());
-
-    m_instructions.push_back(Label(identifier));
-
-    return true;
-}
-
-uint8_t Parser::parse_register()
-{
-    auto r = expect(TokenKind::Register);
-
-    return std::get<std::uint8_t>(r.raw_value());
-}
-
-std::uint16_t Parser::parse_address()
-{
-    expect(TokenKind::OpenBracket);
-    expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
-    expect(TokenKind::CloseBracket);
-
-    return false;
 }
 
 std::uint16_t Parser::parse_immediate()
@@ -139,23 +118,33 @@ std::uint16_t Parser::parse_immediate()
     return std::get<std::uint16_t>(i.raw_value());
 }
 
-void Parser::parse_modes()
+uint8_t Parser::parse_register()
 {
-    switch (look_ahead()->kind())
-    {
-        case TokenKind::Immediate:
-            parse_immediate();
-            break;
-        case TokenKind::Register:
-            parse_register();
-            break;
-        case TokenKind::OpenBracket:
-            parse_address();
-            break;
+    auto r = expect(TokenKind::Register);
 
-        default:
-            break;
-    }
+    return std::get<std::uint8_t>(r.raw_value());
+}
+
+std::string_view Parser::parse_label()
+{
+    auto label = expect(TokenKind::Label);
+    expect(TokenKind::Colon);
+
+    auto identifier = std::get<std::string_view>(label.raw_value());
+
+    return identifier;
+}
+
+Address Parser::parse_address()
+{
+    expect(TokenKind::OpenBracket);
+
+    auto addr =
+        expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
+
+    expect(TokenKind::CloseBracket);
+
+    return addr->raw_value();
 }
 
 void Parser::nop_instruction()
@@ -193,10 +182,14 @@ void Parser::mov_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::LoadAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::LoadAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -209,7 +202,6 @@ void Parser::mov_instruction()
         case TokenKind::OpenBracket:
             parse_address();
             expect(TokenKind::Comma);
-            parse_modes();
             break;
 
         default:
@@ -292,14 +284,19 @@ void Parser::psh_instruction()
         case TokenKind::Register: {
             auto src = parse_register();
 
-            m_instructions.push_back(Instruction(Opcode::PushRegister, 3, src));
+            m_instructions.push_back(Instruction(Opcode::PushRegister, 2, src));
         }
         break;
 
         case TokenKind::OpenBracket: {
-            auto src = parse_address();
+            Address src = parse_address();
 
-            m_instructions.push_back(Instruction(Opcode::PushAddress, 4, src));
+            std::visit(
+                [&](auto& arg) {
+                    m_instructions.push_back(
+                        Instruction(Opcode::PushAddress, 3, arg));
+                },
+                src);
         }
         break;
 
@@ -362,10 +359,14 @@ void Parser::add_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::AddAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::AddAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -409,10 +410,14 @@ void Parser::sub_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::SubAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::SubAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -456,10 +461,14 @@ void Parser::mul_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::MulAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::MulAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -503,10 +512,14 @@ void Parser::div_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::DivAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::DivAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -550,10 +563,14 @@ void Parser::mod_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::ModAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(
+                                Instruction(Opcode::ModAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -597,10 +614,14 @@ void Parser::cmp_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    auto src = parse_address();
+                    Address src = parse_address();
 
-                    m_instructions.push_back(
-                        Instruction(Opcode::CompareAddress, 4, dst, src));
+                    std::visit(
+                        [&](auto& arg) {
+                            m_instructions.push_back(Instruction(
+                                Opcode::CompareAddress, 4, dst, arg));
+                        },
+                        src);
                 }
                 break;
 
@@ -618,33 +639,50 @@ void Parser::cmp_instruction()
 void Parser::jmp_instruction()
 {
     expect(TokenKind::Jump);
-    std::uint16_t addr = parse_address();
+    Address src = parse_address();
 
-    m_instructions.push_back(Instruction(Opcode::Jump, 4, addr));
+    std::visit(
+        [&](auto& arg) {
+            m_instructions.push_back(Instruction(Opcode::Jump, 3, arg));
+        },
+        src);
 }
 
 void Parser::jeq_instruction()
 {
     expect(TokenKind::JumpEquals);
-    std::uint16_t addr = parse_address();
+    Address src = parse_address();
 
-    m_instructions.push_back(Instruction(Opcode::JumpEquals, 4, addr));
+    std::visit(
+        [&](auto& arg) {
+            m_instructions.push_back(Instruction(Opcode::JumpEquals, 3, arg));
+        },
+        src);
 }
 
 void Parser::jne_instruction()
 {
     expect(TokenKind::JumpNotEquals);
-    std::uint16_t addr = parse_address();
+    Address src = parse_address();
 
-    m_instructions.push_back(Instruction(Opcode::JumpNotEquals, 4, addr));
+    std::visit(
+        [&](auto& arg) {
+            m_instructions.push_back(
+                Instruction(Opcode::JumpNotEquals, 3, arg));
+        },
+        src);
 }
 
 void Parser::jsr_instruction()
 {
     expect(TokenKind::Subroutine);
-    std::uint16_t addr = parse_address();
+    Address src = parse_address();
 
-    m_instructions.push_back(Instruction(Opcode::Jump, 3, addr));
+    std::visit(
+        [&](auto& arg) {
+            m_instructions.push_back(Instruction(Opcode::Subroutine, 3, arg));
+        },
+        src);
 }
 
 void Parser::ret_instruction()
