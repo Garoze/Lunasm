@@ -8,6 +8,7 @@
 #include <stdexcept>
 #include <streambuf>
 #include <string>
+#include <string_view>
 #include <variant>
 
 #include "Lexer/Token.hpp"
@@ -131,6 +132,8 @@ std::string_view Parser::parse_label()
     expect(TokenKind::Colon);
 
     auto identifier = std::get<std::string_view>(label.raw_value());
+
+    m_instructions.push_back(Label(identifier));
 
     return identifier;
 }
@@ -667,8 +670,20 @@ void Parser::jne_instruction()
 
     std::visit(
         [&](auto& arg) {
-            m_instructions.push_back(
-                Instruction(Opcode::JumpNotEquals, 3, arg));
+            using T = std::remove_reference_t<decltype(arg)>;
+
+            if constexpr (std::is_same_v<T, std::string_view>)
+            {
+                m_instructions.push_back(
+                    Instruction(Opcode::JumpNotEquals, 3, arg));
+
+                m_instructions.push_back(Label(arg));
+            }
+            else
+            {
+                m_instructions.push_back(
+                    Instruction(Opcode::JumpNotEquals, 3, arg));
+            }
         },
         src);
 }
@@ -698,29 +713,6 @@ void Parser::hlt_instruction()
 
     m_instructions.push_back(Instruction(Opcode::Halt, 1));
 }
-
-// void Parser::debug_instruction() const
-// {
-//     auto visitor = [&](auto arg) {
-//         using T = decltype(arg);
-//
-//         if constexpr (std::is_same_v<T, Instruction>)
-//         {
-//             auto p = fmt::format("{::02x}", arg.eval());
-//             fmt::print("{} ", p);
-//         }
-//         else if constexpr (std::is_same_v<T, Label>)
-//         {
-//             fmt::print("[ {}: {} ] ", arg.label(), arg.address());
-//         }
-//     };
-//
-//     for (auto i : m_instructions)
-//     {
-//         std::visit(visitor, i);
-//     }
-//     fmt::print("\n");
-// }
 
 void Parser::Parse()
 {
