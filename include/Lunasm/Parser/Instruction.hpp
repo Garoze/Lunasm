@@ -3,12 +3,14 @@
 #include <cstdint>
 #include <variant>
 #include <vector>
+#include <string_view>
 
 #include "Parser/Opcodes.hpp"
 
 namespace Lunasm {
 
-using Operand = std::variant<std::monostate, std::uint8_t, std::uint16_t>;
+using Operand =
+    std::variant<std::monostate, std::uint8_t, std::uint16_t, std::string_view>;
 
 class Instruction
 {
@@ -19,6 +21,7 @@ public:
 
     void print() const;
     std::size_t size() const;
+
     void eval(std::vector<std::uint8_t>& out) const;
 
 private:
