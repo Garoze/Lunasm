@@ -49,6 +49,7 @@ private:
 
     Address parse_address();
     void handle_address(Opcode op, std::size_t size, Address addr);
+    void handle_address(Opcode, std::size_t, std::uint8_t, Address);
 
 private:
     void nop_instruction();
