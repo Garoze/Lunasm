@@ -664,11 +664,7 @@ void Parser::jmp_instruction()
     expect(TokenKind::Jump);
     Address src = parse_address();
 
-    std::visit(
-        [&](auto& arg) {
-            m_instructions.push_back(Instruction(Opcode::Jump, 3, arg));
-        },
-        src);
+    handle_address(Opcode::Jump, 3, src);
 }
 
 void Parser::jeq_instruction()
@@ -676,11 +672,7 @@ void Parser::jeq_instruction()
     expect(TokenKind::JumpEquals);
     Address src = parse_address();
 
-    std::visit(
-        [&](auto& arg) {
-            m_instructions.push_back(Instruction(Opcode::JumpEquals, 3, arg));
-        },
-        src);
+    handle_address(Opcode::JumpEquals, 3, src);
 }
 
 void Parser::jne_instruction()
@@ -696,11 +688,7 @@ void Parser::jsr_instruction()
     expect(TokenKind::Subroutine);
     Address src = parse_address();
 
-    std::visit(
-        [&](auto& arg) {
-            m_instructions.push_back(Instruction(Opcode::Subroutine, 3, arg));
-        },
-        src);
+    handle_address(Opcode::Subroutine, 3, src);
 }
 
 void Parser::ret_instruction()
