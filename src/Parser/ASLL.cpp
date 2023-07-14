@@ -29,40 +29,13 @@ void ASLL::resolve_labels()
         else if constexpr (std::is_same_v<T, Label>)
         {
             auto label = arg.label();
-            if (m_labels.count(label) == 0)
+            if (m_labels.find(label) != m_labels.end())
+            {
+                arg.set_address(m_labels.at(label));
+            }
+            else
             {
                 m_labels[label] = m_index;
-            }
-
-            arg.set_address(m_index);
-        }
-    };
-
-    for (auto& inst : m_instructions)
-    {
-        std::visit(visitor, inst);
-    }
-}
-
-void ASLL::generate(std::string const& path)
-{
-    resolve_labels();
-
-    auto visitor = [&](auto& arg) {
-        using T = std::remove_reference_t<decltype(arg)>;
-
-        if constexpr (std::is_same_v<T, Instruction>)
-        {
-            arg.eval(m_output);
-            arg.print();
-        }
-        else if constexpr (std::is_same_v<T, Label>)
-        {
-            auto label = arg.label();
-            if (m_labels.count(label) != 0)
-            {
-                arg.print();
-                arg.eval(m_output);
             }
         }
     };
@@ -70,6 +43,33 @@ void ASLL::generate(std::string const& path)
     for (auto& i : m_instructions)
     {
         std::visit(visitor, i);
+    }
+}
+
+void ASLL::generate(std::string const& path)
+{
+    resolve_labels();
+
+    for (auto& i : m_instructions)
+    {
+        std::visit(
+            [&](auto& arg) {
+                using T = std::remove_reference_t<decltype(arg)>;
+
+                if constexpr (std::is_same_v<T, Instruction>)
+                {
+                    arg.eval(m_output);
+                }
+                else if constexpr (std::is_same_v<T, Label>)
+                {
+                    auto label = arg.label();
+                    if (m_labels.find(label) != m_labels.end())
+                    {
+                        arg.eval(m_output);
+                    }
+                }
+            },
+            i);
     }
 
     fmt::print("{::02x} \n", m_output);
