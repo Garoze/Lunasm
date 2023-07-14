@@ -19,8 +19,8 @@ ASLL::ASLL(const std::vector<Inst>& instructions)
 
 void ASLL::resolve_labels()
 {
-    auto visitor = [&](auto arg) {
-        using T = decltype(arg);
+    auto visitor = [&](auto& arg) {
+        using T = std::remove_reference_t<decltype(arg)>;
 
         if constexpr (std::is_same_v<T, Instruction>)
         {
@@ -28,6 +28,12 @@ void ASLL::resolve_labels()
         }
         else if constexpr (std::is_same_v<T, Label>)
         {
+            auto label = arg.label();
+            if (m_labels.count(label) == 0)
+            {
+                m_labels[label] = m_index;
+            }
+
             arg.set_address(m_index);
         }
     };
@@ -40,11 +46,33 @@ void ASLL::resolve_labels()
 
 void ASLL::generate(std::string const& path)
 {
-
     resolve_labels();
 
-    auto p = fmt::format("{::02x}", m_output);
-    fmt::print("{} \n", p);
+    auto visitor = [&](auto& arg) {
+        using T = std::remove_reference_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, Instruction>)
+        {
+            arg.eval(m_output);
+            arg.print();
+        }
+        else if constexpr (std::is_same_v<T, Label>)
+        {
+            auto label = arg.label();
+            if (m_labels.count(label) != 0)
+            {
+                arg.print();
+                arg.eval(m_output);
+            }
+        }
+    };
+
+    for (auto& i : m_instructions)
+    {
+        std::visit(visitor, i);
+    }
+
+    fmt::print("{::02x} \n", m_output);
 }
 
 void ASLL::handle_instructions(const std::vector<Inst>& instructions)
