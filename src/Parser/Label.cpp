@@ -8,7 +8,7 @@ namespace Lunasm {
 
 Label::Label(std::string_view label)
     : m_label(label)
-    , m_address(0)
+    , m_address(0xFFFF)
 {}
 
 Label::Label(std::string_view label, std::uint16_t address)
@@ -43,7 +43,7 @@ std::string_view Label::label() const
 
 void Label::eval(std::vector<std::uint8_t>& output) const
 {
-    if (m_address != 0)
+    if (m_address != 0xFFFF)
     {
         std::uint8_t LSB = (m_address & 0x00FF);
         std::uint8_t MSB = (m_address & 0xFF00) >> 8;
