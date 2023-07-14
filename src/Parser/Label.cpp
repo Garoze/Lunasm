@@ -43,11 +43,14 @@ std::string_view Label::label() const
 
 void Label::eval(std::vector<std::uint8_t>& output) const
 {
-    std::uint8_t LSB = (m_address & 0x00FF);
-    std::uint8_t MSB = (m_address & 0xFF00) >> 8;
+    if (m_address != 0)
+    {
+        std::uint8_t LSB = (m_address & 0x00FF);
+        std::uint8_t MSB = (m_address & 0xFF00) >> 8;
 
-    output.push_back(LSB);
-    output.push_back(MSB);
+        output.push_back(LSB);
+        output.push_back(MSB);
+    }
 }
 
 } // namespace Lunasm
