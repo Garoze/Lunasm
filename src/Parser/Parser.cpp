@@ -128,10 +128,10 @@ std::uint16_t Parser::parse_immediate()
 
 std::string_view Parser::parse_label()
 {
-    auto label = expect(TokenKind::Label);
+    auto l = expect(TokenKind::Label);
     expect(TokenKind::Colon);
 
-    auto identifier = std::get<std::string_view>(label.raw_value());
+    auto identifier = std::get<std::string_view>(l.raw_value());
 
     m_instructions.push_back(Label(identifier));
 
@@ -142,18 +142,23 @@ Operand Parser::parse_address()
 {
     expect(TokenKind::OpenBracket);
 
-    auto addr =
+    auto a =
         expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
 
     expect(TokenKind::CloseBracket);
 
-    return addr->raw_value();
+    return a->raw_value();
 }
 
 void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
                             std::optional<Operand> src = {})
 {
-    auto visitor = [&](auto arg) {
+
+    //                                          Label
+    // Instruction(Opcode op, std::size_t size, Operand dst);
+    //                                          Label        Label
+    // Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
+    auto visitor = [&](auto& arg) {
         using T = std::remove_reference_t<decltype(arg)>;
 
         if constexpr (std::is_same_v<T, std::string_view>)

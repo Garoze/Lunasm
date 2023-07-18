@@ -19,14 +19,6 @@ namespace Lunasm {
 
 using Inst = std::variant<Instruction, Label>;
 
-enum class ParserStatus
-{
-    ParsingLabels,
-    ParsingInstructions,
-    OutputFile,
-    End,
-};
-
 class Parser
 {
 public:
@@ -42,9 +34,9 @@ private:
     std::optional<Token> look_ahead(std::size_t);
 
 private:
-    std::string_view parse_label();
     std::uint8_t parse_register();
     std::uint16_t parse_immediate();
+    std::string_view parse_label();
 
     Operand parse_address();
     void handle_address(Opcode, std::size_t, Operand, std::optional<Operand>);
