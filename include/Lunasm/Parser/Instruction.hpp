@@ -1,9 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include <string_view>
 #include <variant>
 #include <vector>
-#include <string_view>
 
 #include "Parser/Opcodes.hpp"
 
@@ -21,6 +21,9 @@ public:
 
     void print() const;
     std::size_t size() const;
+
+    void set_dst(Operand);
+    void set_src(Operand);
 
     void eval(std::vector<std::uint8_t>& out) const;
 

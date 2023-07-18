@@ -98,6 +98,16 @@ void Instruction::print() const
     fmt::print("( {} :: {} )\n", OP_MNEMONICS.at(m_opcode), m_size);
 }
 
+void Instruction::set_dst(Operand dst)
+{
+    m_dst = dst;
+}
+
+void Instruction::set_src(Operand src)
+{
+    m_src = src;
+}
+
 void Instruction::eval(std::vector<std::uint8_t>& output) const
 {
     output.push_back(static_cast<std::uint8_t>(m_opcode));
