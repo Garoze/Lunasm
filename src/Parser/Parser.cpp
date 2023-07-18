@@ -112,18 +112,18 @@ std::optional<Token> Parser::expect_any(Kinds... kinds)
     return {};
 }
 
-std::uint16_t Parser::parse_immediate()
-{
-    auto i = expect(TokenKind::Immediate);
-
-    return std::get<std::uint16_t>(i.raw_value());
-}
-
 uint8_t Parser::parse_register()
 {
     auto r = expect(TokenKind::Register);
 
     return std::get<std::uint8_t>(r.raw_value());
+}
+
+std::uint16_t Parser::parse_immediate()
+{
+    auto i = expect(TokenKind::Immediate);
+
+    return std::get<std::uint16_t>(i.raw_value());
 }
 
 std::string_view Parser::parse_label()
@@ -138,7 +138,7 @@ std::string_view Parser::parse_label()
     return identifier;
 }
 
-Address Parser::parse_address()
+Operand Parser::parse_address()
 {
     expect(TokenKind::OpenBracket);
 
@@ -150,45 +150,30 @@ Address Parser::parse_address()
     return addr->raw_value();
 }
 
-void Parser::handle_address(Opcode op, std::size_t size, Address addr)
+void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
+                            std::optional<Operand> src = {})
 {
-    std::visit(
-        [&](auto& arg) {
-            using T = std::remove_reference_t<decltype(arg)>;
+    auto visitor = [&](auto arg) {
+        using T = std::remove_reference_t<decltype(arg)>;
 
-            if constexpr (std::is_same_v<T, std::string_view>)
-            {
-                m_instructions.push_back(Instruction(op, size, arg));
+        if constexpr (std::is_same_v<T, std::string_view>)
+        {
+            m_instructions.push_back(Instruction(op, size, arg));
 
-                m_instructions.push_back(Label(arg));
-            }
-            else
-            {
-                m_instructions.push_back(Instruction(op, size, arg));
-            }
-        },
-        addr);
-}
+            m_instructions.push_back(Label(arg));
+        }
+        else
+        {
+            m_instructions.push_back(Instruction(op, size, arg));
+        }
+    };
 
-void Parser::handle_address(Opcode op, std::size_t size, std::uint8_t dst,
-                            Address src)
-{
-    std::visit(
-        [&](auto& arg) {
-            using T = std::remove_reference_t<decltype(arg)>;
+    std::visit(visitor, dst);
 
-            if constexpr (std::is_same_v<T, std::string_view>)
-            {
-                m_instructions.push_back(Instruction(op, size, arg));
-
-                m_instructions.push_back(Label(arg));
-            }
-            else
-            {
-                m_instructions.push_back(Instruction(op, size, arg));
-            }
-        },
-        src);
+    if (src.has_value())
+    {
+        std::visit(visitor, src.value());
+    }
 }
 
 void Parser::nop_instruction()
@@ -226,14 +211,9 @@ void Parser::mov_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::LoadAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::LoadAddress, 4, dst, src);
                 }
                 break;
 
@@ -333,14 +313,9 @@ void Parser::psh_instruction()
         break;
 
         case TokenKind::OpenBracket: {
-            Address src = parse_address();
+            Operand src = parse_address();
 
-            std::visit(
-                [&](auto& arg) {
-                    m_instructions.push_back(
-                        Instruction(Opcode::PushAddress, 3, arg));
-                },
-                src);
+            handle_address(Opcode::PushAddress, 3, src);
         }
         break;
 
@@ -403,14 +378,9 @@ void Parser::add_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::AddAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::AddAddress, 4, dst, src);
                 }
                 break;
 
@@ -454,14 +424,9 @@ void Parser::sub_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::SubAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::SubAddress, 4, dst, src);
                 }
                 break;
 
@@ -505,14 +470,9 @@ void Parser::mul_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::MulAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::MulAddress, 4, dst, src);
                 }
                 break;
 
@@ -556,14 +516,9 @@ void Parser::div_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::DivAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::DivAddress, 4, dst, src);
                 }
                 break;
 
@@ -607,14 +562,9 @@ void Parser::mod_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
-                    std::visit(
-                        [&](auto& arg) {
-                            m_instructions.push_back(
-                                Instruction(Opcode::ModAddress, 4, dst, arg));
-                        },
-                        src);
+                    handle_address(Opcode::ModAddress, 4, dst, src);
                 }
                 break;
 
@@ -658,7 +608,7 @@ void Parser::cmp_instruction()
                 break;
 
                 case TokenKind::OpenBracket: {
-                    Address src = parse_address();
+                    Operand src = parse_address();
 
                     handle_address(Opcode::CompareAddress, 4, dst, src);
                 }
@@ -678,7 +628,7 @@ void Parser::cmp_instruction()
 void Parser::jmp_instruction()
 {
     expect(TokenKind::Jump);
-    Address src = parse_address();
+    Operand src = parse_address();
 
     handle_address(Opcode::Jump, 3, src);
 }
@@ -686,7 +636,7 @@ void Parser::jmp_instruction()
 void Parser::jeq_instruction()
 {
     expect(TokenKind::JumpEquals);
-    Address src = parse_address();
+    Operand src = parse_address();
 
     handle_address(Opcode::JumpEquals, 3, src);
 }
@@ -694,7 +644,7 @@ void Parser::jeq_instruction()
 void Parser::jne_instruction()
 {
     expect(TokenKind::JumpNotEquals);
-    Address src = parse_address();
+    Operand src = parse_address();
 
     handle_address(Opcode::JumpNotEquals, 3, src);
 }
@@ -702,7 +652,7 @@ void Parser::jne_instruction()
 void Parser::jsr_instruction()
 {
     expect(TokenKind::Subroutine);
-    Address src = parse_address();
+    Operand src = parse_address();
 
     handle_address(Opcode::Subroutine, 3, src);
 }

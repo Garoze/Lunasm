@@ -18,7 +18,6 @@
 namespace Lunasm {
 
 using Inst = std::variant<Instruction, Label>;
-using Address = std::variant<std::uint8_t, std::uint16_t, std::string_view>;
 
 enum class ParserStatus
 {
@@ -47,9 +46,8 @@ private:
     std::uint8_t parse_register();
     std::uint16_t parse_immediate();
 
-    Address parse_address();
-    void handle_address(Opcode op, std::size_t size, Address addr);
-    void handle_address(Opcode, std::size_t, std::uint8_t, Address);
+    Operand parse_address();
+    void handle_address(Opcode, std::size_t, Operand, std::optional<Operand>);
 
 private:
     void nop_instruction();
