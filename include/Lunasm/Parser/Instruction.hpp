@@ -15,9 +15,9 @@ using Operand =
 class Instruction
 {
 public:
-    Instruction(Opcode op, std::size_t size);
-    Instruction(Opcode op, std::size_t size, Operand dst);
-    Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
+    Instruction(Opcode, std::size_t);
+    Instruction(Opcode, std::size_t, Operand);
+    Instruction(Opcode, std::size_t, Operand, Operand);
 
     void print() const;
     std::size_t size() const;
@@ -25,7 +25,7 @@ public:
     void set_dst(Operand);
     void set_src(Operand);
 
-    void eval(std::vector<std::uint8_t>& out) const;
+    void eval(std::vector<std::uint8_t>&) const;
 
 private:
     Opcode m_opcode;
