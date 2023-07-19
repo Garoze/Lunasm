@@ -88,14 +88,14 @@ Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {})
     , m_dst(dst)
 {}
 
-std::size_t Instruction::size() const
-{
-    return m_size;
-}
-
 void Instruction::print() const
 {
     fmt::print("( {} :: {} )\n", OP_MNEMONICS.at(m_opcode), m_size);
+}
+
+std::size_t Instruction::size() const
+{
+    return m_size;
 }
 
 void Instruction::set_dst(Operand dst)
@@ -108,7 +108,20 @@ void Instruction::set_src(Operand src)
     m_src = src;
 }
 
-void Instruction::eval(std::vector<std::uint8_t>& output) const
+void Instruction::split_u16(std::vector<std::uint8_t>& output,
+                            std::uint16_t value) const
+{
+
+    std::uint8_t LSB = (value & 0x00FF);
+    std::uint8_t MSB = (value & 0xFF00) >> 8;
+
+    output.push_back(LSB);
+    output.push_back(MSB);
+}
+
+void Instruction::eval(
+    std::vector<std::uint8_t>& output,
+    std::unordered_map<std::string_view, std::uint16_t>& labels) const
 {
     output.push_back(static_cast<std::uint8_t>(m_opcode));
 
@@ -121,11 +134,12 @@ void Instruction::eval(std::vector<std::uint8_t>& output) const
         }
         else if constexpr (std::is_same_v<T, std::uint16_t>)
         {
-            std::uint8_t LSB = (arg & 0x00FF);
-            std::uint8_t MSB = (arg & 0xFF00) >> 8;
-
-            output.push_back(LSB);
-            output.push_back(MSB);
+            split_u16(output, arg);
+        }
+        else if constexpr (std::is_same_v<T, std::string_view>)
+        {
+            std::uint16_t address = labels.at(arg);
+            split_u16(output, address);
         }
     };
 
