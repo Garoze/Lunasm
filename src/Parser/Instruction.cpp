@@ -136,6 +136,11 @@ void Instruction::eval(
         {
             split_u16(output, arg);
         }
+        else if constexpr (std::is_same_v<T, std::uint16_t>)
+        {
+            std::uint16_t address = labels.at(arg);
+            split_u16(output, address);
+        }
     };
 
     std::visit(visitor, m_dst);
