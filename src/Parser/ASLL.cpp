@@ -52,24 +52,8 @@ void ASLL::generate(std::string const& path)
 
     for (auto& i : m_instructions)
     {
-        std::visit(
-            [&](auto& arg) {
-                using T = std::remove_reference_t<decltype(arg)>;
 
-                if constexpr (std::is_same_v<T, Instruction>)
-                {
-                    arg.eval(m_output);
-                }
-                else if constexpr (std::is_same_v<T, Label>)
-                {
-                    auto label = arg.label();
-                    if (m_labels.find(label) != m_labels.end())
-                    {
-                        arg.eval(m_output);
-                    }
-                }
-            },
-            i);
+        std::visit([&](auto& arg) -> void { arg.eval(m_output, m_labels); }, i);
     }
 
     fmt::print("{::02x} \n", m_output);

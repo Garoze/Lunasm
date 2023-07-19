@@ -1,0 +1,2 @@
+label:
+	mov [label], $01
