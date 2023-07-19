@@ -42,7 +42,6 @@ private:
 
 private:
     void push_instruction(Opcode, Operand, Operand);
-    void handle_address(Opcode, std::size_t, Operand, std::optional<Operand>);
 
 private:
     void nop_instruction();
