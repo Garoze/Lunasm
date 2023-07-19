@@ -135,6 +135,8 @@ std::string_view Parser::parse_label()
 
     m_instructions.push_back(Label(identifier));
 
+    // fmt::print("[Parser] Label definition: `{}`\n", identifier);
+
     return identifier;
 }
 
@@ -154,10 +156,6 @@ void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
                             std::optional<Operand> src = {})
 {
 
-    //                                          Label
-    // Instruction(Opcode op, std::size_t size, Operand dst);
-    //                                          Label        Label
-    // Instruction(Opcode op, std::size_t size, Operand dst, Operand src);
     auto visitor = [&](auto& arg) {
         using T = std::remove_reference_t<decltype(arg)>;
 
@@ -208,7 +206,7 @@ void Parser::mov_instruction()
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
+                    std::uint8_t src = parse_register();
 
                     m_instructions.push_back(
                         Instruction(Opcode::LoadRegister, 3, dst, src));
@@ -228,10 +226,41 @@ void Parser::mov_instruction()
         }
         break;
 
-        case TokenKind::OpenBracket:
-            parse_address();
+        case TokenKind::OpenBracket: {
+            Operand dst = parse_address();
             expect(TokenKind::Comma);
-            break;
+
+            switch (look_ahead()->kind())
+            {
+                case TokenKind::Immediate: {
+                    std::uint16_t src = parse_immediate();
+
+                    m_instructions.push_back(
+                        Instruction(Opcode::StoreImmediate, 5, dst, src));
+                }
+                break;
+
+                case TokenKind::Register: {
+                    std::uint8_t src = parse_register();
+
+                    m_instructions.push_back(
+                        Instruction(Opcode::StoreRegister, 3, dst, src));
+                }
+                break;
+
+                case TokenKind::OpenBracket: {
+                    Operand src = parse_address();
+
+                    m_instructions.push_back(
+                        Instruction(Opcode::StoreAddress, 5, dst, src));
+                }
+                break;
+
+                default:
+                    break;
+            }
+        }
+        break;
 
         default:
             break;
