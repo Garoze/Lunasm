@@ -1,10 +1,11 @@
-mov r1, $05 		; LoadFromImmediate
-mov r1, r2      ; LoadFromRegister
-mov r1, [$100]  ; LoadFromAddress
-mov r1, [r2]    ; LoadFromAddress
-mov r1, [label] ; LoaFromAddress
+label:
+	mov r1, $05 		
+	mov r1, r2      
+	mov r1, [$100]  
+	mov r1, [r2]    
+	mov r1, [label] 
 
-mov [$100], $05 		; StoreFromImmediate
-mov [$100], r1  		; StoreFromRegister
-mov [$100], [$100]  ; StoreFromAddress
-mov [$100], [label] ; StoreFromAddress
+	mov [$100], $05 		
+	mov [$100], r1  		
+	mov [$100], [$100]  
+	mov [$100], [label] 
