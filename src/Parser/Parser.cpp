@@ -14,15 +14,15 @@
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
-#include "Lexer/Token.hpp"
 #include "Lexer/Mnemonics.hpp"
+#include "Lexer/Token.hpp"
 
 #include "Parser/ASLL.hpp"
-#include "Parser/InstSizes.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Opcodes.hpp"
 #include "Parser/Parser.hpp"
+#include "Parser/Sizes.hpp"
 
 namespace Lunasm {
 
