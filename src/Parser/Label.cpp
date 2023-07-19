@@ -41,9 +41,11 @@ std::string_view Label::label() const
     return m_label;
 }
 
-void Label::eval(std::vector<std::uint8_t>& output) const
+void Label::eval(
+    std::vector<std::uint8_t>& output,
+    std::unordered_map<std::string_view, std::uint16_t>& labels) const
 {
-    if (m_address != 0xFFFF)
+    if (labels.find(m_label) != labels.end())
     {
         std::uint8_t LSB = (m_address & 0x00FF);
         std::uint8_t MSB = (m_address & 0xFF00) >> 8;
