@@ -11,13 +11,14 @@
 #include <string_view>
 #include <variant>
 
-#include "Lexer/Token.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
+#include "Lexer/Token.hpp"
 #include "Lexer/Mnemonics.hpp"
 
 #include "Parser/ASLL.hpp"
+#include "Parser/InstSizes.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Opcodes.hpp"
@@ -152,6 +153,12 @@ Operand Parser::parse_address()
     return a->raw_value();
 }
 
+void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
+{
+    Instruction i{op, INST_SIZE.at(op), dst, src};
+    m_instructions.push_back(i);
+}
+
 void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
                             std::optional<Operand> src = {})
 {
@@ -182,7 +189,7 @@ void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
 void Parser::nop_instruction()
 {
     expect(TokenKind::NOP);
-    m_instructions.push_back(Instruction(Opcode::NOP, 1));
+    push_instruction(Opcode::NOP);
 }
 
 void Parser::mov_instruction()

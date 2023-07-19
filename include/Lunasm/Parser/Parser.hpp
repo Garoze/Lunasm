@@ -39,6 +39,9 @@ private:
     std::string_view parse_label();
 
     Operand parse_address();
+
+private:
+    void push_instruction(Opcode, Operand, Operand);
     void handle_address(Opcode, std::size_t, Operand, std::optional<Operand>);
 
 private:
