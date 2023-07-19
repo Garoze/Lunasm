@@ -155,35 +155,7 @@ Operand Parser::parse_address()
 
 void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
 {
-    Instruction i{op, INST_SIZE.at(op), dst, src};
-    m_instructions.push_back(i);
-}
-
-void Parser::handle_address(Opcode op, std::size_t size, Operand dst,
-                            std::optional<Operand> src = {})
-{
-
-    auto visitor = [&](auto& arg) {
-        using T = std::remove_reference_t<decltype(arg)>;
-
-        if constexpr (std::is_same_v<T, std::string_view>)
-        {
-            m_instructions.push_back(Instruction(op, size, arg));
-
-            m_instructions.push_back(Label(arg));
-        }
-        else
-        {
-            m_instructions.push_back(Instruction(op, size, arg));
-        }
-    };
-
-    std::visit(visitor, dst);
-
-    if (src.has_value())
-    {
-        std::visit(visitor, src.value());
-    }
+    m_instructions.push_back(Instruction{op, INST_SIZE.at(op), dst, src});
 }
 
 void Parser::nop_instruction()
@@ -206,24 +178,19 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::LoadImmediate, 4, dst, src));
+                    push_instruction(Opcode::LoadImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
                     std::uint8_t src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::LoadRegister, 3, dst, src));
+                    push_instruction(Opcode::LoadRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::LoadAddress, 4, dst, src);
+                    push_instruction(Opcode::LoadAddress, dst, src);
                 }
                 break;
 
@@ -241,25 +208,19 @@ void Parser::mov_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::StoreImmediate, 5, dst, src));
+                    push_instruction(Opcode::StoreImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
                     std::uint8_t src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::StoreRegister, 3, dst, src));
+                    push_instruction(Opcode::StoreRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::StoreAddress, 5, dst, src));
+                    push_instruction(Opcode::StoreAddress, dst, src);
                 }
                 break;
 
@@ -277,59 +238,59 @@ void Parser::mov_instruction()
 void Parser::shl_instruction()
 {
     expect(TokenKind::ShiftLeft);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
     expect(TokenKind::Comma);
-    std::uint16_t imm = parse_immediate();
+    std::uint16_t src = parse_immediate();
 
-    m_instructions.push_back(Instruction(Opcode::ShiftLeft, 4, reg, imm));
+    push_instruction(Opcode::ShiftLeft, dst, src);
 }
 
 void Parser::shr_instruction()
 {
     expect(TokenKind::ShiftRight);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
     expect(TokenKind::Comma);
-    std::uint16_t imm = parse_immediate();
+    std::uint16_t src = parse_immediate();
 
-    m_instructions.push_back(Instruction(Opcode::ShiftRight, 4, reg, imm));
+    push_instruction(Opcode::ShiftRight, dst, src);
 }
 
 void Parser::and_instruction()
 {
     expect(TokenKind::BitAND);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
     expect(TokenKind::Comma);
-    std::uint16_t imm = parse_immediate();
+    std::uint16_t src = parse_immediate();
 
-    m_instructions.push_back(Instruction(Opcode::BitwiseAND, 4, reg, imm));
+    push_instruction(Opcode::BitwiseAND, dst, src);
 }
 
 void Parser::bor_instruction()
 {
     expect(TokenKind::BitOR);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
     expect(TokenKind::Comma);
-    std::uint16_t imm = parse_immediate();
+    std::uint16_t src = parse_immediate();
 
-    m_instructions.push_back(Instruction(Opcode::BitwiseOR, 4, reg, imm));
+    push_instruction(Opcode::BitwiseOR, dst, src);
 }
 
 void Parser::xor_instruction()
 {
     expect(TokenKind::BitXOR);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
     expect(TokenKind::Comma);
-    std::uint16_t imm = parse_immediate();
+    std::uint16_t src = parse_immediate();
 
-    m_instructions.push_back(Instruction(Opcode::BitwiseXOR, 4, reg, imm));
+    push_instruction(Opcode::BitwiseXOR, dst, src);
 }
 
 void Parser::not_instruction()
 {
     expect(TokenKind::BitNOT);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
 
-    m_instructions.push_back(Instruction(Opcode::BitwiseNOT, 2, reg));
+    push_instruction(Opcode::BitwiseNOT, dst);
 }
 
 void Parser::psh_instruction()
@@ -340,23 +301,19 @@ void Parser::psh_instruction()
     {
         case TokenKind::Immediate: {
             std::uint16_t src = parse_immediate();
-
-            m_instructions.push_back(
-                Instruction(Opcode::PushImmediate, 3, src));
+            push_instruction(Opcode::PushImmediate, src);
         }
         break;
 
         case TokenKind::Register: {
-            auto src = parse_register();
-
-            m_instructions.push_back(Instruction(Opcode::PushRegister, 2, src));
+            std::uint8_t src = parse_register();
+            push_instruction(Opcode::PushRegister, src);
         }
         break;
 
         case TokenKind::OpenBracket: {
             Operand src = parse_address();
-
-            handle_address(Opcode::PushAddress, 3, src);
+            push_instruction(Opcode::PushAddress, src);
         }
         break;
 
@@ -368,26 +325,25 @@ void Parser::psh_instruction()
 void Parser::pop_instruction()
 {
     expect(TokenKind::Pop);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
 
-    m_instructions.push_back(Instruction(Opcode::Pop, 1, reg));
+    push_instruction(Opcode::Pop, dst);
 }
 
 void Parser::inc_instruction()
 {
     expect(TokenKind::Increment);
-    std::uint8_t reg = parse_register();
+    std::uint8_t dst = parse_register();
 
-    m_instructions.push_back(Instruction(Opcode::Increment, 2, reg));
+    push_instruction(Opcode::Increment, dst);
 }
 
 void Parser::dec_instruction()
 {
     expect(TokenKind::Decrement);
+    std::uint8_t dst = parse_register();
 
-    std::uint8_t reg = parse_register();
-
-    m_instructions.push_back(Instruction(Opcode::Decrement, 2, reg));
+    push_instruction(Opcode::Decrement, dst);
 }
 
 void Parser::add_instruction()
@@ -404,24 +360,19 @@ void Parser::add_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::AddImmediate, 4, dst, src));
+                    push_instruction(Opcode::AddImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::AddRegister, 3, dst, src));
+                    std::uint8_t src = parse_register();
+                    push_instruction(Opcode::AddRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::AddAddress, 4, dst, src);
+                    push_instruction(Opcode::AddAddress, dst, src);
                 }
                 break;
 
@@ -450,24 +401,19 @@ void Parser::sub_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::SubImmediate, 4, dst, src));
+                    push_instruction(Opcode::SubImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::SubRegister, 3, dst, src));
+                    std::uint8_t src = parse_register();
+                    push_instruction(Opcode::SubRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::SubAddress, 4, dst, src);
+                    push_instruction(Opcode::SubAddress, dst, src);
                 }
                 break;
 
@@ -496,24 +442,19 @@ void Parser::mul_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::MulImmediate, 4, dst, src));
+                    push_instruction(Opcode::MulImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::MulRegister, 3, dst, src));
+                    std::uint8_t src = parse_register();
+                    push_instruction(Opcode::MulRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::MulAddress, 4, dst, src);
+                    push_instruction(Opcode::MulAddress, dst, src);
                 }
                 break;
 
@@ -542,24 +483,19 @@ void Parser::div_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::DivImmediate, 4, dst, src));
+                    push_instruction(Opcode::DivImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::DivRegister, 3, dst, src));
+                    std::uint8_t src = parse_register();
+                    push_instruction(Opcode::DivRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::DivAddress, 4, dst, src);
+                    push_instruction(Opcode::DivAddress, dst, src);
                 }
                 break;
 
@@ -588,24 +524,19 @@ void Parser::mod_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::ModImmediate, 4, dst, src));
+                    push_instruction(Opcode::ModImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
-                    auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::ModRegister, 3, dst, src));
+                    std::uint8_t src = parse_register();
+                    push_instruction(Opcode::ModRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::ModAddress, 4, dst, src);
+                    push_instruction(Opcode::ModAddress, dst, src);
                 }
                 break;
 
@@ -634,24 +565,19 @@ void Parser::cmp_instruction()
             {
                 case TokenKind::Immediate: {
                     std::uint16_t src = parse_immediate();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::CompareImmediate, 4, dst, src));
+                    push_instruction(Opcode::CompareImmediate, dst, src);
                 }
                 break;
 
                 case TokenKind::Register: {
                     auto src = parse_register();
-
-                    m_instructions.push_back(
-                        Instruction(Opcode::CompareRegister, 3, dst, src));
+                    push_instruction(Opcode::CompareRegister, dst, src);
                 }
                 break;
 
                 case TokenKind::OpenBracket: {
                     Operand src = parse_address();
-
-                    handle_address(Opcode::CompareAddress, 4, dst, src);
+                    push_instruction(Opcode::CompareAddress, dst, src);
                 }
                 break;
 
@@ -669,47 +595,47 @@ void Parser::cmp_instruction()
 void Parser::jmp_instruction()
 {
     expect(TokenKind::Jump);
-    Operand src = parse_address();
+    Operand dst = parse_address();
 
-    handle_address(Opcode::Jump, 3, src);
+    push_instruction(Opcode::Jump, dst);
 }
 
 void Parser::jeq_instruction()
 {
     expect(TokenKind::JumpEquals);
-    Operand src = parse_address();
+    Operand dst = parse_address();
 
-    handle_address(Opcode::JumpEquals, 3, src);
+    push_instruction(Opcode::JumpEquals, dst);
 }
 
 void Parser::jne_instruction()
 {
     expect(TokenKind::JumpNotEquals);
-    Operand src = parse_address();
+    Operand dst = parse_address();
 
-    handle_address(Opcode::JumpNotEquals, 3, src);
+    push_instruction(Opcode::JumpNotEquals, dst);
 }
 
 void Parser::jsr_instruction()
 {
     expect(TokenKind::Subroutine);
-    Operand src = parse_address();
+    Operand dst = parse_address();
 
-    handle_address(Opcode::Subroutine, 3, src);
+    push_instruction(Opcode::Subroutine, dst);
 }
 
 void Parser::ret_instruction()
 {
     expect(TokenKind::Return);
 
-    m_instructions.push_back(Instruction(Opcode::Return, 1));
+    push_instruction(Opcode::Return);
 }
 
 void Parser::hlt_instruction()
 {
     expect(TokenKind::Halt);
 
-    m_instructions.push_back(Instruction(Opcode::Halt, 1));
+    push_instruction(Opcode::Halt);
 }
 
 void Parser::Parse()
@@ -826,7 +752,6 @@ void Parser::Parse()
         }
     }
 
-    // debug_instruction();
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
 
     m_asll->handle_instructions(m_instructions);
