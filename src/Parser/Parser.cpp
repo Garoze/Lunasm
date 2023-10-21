@@ -17,7 +17,7 @@
 #include "Lexer/Mnemonics.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/ASLL.hpp"
+#include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Opcodes.hpp"
@@ -29,7 +29,7 @@ namespace Lunasm {
 Parser::Parser()
     : m_index(0)
     , m_lexer(std::make_unique<Lexer>())
-    , m_asll(std::make_unique<ASLL>())
+    , m_asll(std::make_unique<ASL>())
 {}
 
 void Parser::step()
@@ -100,7 +100,7 @@ std::optional<Token> Parser::expect_any(Kinds... kinds)
     auto t = look_ahead();
     if (t.has_value())
     {
-        for (TokenKind k : {kinds...})
+        for (TokenKind k : { kinds... })
         {
             if (t->kind() == k)
             {
@@ -155,7 +155,7 @@ Operand Parser::parse_address()
 
 void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
 {
-    m_instructions.push_back(Instruction{op, INST_SIZE.at(op), dst, src});
+    m_instructions.push_back(Instruction{ op, INST_SIZE.at(op), dst, src });
 }
 
 void Parser::nop_instruction()

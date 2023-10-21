@@ -3,21 +3,21 @@
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
-#include "Parser/ASLL.hpp"
+#include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 
 namespace Lunasm {
 
-ASLL::ASLL()
+ASL::ASL()
     : m_index(0)
 {}
 
-ASLL::ASLL(const std::vector<Inst>& instructions)
+ASL::ASL(const std::vector<Inst>& instructions)
     : m_index(0)
     , m_instructions(instructions)
 {}
 
-void ASLL::resolve_labels()
+void ASL::resolve_labels()
 {
     for (auto& i : m_instructions)
     {
@@ -43,7 +43,7 @@ void ASLL::resolve_labels()
     }
 }
 
-void ASLL::generate(std::string const& path)
+void ASL::generate(std::string const& path)
 {
     resolve_labels();
 
@@ -56,7 +56,7 @@ void ASLL::generate(std::string const& path)
     fmt::print("{::#02x} \n", m_output);
 }
 
-void ASLL::handle_instructions(const std::vector<Inst>& instructions)
+void ASL::handle_instructions(const std::vector<Inst>& instructions)
 {
     m_instructions = instructions;
     generate("teste");

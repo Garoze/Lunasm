@@ -11,7 +11,7 @@
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/ASLL.hpp"
+#include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 
@@ -88,7 +88,7 @@ private:
 private:
     std::size_t m_index;
     std::vector<Token> m_tokens;
-    std::unique_ptr<ASLL> m_asll;
+    std::unique_ptr<ASL> m_asll;
     std::unique_ptr<Lexer> m_lexer;
     std::vector<Inst> m_instructions;
 };

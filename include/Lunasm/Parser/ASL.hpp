@@ -13,11 +13,11 @@ namespace Lunasm {
 
 using Inst = std::variant<Instruction, Label>;
 
-class ASLL
+class ASL
 {
 public:
-    ASLL();
-    ASLL(const std::vector<Inst>& instructions);
+    ASL();
+    ASL(const std::vector<Inst>& instructions);
 
     void resolve_labels();
     void generate(std::string const& path);

@@ -1,7 +1,7 @@
 add_library(Parser
   Instruction.cpp
   Label.cpp 
-  ASLL.cpp
+  ASL.cpp
   Parser.cpp
 )
 
