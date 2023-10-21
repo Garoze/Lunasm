@@ -34,9 +34,9 @@ To run the project execute the binary inside `Lunasm/bin/Lunasm` or execute the 
 
 ### Toolchain
 
-* [CMake 3.24.3](https://cmake.org/)
+* [CMake 3.26.5](https://cmake.org/)
 * [Ninja 1.11.1](https://ninja-build.org/manual.html)
-* [GCC 11.3.1](https://gcc.gnu.org/)
+* [GCC 13.2.1](https://gcc.gnu.org/)
 
 ### Libraries
 
