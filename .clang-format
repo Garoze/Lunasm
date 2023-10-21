@@ -24,6 +24,7 @@ BreakBeforeBraces: Custom # Allman # Attach
 BraceWrapping:   
   AfterClass:      true # false
   AfterControlStatement: true # false
+  AfterCaseLabel: true # false
   AfterEnum:       true # false
   AfterFunction:   true # false
   AfterNamespace:  false # false
