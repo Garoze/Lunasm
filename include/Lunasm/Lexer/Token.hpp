@@ -1,12 +1,14 @@
 #pragma once
 
+#include <cstdint>
 #include <string>
 #include <string_view>
 #include <variant>
 
 #include "Kind.hpp"
 
-using TokenValue = std::variant<std::monostate, std::uint8_t, std::uint16_t, std::string_view>;
+using TokenValue =
+    std::variant<std::monostate, std::uint8_t, std::uint16_t, std::string_view>;
 
 namespace Lunasm {
 

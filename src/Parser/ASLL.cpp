@@ -53,7 +53,7 @@ void ASLL::generate(std::string const& path)
         std::visit([&](auto& arg) { arg.eval(m_output, m_labels); }, i);
     }
 
-    fmt::print("{::02x} \n", m_output);
+    fmt::print("{::#02x} \n", m_output);
 }
 
 void ASLL::handle_instructions(const std::vector<Inst>& instructions)
