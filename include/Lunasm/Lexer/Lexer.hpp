@@ -43,8 +43,10 @@ private:
 private:
     void Comment();
     Token Register();
-    Token Immediate();
+    Token lex_immediate();
     Token Identifier();
+
+    std::uint16_t get_base();
 
 private:
     Token next_token();

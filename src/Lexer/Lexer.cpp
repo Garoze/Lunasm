@@ -3,6 +3,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "fmt/core.h"
@@ -126,30 +127,91 @@ Token Lexer::Register()
     }
 }
 
-Token Lexer::Immediate()
-{
-    skip("Skipping the '$' character");
+std::unordered_map<char, int> char_to_digit = {
+    { '0', 0 },  { '1', 1 },  { '2', 2 },  { '3', 3 },
+    { '4', 4 },  { '5', 5 },  { '6', 6 },  { '7', 7 },
+    { '8', 8 },  { '9', 9 },  { 'a', 10 }, { 'b', 11 },
+    { 'c', 12 }, { 'd', 13 }, { 'e', 14 }, { 'f', 15 },
+};
 
-    if (!peek(0).has_value() || !std::isxdigit(peek(0).value()))
+std::uint16_t Lexer::get_base()
+{
+    std::uint16_t base{ 10 };
+
+    switch (current_char())
     {
-        auto err =
-            fmt::format("Missing immediate after '$' on line: {} offset: {}",
-                        m_line, offset());
-        throw std::runtime_error(err);
+        case '#':
+        case '$':
+            step();
+            base = 16;
+            break;
+
+        case '0':
+            step();
+            fmt::print("Passou do '0' -> current: {}\n", current_char());
+            switch (current_char())
+            {
+                case 'x':
+                    step();
+                    base = 16;
+                    break;
+                case 'b':
+                    step();
+                    base = 2;
+                    break;
+                default:
+                    base = 8;
+                    break;
+            }
+            break;
     }
 
-    auto start = offset();
+    return base;
+}
 
-    while (!is_empty() && std::isxdigit(current_char()))
+Token Lexer::lex_immediate()
+{
+    std::uint16_t value{ 0 };
+    std::uint16_t base = get_base();
+
+    while (!is_empty() &&
+           (std::isdigit(current_char()) || std::isxdigit(current_char())))
     {
+        double digit = char_to_digit.at(current_char());
+
+        if (digit == 0 && is_empty())
+        {
+            break;
+        }
+
+        if (digit >= base)
+        {
+            auto err =
+                fmt::format("Digit '{}' out of range for base {}", digit, base);
+
+            return Token(Kind::kind_t::ERROR, err, "", m_line, m_index);
+            digit = 0;
+        }
+
+        if (value > (std::numeric_limits<std::uint16_t>::max() / base))
+        {
+            auto err = fmt::format("Integer literal overflow");
+
+            return Token(Kind::kind_t::ERROR, err, "", m_line, m_index);
+
+            while (isdigit(current_char()))
+            {
+                step();
+            }
+            value = 0;
+            break;
+        }
+
+        value = (value * base) + digit;
         step();
     }
 
-    std::string_view text(m_source_code.c_str() + start, offset(start));
-
-    auto value = static_cast<std::uint16_t>(std::stoi(text.data()));
-
-    return Token(Kind::kind_t::Immediate, value, "", m_line, offset());
+    return Token(Kind::kind_t::Immediate, value, "", m_line, m_index);
 }
 
 Token Lexer::Identifier()
@@ -223,9 +285,22 @@ Token Lexer::next_token()
             case ';':
                 Comment();
                 break;
+
+            case '#':
             case '$':
-                return Immediate();
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return lex_immediate();
                 break;
+
             case 'r':
                 if (std::isdigit(peek().value())) // check if the next char is a
                                                   // number or not.
@@ -249,11 +324,6 @@ std::vector<Token> Lexer::Tokenizer()
     while (auto token = next_token())
     {
         tokens.push_back(token);
-
-        if (m_debug == true)
-        {
-            fmt::print("{}\n", token.as_string());
-        }
 
         if (token.kind().raw() == Kind::kind_t::__EOF)
             break;
