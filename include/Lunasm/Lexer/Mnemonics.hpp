@@ -45,6 +45,13 @@ const std::unordered_map<Kind::kind_t, std::string> KIND_TO_STR = {
     { Kind::kind_t::AtSign, "AtSign" },
     { Kind::kind_t::OpenSquare, "OpenSquare" },
     { Kind::kind_t::CloseSquare, "CloseSquare" },
+    { Kind::kind_t::OpenBracket, "OpenBracket" },
+    { Kind::kind_t::CloseBracket, "CloseBracket" },
+    { Kind::kind_t::LeftParen, "LeftParen" },
+    { Kind::kind_t::RightParen, "RightParen" },
+    { Kind::kind_t::Module, "Module" },
+    { Kind::kind_t::Macro, "Macro" },
+    { Kind::kind_t::Org, "Org" },
     { Kind::kind_t::ERROR, "Error" },
     { Kind::kind_t::__EOF, "EOF" },
 };

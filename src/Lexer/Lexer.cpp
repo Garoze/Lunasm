@@ -8,7 +8,7 @@
 
 #include "fmt/core.h"
 
-#include "Lexer/Instructions.hpp"
+#include "Lexer/Keywords.hpp"
 #include "Lexer/Kind.hpp"
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
@@ -34,24 +34,14 @@ void Lexer::step()
     }
 }
 
-void Lexer::space()
+bool Lexer::is_empty() const
 {
-    if (current_char() == '\n')
-    {
-        m_line++;
-    }
-
-    step();
+    return m_index >= m_source_code.length();
 }
 
 char Lexer::current_char() const
 {
     return m_source_code.at(m_index);
-}
-
-bool Lexer::is_empty() const
-{
-    return m_index >= m_source_code.length();
 }
 
 std::optional<char> Lexer::peek(std::size_t pos = 1) const
@@ -64,6 +54,24 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     }
 
     return {};
+}
+
+std::string Lexer::sanitize_input(std::string input)
+{
+    std::transform(input.begin(), input.end(), input.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    return input;
+}
+
+void Lexer::handle_space()
+{
+    if (current_char() == '\n')
+    {
+        m_line++;
+    }
+
+    step();
 }
 
 void Lexer::lex_comments()
@@ -82,41 +90,89 @@ void Lexer::lex_comments()
     }
 }
 
-Token Lexer::lex_registers()
+Token Lexer::lex_directives()
 {
     switch (current_char())
     {
-        case 'r':
+        case '@':
+        {
             step();
-            switch (char r = current_char())
-            {
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                    step();
-                    return Token(
-                        Kind::kind_t::Register,
-                        static_cast<std::uint16_t>(std::stoi(std::string{ r })),
-                        "", m_line, m_index);
+            auto start = m_index;
 
-                default:
-                    return Token(Kind::kind_t::ERROR, "Invalid Register", "",
-                                 m_line, m_index);
-                    break;
+            while (!is_empty() &&
+                   (std::isalnum(current_char()) || current_char() == '_'))
+            {
+                step();
             }
+
+            auto text = std::string_view{ m_source_code }.substr(
+                start, m_index - start);
+
+            if (!is_directive(text))
+            {
+                return Token(Kind::kind_t::ERROR, "Invalid Directive", "",
+                             m_line, m_index);
+            }
+
+            return Token(DIRECTIVES.at(text), text, "", m_line, m_index);
+        }
+        break;
+    }
+
+    return Token(Kind::kind_t::ERROR, "Invalid directive", "", m_line, m_index);
+}
+
+Token Lexer::lex_separators()
+{
+    switch (char c = current_char())
+    {
+        case ',':
+        case ':':
+        case '[':
+        case ']':
+        case '(':
+        case ')':
+        case '{':
+        case '}':
+            step();
+            return Token(
+                CHAR_TO_KIND.at(c),
+                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
+                m_line, m_index);
             break;
 
         default:
-            return lex_instructions();
+            fmt::print("Invalid Separator on Line: {} and Column: {} -> {}\n",
+                       m_line, m_index, c);
             break;
     }
 
-    return Token(Kind::kind_t::ERROR, "Invalid Register", "", m_line, m_index);
+    return Token(Kind::kind_t::ERROR, "Invalid token from lex_separators", "",
+                 m_line, m_index);
+}
+
+Token Lexer::lex_operators()
+{
+    switch (char c = current_char())
+    {
+        case '+':
+        case '-':
+        case '=':
+            step();
+            return Token(
+                CHAR_TO_KIND.at(c),
+                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
+                m_line, m_index);
+            break;
+
+        default:
+            fmt::print("Invalid Operator on Line: {} and Column: {} -> {}\n",
+                       m_line, m_index, c);
+            break;
+    }
+
+    return Token(Kind::kind_t::ERROR, "Invalid token from lex_operators", "",
+                 m_line, m_index);
 }
 
 std::unordered_map<char, int> char_to_digit = {
@@ -206,6 +262,43 @@ Token Lexer::lex_immediates()
     return Token(Kind::kind_t::Immediate, value, "", m_line, m_index);
 }
 
+Token Lexer::lex_registers()
+{
+    switch (current_char())
+    {
+        case 'r':
+            step();
+            switch (char r = current_char())
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                    step();
+                    return Token(
+                        Kind::kind_t::Register,
+                        static_cast<std::uint16_t>(std::stoi(std::string{ r })),
+                        "", m_line, m_index);
+
+                default:
+                    return Token(Kind::kind_t::ERROR, "Invalid Register", "",
+                                 m_line, m_index);
+                    break;
+            }
+            break;
+
+        default:
+            return lex_instructions();
+            break;
+    }
+
+    return Token(Kind::kind_t::ERROR, "Invalid Register", "", m_line, m_index);
+}
+
 Token Lexer::lex_instructions()
 {
     auto start = m_index;
@@ -225,124 +318,6 @@ Token Lexer::lex_instructions()
     }
 
     return Token(Kind::kind_t::Label, text, "", m_line, m_index);
-}
-
-Token Lexer::lex_operators()
-{
-    switch (char c = current_char())
-    {
-        case '+':
-        case '-':
-        case '=':
-            step();
-            return Token(
-                CHAR_TO_KIND.at(c),
-                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
-                m_line, m_index);
-            break;
-
-        default:
-            fmt::print("Invalid Operator on Line: {} and Column: {} -> {}\n",
-                       m_line, m_index, c);
-            break;
-    }
-
-    return Token(Kind::kind_t::ERROR, "Invalid token from lex_operators", "",
-                 m_line, m_index);
-}
-
-Token Lexer::lex_separators()
-{
-    switch (char c = current_char())
-    {
-        case ',':
-        case ':':
-        case '[':
-        case ']':
-            step();
-            return Token(
-                CHAR_TO_KIND.at(c),
-                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
-                m_line, m_index);
-            break;
-
-        default:
-            fmt::print("Invalid Separator on Line: {} and Column: {} -> {}\n",
-                       m_line, m_index, c);
-            break;
-    }
-
-    return Token(Kind::kind_t::ERROR, "Invalid token from lex_separators", "",
-                 m_line, m_index);
-}
-
-std::string Lexer::sanitize_input(std::string input)
-{
-    std::transform(input.begin(), input.end(), input.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
-
-    return input;
-}
-
-Token Lexer::next_token()
-{
-    while (!is_empty())
-    {
-        switch (current_char())
-        {
-            case ' ':
-            case '\r':
-            case '\t':
-            case '\n':
-                space();
-                break;
-
-            case ';':
-                lex_comments();
-                break;
-
-            case ':':
-            case ',':
-            case '[':
-            case ']':
-                return lex_separators();
-                break;
-
-            case '+':
-            case '-':
-            case '=':
-                return lex_operators();
-                break;
-
-            case '#':
-            case '$':
-            case '0':
-            case '1':
-            case '2':
-            case '3':
-            case '4':
-            case '5':
-            case '6':
-            case '7':
-            case '8':
-            case '9':
-                return lex_immediates();
-                break;
-
-            case 'r':
-                if (std::isdigit(peek().value())) // check if the next char is a
-                                                  // number or not.
-                {
-                    return lex_registers();
-                }
-
-            default:
-                return lex_instructions();
-                break;
-        }
-    }
-
-    return Token(Kind::kind_t::__EOF, "EOF", "", m_line, m_index);
 }
 
 std::vector<Token> Lexer::Tokenizer()
@@ -397,6 +372,74 @@ std::vector<Token> Lexer::Lex_file(std::filesystem::path const& file_path,
     }
 
     return tokens;
+}
+
+Token Lexer::next_token()
+{
+    while (!is_empty())
+    {
+        switch (current_char())
+        {
+            case ' ':
+            case '\r':
+            case '\t':
+            case '\n':
+                handle_space();
+                break;
+
+            case ';':
+                lex_comments();
+                break;
+
+            case '@':
+                return lex_directives();
+                break;
+
+            case ',':
+            case ':':
+            case '[':
+            case ']':
+            case '(':
+            case ')':
+            case '{':
+            case '}':
+                return lex_separators();
+                break;
+
+            case '+':
+            case '-':
+            case '=':
+                return lex_operators();
+                break;
+
+            case '#':
+            case '$':
+            case '0':
+            case '1':
+            case '2':
+            case '3':
+            case '4':
+            case '5':
+            case '6':
+            case '7':
+            case '8':
+            case '9':
+                return lex_immediates();
+                break;
+
+            case 'r':
+                if (std::isdigit(peek().value()))
+                {
+                    return lex_registers();
+                }
+
+            default:
+                return lex_instructions();
+                break;
+        }
+    }
+
+    return Token(Kind::kind_t::__EOF, "EOF", "", m_line, m_index);
 }
 
 } // namespace Lexer

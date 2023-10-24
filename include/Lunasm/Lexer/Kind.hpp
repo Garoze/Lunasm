@@ -50,6 +50,14 @@ public:
         AtSign,
         OpenSquare,
         CloseSquare,
+        OpenBracket,
+        CloseBracket,
+        LeftParen,
+        RightParen,
+
+        Module,
+        Macro,
+        Org,
 
         ERROR,
         __EOF,
@@ -65,13 +73,14 @@ private:
 };
 
 const std::unordered_map<char, Kind::kind_t> CHAR_TO_KIND = {
-
-    { '#', Kind::kind_t::Hash },        { '$', Kind::kind_t::Dollar },
-    { '+', Kind::kind_t::Plus },        { '-', Kind::kind_t::Minus },
-    { ',', Kind::kind_t::Comma },       { ':', Kind::kind_t::Colon },
-    { ';', Kind::kind_t::SemiColon },   { '=', Kind::kind_t::Equals },
-    { '@', Kind::kind_t::AtSign },      { '[', Kind::kind_t::OpenSquare },
-    { ']', Kind::kind_t::CloseSquare },
+    { '#', Kind::kind_t::Hash },         { '$', Kind::kind_t::Dollar },
+    { '+', Kind::kind_t::Plus },         { '-', Kind::kind_t::Minus },
+    { ',', Kind::kind_t::Comma },        { ':', Kind::kind_t::Colon },
+    { ';', Kind::kind_t::SemiColon },    { '=', Kind::kind_t::Equals },
+    { '@', Kind::kind_t::AtSign },       { '[', Kind::kind_t::OpenSquare },
+    { ']', Kind::kind_t::CloseSquare },  { '(', Kind::kind_t::LeftParen },
+    { ')', Kind::kind_t::RightParen },   { '{', Kind::kind_t::OpenBracket },
+    { '}', Kind::kind_t::CloseBracket },
 };
 
 } // namespace Lexer
