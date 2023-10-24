@@ -1,5 +1,7 @@
 add_library(Lexer
   Kind.cpp
+  Value.cpp
+  Location.cpp
   Token.cpp
   Lexer.cpp
 )
