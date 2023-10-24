@@ -175,7 +175,7 @@ Token Lexer::lex_operators()
                  m_line, m_index);
 }
 
-std::unordered_map<char, int> char_to_digit = {
+const std::unordered_map<char, int> CHAR_TO_DIGIT = {
     { '0', 0 },  { '1', 1 },  { '2', 2 },  { '3', 3 },
     { '4', 4 },  { '5', 5 },  { '6', 6 },  { '7', 7 },
     { '8', 8 },  { '9', 9 },  { 'a', 10 }, { 'b', 11 },
@@ -224,7 +224,7 @@ Token Lexer::lex_immediates()
     while (!is_empty() &&
            (std::isdigit(current_char()) || std::isxdigit(current_char())))
     {
-        double digit = char_to_digit.at(current_char());
+        double digit = CHAR_TO_DIGIT.at(current_char());
 
         if (digit == 0 && is_empty())
         {
@@ -278,10 +278,9 @@ Token Lexer::lex_registers()
                 case '6':
                 case '7':
                     step();
-                    return Token(
-                        Kind::kind_t::Register,
-                        static_cast<std::uint16_t>(std::stoi(std::string{ r })),
-                        "", m_line, m_index);
+                    return Token(Kind::kind_t::Register,
+                                 static_cast<std::uint16_t>(r - '0'), "",
+                                 m_line, m_index);
 
                 default:
                     return Token(Kind::kind_t::ERROR, "Invalid Register", "",
