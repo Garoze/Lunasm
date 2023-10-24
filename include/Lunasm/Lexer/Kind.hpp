@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <unordered_map>
 
 namespace Lexer {
 
@@ -42,10 +43,10 @@ public:
         Dollar,
         Plus,
         Minus,
+        Equals,
         Comma,
         Colon,
         SemiColon,
-        Equals,
         AtSign,
         OpenSquare,
         CloseSquare,
@@ -61,6 +62,16 @@ public:
 
 private:
     kind_t m_kind;
+};
+
+const std::unordered_map<char, Kind::kind_t> CHAR_TO_KIND = {
+
+    { '#', Kind::kind_t::Hash },        { '$', Kind::kind_t::Dollar },
+    { '+', Kind::kind_t::Plus },        { '-', Kind::kind_t::Minus },
+    { ',', Kind::kind_t::Comma },       { ':', Kind::kind_t::Colon },
+    { ';', Kind::kind_t::SemiColon },   { '=', Kind::kind_t::Equals },
+    { '@', Kind::kind_t::AtSign },      { '[', Kind::kind_t::OpenSquare },
+    { ']', Kind::kind_t::CloseSquare },
 };
 
 } // namespace Lexer
