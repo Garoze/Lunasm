@@ -50,6 +50,7 @@ public:
         OpenSquare,
         CloseSquare,
 
+        ERROR,
         __EOF,
     };
 
