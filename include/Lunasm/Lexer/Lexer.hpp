@@ -1,5 +1,6 @@
 #pragma once
 
+#include <filesystem>
 #include <optional>
 #include <string>
 #include <string_view>
@@ -7,7 +8,7 @@
 
 #include "Token.hpp"
 
-namespace Lunasm {
+namespace Lexer {
 
 class Lexer
 {
@@ -19,6 +20,8 @@ public:
     std::vector<Token> Lex_source(std::string);
 
     void enable_debug(bool);
+
+    std::vector<Token> lex_file(std::filesystem::path const&, bool);
 
 private:
     char eat();
@@ -53,4 +56,4 @@ private:
     std::string m_source_code;
 };
 
-} // namespace Lunasm
+} // namespace Lexer

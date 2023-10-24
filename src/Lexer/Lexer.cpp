@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cctype>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -11,7 +12,7 @@
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
-namespace Lunasm {
+namespace Lexer {
 
 Lexer::Lexer()
     : m_line(1)
@@ -111,12 +112,13 @@ Token Lexer::Register()
 
     switch (char n = eat())
     {
-        case '0' ... '7': {
+        case '0' ... '7':
+        {
             std::string_view text(m_source_code.c_str() + offset(1), 1);
 
             auto value = static_cast<std::uint8_t>(std::stoi(text.data()));
 
-            return Token(TokenKind::Register, value, m_line, offset());
+            return Token(Kind::kind_t::Register, value, "", m_line, offset());
         }
         default:
             throw std::runtime_error("Invalid Register.");
@@ -147,7 +149,7 @@ Token Lexer::Immediate()
 
     auto value = static_cast<std::uint16_t>(std::stoi(text.data()));
 
-    return Token(TokenKind::Immediate, value, m_line, offset());
+    return Token(Kind::kind_t::Immediate, value, "", m_line, offset());
 }
 
 Token Lexer::Identifier()
@@ -164,10 +166,10 @@ Token Lexer::Identifier()
 
     if (is_instruction(text))
     {
-        return Token(INSTRUCTIONS.at(text), text, m_line, offset());
+        return Token(INSTRUCTIONS.at(text), text, "", m_line, offset());
     }
 
-    return Token(TokenKind::Label, text, m_line, offset());
+    return Token(Kind::kind_t::Label, text, "", m_line, offset());
 }
 
 std::string Lexer::sanitize_input(std::string input)
@@ -193,27 +195,29 @@ Token Lexer::next_token()
 
             case '[':
                 step();
-                return Token(TokenKind::OpenBracket, "[", m_line, offset());
+                return Token(Kind::kind_t::OpenSquare, "[", "", m_line,
+                             offset());
                 break;
             case ']':
                 step();
-                return Token(TokenKind::CloseBracket, "]", m_line, offset());
+                return Token(Kind::kind_t::CloseSquare, "]", "", m_line,
+                             offset());
                 break;
             case '+':
                 step();
-                return Token(TokenKind::AddOperation, "+", m_line, offset());
+                return Token(Kind::kind_t::Plus, "+", "", m_line, offset());
                 break;
             case '-':
                 step();
-                return Token(TokenKind::SubOperation, "-", m_line, offset());
+                return Token(Kind::kind_t::Minus, "-", "", m_line, offset());
                 break;
             case ',':
                 step();
-                return Token(TokenKind::Comma, ",", m_line, offset());
+                return Token(Kind::kind_t::Comma, ",", "", m_line, offset());
                 break;
             case ':':
                 step();
-                return Token(TokenKind::Colon, ":", m_line, offset());
+                return Token(Kind::kind_t::Colon, ":", "", m_line, offset());
                 break;
 
             case ';':
@@ -235,7 +239,7 @@ Token Lexer::next_token()
         }
     }
 
-    return Token(TokenKind::END, "EOF", m_line, offset());
+    return Token(Kind::kind_t::__EOF, "EOF", "", m_line, offset());
 }
 
 std::vector<Token> Lexer::Tokenizer()
@@ -247,9 +251,11 @@ std::vector<Token> Lexer::Tokenizer()
         tokens.push_back(token);
 
         if (m_debug == true)
-            token.print();
+        {
+            fmt::print("{}\n", token.as_string());
+        }
 
-        if (token.kind() == TokenKind::END)
+        if (token.kind().raw() == Kind::kind_t::__EOF)
             break;
     }
 
@@ -263,4 +269,36 @@ std::vector<Token> Lexer::Lex_source(std::string source_code)
     return Tokenizer();
 }
 
-} // namespace Lunasm
+std::vector<Token> Lexer::lex_file(std::filesystem::path const& file_path,
+                                   bool debug = false)
+{
+    std::stringstream ss;
+
+    const std::ifstream file(file_path, std::ios::in);
+
+    if (!file.good())
+    {
+        auto err =
+            fmt::format("Could not open the file {}", file_path.string());
+        throw std::runtime_error(err);
+    }
+
+    ss << file.rdbuf();
+    std::string source = ss.str();
+
+    m_source_code = sanitize_input(source);
+
+    auto tokens = Tokenizer();
+
+    if (debug)
+    {
+        for (const auto& t : tokens)
+        {
+            fmt::print("{}\n", t.as_string());
+        }
+    }
+
+    return tokens;
+}
+
+} // namespace Lexer
