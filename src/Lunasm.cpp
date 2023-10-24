@@ -1,7 +1,7 @@
-#include <argparse/argparse.hpp>
-#include <fmt/core.h>
+#include "Lexer/Lexer.hpp"
+#include "fmt/core.h"
 
-#include "Parser/Parser.hpp"
+#include <argparse/argparse.hpp>
 
 int main(int argc, char* argv[])
 {
@@ -38,9 +38,9 @@ int main(int argc, char* argv[])
     {
         auto file = program.get<std::string>("--file");
 
-        Lunasm::Parser p{};
-
-        p.parse_file(file, debug);
+        Lexer::Lexer l{};
+        l.lex_file(file, true);
+        // Lunasm::Parser p{};
     }
 
     return EXIT_SUCCESS;
