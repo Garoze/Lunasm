@@ -107,24 +107,41 @@ void Lexer::Comment()
     }
 }
 
-Token Lexer::Register()
+Token Lexer::lex_register()
 {
-    skip("Skipping the 'r' character.");
-
-    switch (char n = eat())
+    switch (current_char())
     {
-        case '0' ... '7':
-        {
-            std::string_view text(m_source_code.c_str() + offset(1), 1);
+        case 'r':
+            step();
+            switch (char r = current_char())
+            {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                    step();
+                    return Token(
+                        Kind::kind_t::Register,
+                        static_cast<std::uint16_t>(std::stoi(std::string{ r })),
+                        "", m_line, m_index);
 
-            auto value = static_cast<std::uint8_t>(std::stoi(text.data()));
+                default:
+                    return Token(Kind::kind_t::ERROR, "Invalid Register", "",
+                                 m_line, m_index);
+                    break;
+            }
+            break;
 
-            return Token(Kind::kind_t::Register, value, "", m_line, offset());
-        }
         default:
-            throw std::runtime_error("Invalid Register.");
+            return Identifier();
             break;
     }
+
+    return Token(Kind::kind_t::ERROR, "Invalid Register", "", m_line, m_index);
 }
 
 std::unordered_map<char, int> char_to_digit = {
@@ -305,7 +322,7 @@ Token Lexer::next_token()
                 if (std::isdigit(peek().value())) // check if the next char is a
                                                   // number or not.
                 {
-                    return Register();
+                    return lex_register();
                 }
 
             default:

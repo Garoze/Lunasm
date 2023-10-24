@@ -42,7 +42,7 @@ private:
 
 private:
     void Comment();
-    Token Register();
+    Token lex_register();
     Token lex_immediate();
     Token Identifier();
 
