@@ -17,6 +17,12 @@ public:
     [[nodiscard]] value_t raw() const;
     [[nodiscard]] std::string as_string() const;
 
+public:
+    constexpr explicit operator bool() noexcept
+    {
+        return !m_value.valueless_by_exception();
+    }
+
 private:
     value_t m_value;
 };
