@@ -4,63 +4,43 @@
 
 #include "Kind.hpp"
 
-namespace Lunasm {
+namespace Lexer {
 
-const std::unordered_map<TokenKind, std::string> MNEMONICS = {
-
-    // CPU Instructions
-    {TokenKind::NOP, "NOP"},
-
-    {TokenKind::MovInstruction, "MovInstruction"},
-
-    {TokenKind::ShiftLeft, "ShiftLeft"},
-    {TokenKind::ShiftRight, "ShiftRight"},
-
-    {TokenKind::BitAND, "BitwiseAND"},
-    {TokenKind::BitOR, "BitwiseOR"},
-    {TokenKind::BitXOR, "BitwiseXOR"},
-    {TokenKind::BitNOT, "BitwiseNOT"},
-
-    {TokenKind::Push, "Push"},
-    {TokenKind::Pop, "Pop"},
-
-    {TokenKind::Increment, "Increment"},
-    {TokenKind::Decrement, "Decrement"},
-
-    {TokenKind::Add, "Add"},
-    {TokenKind::Sub, "Sub"},
-    {TokenKind::Mul, "Mul"},
-    {TokenKind::Div, "Div"},
-    {TokenKind::Mod, "Mod"},
-
-    {TokenKind::Compare, "Compare"},
-
-    {TokenKind::Jump, "Jump"},
-    {TokenKind::JumpEquals, "JumpEquals"},
-    {TokenKind::JumpNotEquals, "JumpNotEquals"},
-
-    {TokenKind::Subroutine, "Subroutine"},
-
-    {TokenKind::Return, "Return"},
-
-    {TokenKind::Halt, "Halt"},
-
-    // Lexer things
-    {TokenKind::Label, "Label"},
-    {TokenKind::Register, "Register"},
-    {TokenKind::Immediate, "Immediate"},
-
-    // Literals
-    {TokenKind::OpenBracket, "OpenBracket"},
-    {TokenKind::CloseBracket, "CloseBracket"},
-
-    {TokenKind::AddOperation, "AddOperation"},
-    {TokenKind::SubOperation, "SubOperation"},
-
-    {TokenKind::Colon, "Colon"},
-    {TokenKind::Comma, "Comma"},
-
-    {TokenKind::END, "EOF"},
+const std::unordered_map<Kind::kind_t, std::string> KIND_TO_STR = {
+    { Kind::kind_t::Nop, "Nop" },
+    { Kind::kind_t::Mov, "Mov" },
+    { Kind::kind_t::ShiftLeft, "ShiftLeft" },
+    { Kind::kind_t::ShiftRight, "ShiftRight" },
+    { Kind::kind_t::And, "And" },
+    { Kind::kind_t::Or, "Or" },
+    { Kind::kind_t::Xor, "Xor" },
+    { Kind::kind_t::Not, "Not" },
+    { Kind::kind_t::Push, "Push" },
+    { Kind::kind_t::Pop, "Pop" },
+    { Kind::kind_t::Increment, "Increment" },
+    { Kind::kind_t::Decrement, "Decrement" },
+    { Kind::kind_t::Compare, "Compare" },
+    { Kind::kind_t::Jump, "Jump" },
+    { Kind::kind_t::JumpIfEquals, "JumpIfEquals" },
+    { Kind::kind_t::JumpIfNotEquals, "JumpIfNotEquals" },
+    { Kind::kind_t::Subroutine, "Subroutine" },
+    { Kind::kind_t::Return, "Return" },
+    { Kind::kind_t::Halt, "Halt" },
+    { Kind::kind_t::Register, "Register" },
+    { Kind::kind_t::Immediate, "Immediate" },
+    { Kind::kind_t::Label, "Label" },
+    { Kind::kind_t::Hash, "Hash" },
+    { Kind::kind_t::Dollar, "Dollar" },
+    { Kind::kind_t::Plus, "Plus" },
+    { Kind::kind_t::Minus, "Minus" },
+    { Kind::kind_t::Comma, "Comma" },
+    { Kind::kind_t::Colon, "Colon" },
+    { Kind::kind_t::SemiColon, "SemiColon" },
+    { Kind::kind_t::Equals, "Equals" },
+    { Kind::kind_t::AtSign, "AtSign" },
+    { Kind::kind_t::OpenSquare, "OpenSquare" },
+    { Kind::kind_t::CloseSquare, "CloseSquare" },
+    { Kind::kind_t::__EOF, "EOF" },
 };
 
-} // namespace Lunasm
+} // namespace Lexer

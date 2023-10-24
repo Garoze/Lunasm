@@ -1,20 +1,20 @@
 #include "Lexer/Kind.hpp"
 #include "Lexer/Mnemonics.hpp"
 
-namespace Lunasm {
+namespace Lexer {
 
-Kind::Kind(TokenKind kind)
-    : m_value(kind)
+Kind::Kind(kind_t kind)
+    : m_kind(kind)
 {}
 
-TokenKind Kind::raw() const
+Kind::kind_t Kind::raw() const
 {
-    return m_value;
+    return m_kind;
 }
 
 std::string Kind::as_string() const
 {
-    return MNEMONICS.at(m_value);
+    return KIND_TO_STR.at(m_kind);
 }
 
-} // namespace Lunasm
+} // namespace Lexer

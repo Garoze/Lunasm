@@ -2,73 +2,59 @@
 
 #include <string>
 
-namespace Lunasm {
-
-enum class TokenKind
-{
-    // CPU Instructions
-    NOP,
-    MovInstruction,
-
-    ShiftLeft,
-    ShiftRight,
-
-    BitAND,
-    BitOR,
-    BitXOR,
-    BitNOT,
-
-    Push,
-    Pop,
-
-    Increment,
-    Decrement,
-
-    Add,
-    Sub,
-    Mul,
-    Div,
-    Mod,
-
-    Compare,
-
-    Jump,
-    JumpEquals,
-    JumpNotEquals,
-
-    Subroutine,
-    Return,
-
-    Halt,
-
-    // Lexer general stuff
-    Register,
-    Immediate,
-    Label,
-
-    // Literals
-    OpenBracket,
-    CloseBracket,
-    Colon,
-    Comma,
-
-    // Binary op
-    AddOperation,
-    SubOperation,
-
-    END,
-};
+namespace Lexer {
 
 class Kind
 {
 public:
-    Kind(TokenKind);
+    enum class kind_t
+    {
+        Nop,
+        Mov,
+        ShiftLeft,
+        ShiftRight,
+        And,
+        Or,
+        Xor,
+        Not,
+        Push,
+        Pop,
+        Increment,
+        Decrement,
+        Compare,
+        Jump,
+        JumpIfEquals,
+        JumpIfNotEquals,
+        Subroutine,
+        Return,
+        Halt,
 
-    TokenKind raw() const;
-    std::string as_string() const;
+        Register,
+        Immediate,
+        Label,
+
+        Hash,
+        Dollar,
+        Plus,
+        Minus,
+        Comma,
+        Colon,
+        SemiColon,
+        Equals,
+        AtSign,
+        OpenSquare,
+        CloseSquare,
+
+        __EOF,
+    };
+
+    Kind(kind_t);
+
+    [[nodiscard]] kind_t raw() const;
+    [[nodiscard]] std::string as_string() const;
 
 private:
-    TokenKind m_value;
+    kind_t m_kind;
 };
 
-} // namespace Lunasm
+} // namespace Lexer
