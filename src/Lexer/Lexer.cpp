@@ -257,6 +257,55 @@ Token Lexer::Identifier()
     return Token(Kind::kind_t::Label, text, "", m_line, offset());
 }
 
+Token Lexer::lex_operators()
+{
+    switch (char c = current_char())
+    {
+        case '+':
+        case '-':
+        case '=':
+            step();
+            return Token(
+                CHAR_TO_KIND.at(c),
+                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
+                m_line, m_index);
+            break;
+
+        default:
+            fmt::print("Invalid Operator on Line: {} and Column: {} -> {}\n",
+                       m_line, m_index, c);
+            break;
+    }
+
+    return Token(Kind::kind_t::ERROR, "Invalid token from lex_operators", "",
+                 m_line, m_index);
+}
+
+Token Lexer::lex_separators()
+{
+    switch (char c = current_char())
+    {
+        case ',':
+        case ':':
+        case '[':
+        case ']':
+            step();
+            return Token(
+                CHAR_TO_KIND.at(c),
+                std::string_view{ m_source_code }.substr(m_index - 1, 1), "",
+                m_line, m_index);
+            break;
+
+        default:
+            fmt::print("Invalid Separator on Line: {} and Column: {} -> {}\n",
+                       m_line, m_index, c);
+            break;
+    }
+
+    return Token(Kind::kind_t::ERROR, "Invalid token from lex_separators", "",
+                 m_line, m_index);
+}
+
 std::string Lexer::sanitize_input(std::string input)
 {
     std::transform(input.begin(), input.end(), input.begin(),
@@ -278,35 +327,21 @@ Token Lexer::next_token()
                 space();
                 break;
 
-            case '[':
-                step();
-                return Token(Kind::kind_t::OpenSquare, "[", "", m_line,
-                             offset());
-                break;
-            case ']':
-                step();
-                return Token(Kind::kind_t::CloseSquare, "]", "", m_line,
-                             offset());
-                break;
-            case '+':
-                step();
-                return Token(Kind::kind_t::Plus, "+", "", m_line, offset());
-                break;
-            case '-':
-                step();
-                return Token(Kind::kind_t::Minus, "-", "", m_line, offset());
-                break;
-            case ',':
-                step();
-                return Token(Kind::kind_t::Comma, ",", "", m_line, offset());
-                break;
-            case ':':
-                step();
-                return Token(Kind::kind_t::Colon, ":", "", m_line, offset());
-                break;
-
             case ';':
                 lex_comment();
+                break;
+
+            case ',':
+            case ':':
+            case '[':
+            case ']':
+                return lex_separators();
+                break;
+
+            case '+':
+            case '-':
+            case '=':
+                return lex_operators();
                 break;
 
             case '#':

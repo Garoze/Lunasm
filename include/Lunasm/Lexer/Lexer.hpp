@@ -46,6 +46,9 @@ private:
     Token lex_immediate();
     Token Identifier();
 
+    Token lex_operators();
+    Token lex_separators();
+
     std::uint16_t get_base();
 
 private:
