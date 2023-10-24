@@ -196,7 +196,6 @@ std::uint16_t Lexer::get_base()
 
         case '0':
             step();
-            fmt::print("Passou do '0' -> current: {}\n", current_char());
             switch (current_char())
             {
                 case 'x':
