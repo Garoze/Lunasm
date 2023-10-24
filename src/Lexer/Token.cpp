@@ -40,7 +40,7 @@ std::string Token::as_string() const
                       m_value.as_string());
 
     return fmt::format(
-        "Token( Kind: {:18} Text: {:10} Line: {:2d} Column: {:2d})\n", kind,
+        "Token( Kind: {:18} Text: {:10} Line: {:2d} Offset: {:2d})", kind,
         value, m_location.line(), m_location.column());
 }
 
