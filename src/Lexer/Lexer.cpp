@@ -97,13 +97,19 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     return {};
 }
 
-void Lexer::Comment()
+void Lexer::lex_comment()
 {
-    skip("Skipping the ';' character");
-
-    while (!is_empty() && current_char() != '\n')
+    switch (current_char())
     {
-        step();
+        case ';':
+            while (!is_empty() && current_char() != '\n')
+            {
+                step();
+            }
+            break;
+
+        default:
+            break;
     }
 }
 
@@ -300,7 +306,7 @@ Token Lexer::next_token()
                 break;
 
             case ';':
-                Comment();
+                lex_comment();
                 break;
 
             case '#':

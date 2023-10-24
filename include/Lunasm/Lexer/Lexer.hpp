@@ -41,7 +41,7 @@ private:
     std::string sanitize_input(std::string);
 
 private:
-    void Comment();
+    void lex_comment();
     Token lex_register();
     Token lex_immediate();
     Token Identifier();
