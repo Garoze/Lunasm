@@ -26,11 +26,6 @@ Lexer::Lexer(const std::string& source_code)
     , m_source_code(source_code)
 {}
 
-char Lexer::eat()
-{
-    return m_source_code.at(m_index++);
-}
-
 void Lexer::step()
 {
     if ((m_index + 1) <= m_source_code.length())
@@ -49,22 +44,6 @@ void Lexer::space()
     step();
 }
 
-void Lexer::skip(std::size_t n = 1)
-{
-    if ((m_index + n) <= m_source_code.length())
-    {
-        m_index += n;
-    }
-}
-
-void Lexer::skip(const std::string& message)
-{
-#ifdef __LEXER_DEBUG__
-    fmt::print("DEBUG: {}\n", message);
-#endif
-    step();
-}
-
 char Lexer::current_char() const
 {
     return m_source_code.at(m_index);
@@ -73,16 +52,6 @@ char Lexer::current_char() const
 bool Lexer::is_empty() const
 {
     return m_index >= m_source_code.length();
-}
-
-void Lexer::enable_debug(bool b = false)
-{
-    m_debug = b;
-}
-
-std::size_t Lexer::offset(std::size_t pos = 0) const
-{
-    return m_index - pos;
 }
 
 std::optional<char> Lexer::peek(std::size_t pos = 1) const
@@ -97,7 +66,7 @@ std::optional<char> Lexer::peek(std::size_t pos = 1) const
     return {};
 }
 
-void Lexer::lex_comment()
+void Lexer::lex_comments()
 {
     switch (current_char())
     {
@@ -113,7 +82,7 @@ void Lexer::lex_comment()
     }
 }
 
-Token Lexer::lex_register()
+Token Lexer::lex_registers()
 {
     switch (current_char())
     {
@@ -143,7 +112,7 @@ Token Lexer::lex_register()
             break;
 
         default:
-            return Identifier();
+            return lex_instructions();
             break;
     }
 
@@ -192,7 +161,7 @@ std::uint16_t Lexer::get_base()
     return base;
 }
 
-Token Lexer::lex_immediate()
+Token Lexer::lex_immediates()
 {
     std::uint16_t value{ 0 };
     std::uint16_t base = get_base();
@@ -237,9 +206,9 @@ Token Lexer::lex_immediate()
     return Token(Kind::kind_t::Immediate, value, "", m_line, m_index);
 }
 
-Token Lexer::Identifier()
+Token Lexer::lex_instructions()
 {
-    auto start = offset();
+    auto start = m_index;
 
     while (!is_empty() &&
            (std::isalnum(current_char()) || current_char() == '_'))
@@ -247,14 +216,15 @@ Token Lexer::Identifier()
         step();
     }
 
-    std::string_view text(m_source_code.c_str() + start, offset(start));
+    auto text =
+        std::string_view{ m_source_code }.substr(start, m_index - start);
 
     if (is_instruction(text))
     {
-        return Token(INSTRUCTIONS.at(text), text, "", m_line, offset());
+        return Token(INSTRUCTIONS.at(text), text, "", m_line, m_index);
     }
 
-    return Token(Kind::kind_t::Label, text, "", m_line, offset());
+    return Token(Kind::kind_t::Label, text, "", m_line, m_index);
 }
 
 Token Lexer::lex_operators()
@@ -328,11 +298,11 @@ Token Lexer::next_token()
                 break;
 
             case ';':
-                lex_comment();
+                lex_comments();
                 break;
 
-            case ',':
             case ':':
+            case ',':
             case '[':
             case ']':
                 return lex_separators();
@@ -356,23 +326,23 @@ Token Lexer::next_token()
             case '7':
             case '8':
             case '9':
-                return lex_immediate();
+                return lex_immediates();
                 break;
 
             case 'r':
                 if (std::isdigit(peek().value())) // check if the next char is a
                                                   // number or not.
                 {
-                    return lex_register();
+                    return lex_registers();
                 }
 
             default:
-                return Identifier();
+                return lex_instructions();
                 break;
         }
     }
 
-    return Token(Kind::kind_t::__EOF, "EOF", "", m_line, offset());
+    return Token(Kind::kind_t::__EOF, "EOF", "", m_line, m_index);
 }
 
 std::vector<Token> Lexer::Tokenizer()
@@ -397,7 +367,7 @@ std::vector<Token> Lexer::Lex_source(std::string source_code)
     return Tokenizer();
 }
 
-std::vector<Token> Lexer::lex_file(std::filesystem::path const& file_path,
+std::vector<Token> Lexer::Lex_file(std::filesystem::path const& file_path,
                                    bool debug = false)
 {
     std::stringstream ss;
