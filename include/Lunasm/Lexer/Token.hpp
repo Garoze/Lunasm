@@ -1,42 +1,35 @@
 #pragma once
 
-#include <cstdint>
 #include <string>
 #include <string_view>
-#include <variant>
 
 #include "Kind.hpp"
+#include "Location.hpp"
+#include "Value.hpp"
 
-using TokenValue =
-    std::variant<std::monostate, std::uint8_t, std::uint16_t, std::string_view>;
-
-namespace Lunasm {
+namespace Lexer {
 
 class Token
 {
 public:
-    Token(Kind, TokenValue, std::size_t, std::size_t);
+    Token(Kind::kind_t, Value::value_t, std::string, std::size_t, std::size_t);
 
-    void print() const;
+    [[nodiscard]] const Kind& kind() const;
+    [[nodiscard]] const Value& value() const;
+    [[nodiscard]] const Location& location() const;
 
-    TokenKind kind() const;
-    TokenValue raw_value() const;
-
-public:
-    std::string as_text() const;
-    std::string as_string() const;
+    [[nodiscard]] std::string as_string() const;
 
 public:
     constexpr explicit operator bool() noexcept
     {
-        return true;
+        return static_cast<bool>(m_value);
     }
 
 private:
     Kind m_kind;
-    TokenValue m_value;
-    std::size_t m_line;
-    std::size_t m_offset;
+    Value m_value;
+    Location m_location;
 };
 
-} // namespace Lunasm
+} // namespace Lexer
