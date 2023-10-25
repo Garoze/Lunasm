@@ -38,6 +38,7 @@ public:
         Register,
         Immediate,
         Label,
+        Symbol,
 
         Hash,
         Dollar,

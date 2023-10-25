@@ -34,6 +34,7 @@ const std::unordered_map<Kind::kind_t, std::string> KIND_TO_STR = {
     { Kind::kind_t::Register, "Register" },
     { Kind::kind_t::Immediate, "Immediate" },
     { Kind::kind_t::Label, "Label" },
+    { Kind::kind_t::Symbol, "Symbol" },
     { Kind::kind_t::Hash, "Hash" },
     { Kind::kind_t::Dollar, "Dollar" },
     { Kind::kind_t::Plus, "Plus" },

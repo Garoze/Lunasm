@@ -315,7 +315,7 @@ Token Lexer::lex_instructions()
         return Token(INSTRUCTIONS.at(text), text, "", m_line, m_index);
     }
 
-    return Token(Kind::kind_t::Label, text, "", m_line, m_index);
+    return Token(Kind::kind_t::Symbol, text, "", m_line, m_index);
 }
 
 std::vector<Token> Lexer::Tokenizer()
