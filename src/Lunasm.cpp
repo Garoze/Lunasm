@@ -39,7 +39,7 @@ int main(int argc, char* argv[])
         auto file = program.get<std::string>("--file");
 
         Lexer::Lexer l{};
-        l.Lex_file(file, true);
+        l.Lex_file(file, debug);
         // Lunasm::Parser p{};
     }
 
