@@ -24,11 +24,11 @@
 #include "Parser/Parser.hpp"
 #include "Parser/Sizes.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 Parser::Parser()
     : m_index(0)
-    , m_lexer(std::make_unique<Lexer>())
+    , m_lexer(std::make_unique<Lexer::Lexer>())
     , m_asll(std::make_unique<ASL>())
 {}
 
@@ -40,7 +40,7 @@ void Parser::step()
     }
 }
 
-std::optional<Token> Parser::look_ahead(std::size_t pos = 0)
+std::optional<Lexer::Token> Parser::look_ahead(std::size_t pos = 0)
 {
     auto index = m_index + pos;
 
@@ -67,16 +67,15 @@ void Parser::parse_file(std::filesystem::path const& path, bool debug)
     ss << file.rdbuf();
     std::string source = ss.str();
 
-    m_lexer->enable_debug(debug);
     m_tokens = m_lexer->Lex_source(source);
 
     Parse();
 }
 
-Token Parser::expect(TokenKind kind)
+Lexer::Token Parser::expect(Lexer::Kind::kind_t kind)
 {
     auto t = look_ahead();
-    if (t.has_value() && t->kind() == kind)
+    if (t.has_value() && t->kind().raw() == kind)
     {
         step();
         return t.value();
@@ -85,24 +84,24 @@ Token Parser::expect(TokenKind kind)
     {
         auto err =
             fmt::format("[Parser] Invalid token kind expected: '{}' got '{}'\n",
-                        MNEMONICS.at(kind), look_ahead()->as_string());
+                        Lexer::KIND_TO_STR.at(kind), look_ahead()->as_string());
 
         throw std::runtime_error(err);
     }
 }
 
 template <typename... Kinds>
-std::optional<Token> Parser::expect_any(Kinds... kinds)
+std::optional<Lexer::Token> Parser::expect_any(Kinds... kinds)
 {
-    static_assert((std::is_same_v<Kinds, TokenKind> && ...),
-                  "must pass TokenKind values");
+    static_assert((std::is_same_v<Kinds, Lexer::Kind::kind_t> && ...),
+                  "must pass Lexer::Kind::kind_t values");
 
     auto t = look_ahead();
     if (t.has_value())
     {
-        for (TokenKind k : { kinds... })
+        for (Lexer::Kind::kind_t k : { kinds... })
         {
-            if (t->kind() == k)
+            if (t->kind().raw() == k)
             {
                 step();
                 return t.value();
@@ -113,26 +112,26 @@ std::optional<Token> Parser::expect_any(Kinds... kinds)
     return {};
 }
 
-uint8_t Parser::parse_register()
+uint16_t Parser::parse_register()
 {
-    auto r = expect(TokenKind::Register);
+    auto r = expect(Lexer::Kind::kind_t::Register);
 
-    return std::get<std::uint8_t>(r.raw_value());
+    return std::get<std::uint16_t>(r.value().raw());
 }
 
 std::uint16_t Parser::parse_immediate()
 {
-    auto i = expect(TokenKind::Immediate);
+    auto i = expect(Lexer::Kind::kind_t::Immediate);
 
-    return std::get<std::uint16_t>(i.raw_value());
+    return std::get<std::uint16_t>(i.value().raw());
 }
 
 std::string_view Parser::parse_label()
 {
-    auto l = expect(TokenKind::Label);
-    expect(TokenKind::Colon);
+    auto l = expect(Lexer::Kind::kind_t::Symbol);
+    expect(Lexer::Kind::kind_t::Colon);
 
-    auto identifier = std::get<std::string_view>(l.raw_value());
+    auto identifier = std::get<std::string_view>(l.value().raw());
 
     m_instructions.push_back(Label(identifier));
 
@@ -143,14 +142,15 @@ std::string_view Parser::parse_label()
 
 Operand Parser::parse_address()
 {
-    expect(TokenKind::OpenBracket);
+    expect(Lexer::Kind::kind_t::OpenSquare);
 
     auto a =
-        expect_any(TokenKind::Immediate, TokenKind::Register, TokenKind::Label);
+        expect_any(Lexer::Kind::kind_t::Immediate,
+                   Lexer::Kind::kind_t::Register, Lexer::Kind::kind_t::Symbol);
 
-    expect(TokenKind::CloseBracket);
+    expect(Lexer::Kind::kind_t::CloseSquare);
 
-    return a->raw_value();
+    return std::get<std::string_view>(a->value().raw());
 }
 
 void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
@@ -160,35 +160,39 @@ void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
 
 void Parser::nop_instruction()
 {
-    expect(TokenKind::NOP);
+    expect(Lexer::Kind::kind_t::Nop);
     push_instruction(Opcode::NOP);
 }
 
 void Parser::mov_instruction()
 {
-    expect(TokenKind::MovInstruction);
+    expect(Lexer::Kind::kind_t::Mov);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::LoadImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::LoadRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::LoadAddress, dst, src);
                 }
@@ -200,25 +204,29 @@ void Parser::mov_instruction()
         }
         break;
 
-        case TokenKind::OpenBracket: {
+        case Lexer::Kind::kind_t::OpenSquare:
+        {
             Operand dst = parse_address();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::StoreImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::StoreRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::StoreAddress, dst, src);
                 }
@@ -237,9 +245,9 @@ void Parser::mov_instruction()
 
 void Parser::shl_instruction()
 {
-    expect(TokenKind::ShiftLeft);
+    expect(Lexer::Kind::kind_t::ShiftLeft);
     std::uint8_t dst = parse_register();
-    expect(TokenKind::Comma);
+    expect(Lexer::Kind::kind_t::Comma);
     std::uint16_t src = parse_immediate();
 
     push_instruction(Opcode::ShiftLeft, dst, src);
@@ -247,9 +255,9 @@ void Parser::shl_instruction()
 
 void Parser::shr_instruction()
 {
-    expect(TokenKind::ShiftRight);
+    expect(Lexer::Kind::kind_t::ShiftRight);
     std::uint8_t dst = parse_register();
-    expect(TokenKind::Comma);
+    expect(Lexer::Kind::kind_t::Comma);
     std::uint16_t src = parse_immediate();
 
     push_instruction(Opcode::ShiftRight, dst, src);
@@ -257,9 +265,9 @@ void Parser::shr_instruction()
 
 void Parser::and_instruction()
 {
-    expect(TokenKind::BitAND);
+    expect(Lexer::Kind::kind_t::And);
     std::uint8_t dst = parse_register();
-    expect(TokenKind::Comma);
+    expect(Lexer::Kind::kind_t::Comma);
     std::uint16_t src = parse_immediate();
 
     push_instruction(Opcode::BitwiseAND, dst, src);
@@ -267,9 +275,9 @@ void Parser::and_instruction()
 
 void Parser::bor_instruction()
 {
-    expect(TokenKind::BitOR);
+    expect(Lexer::Kind::kind_t::Or);
     std::uint8_t dst = parse_register();
-    expect(TokenKind::Comma);
+    expect(Lexer::Kind::kind_t::Comma);
     std::uint16_t src = parse_immediate();
 
     push_instruction(Opcode::BitwiseOR, dst, src);
@@ -277,9 +285,9 @@ void Parser::bor_instruction()
 
 void Parser::xor_instruction()
 {
-    expect(TokenKind::BitXOR);
+    expect(Lexer::Kind::kind_t::Xor);
     std::uint8_t dst = parse_register();
-    expect(TokenKind::Comma);
+    expect(Lexer::Kind::kind_t::Comma);
     std::uint16_t src = parse_immediate();
 
     push_instruction(Opcode::BitwiseXOR, dst, src);
@@ -287,7 +295,7 @@ void Parser::xor_instruction()
 
 void Parser::not_instruction()
 {
-    expect(TokenKind::BitNOT);
+    expect(Lexer::Kind::kind_t::Not);
     std::uint8_t dst = parse_register();
 
     push_instruction(Opcode::BitwiseNOT, dst);
@@ -295,23 +303,26 @@ void Parser::not_instruction()
 
 void Parser::psh_instruction()
 {
-    expect(TokenKind::Push);
+    expect(Lexer::Kind::kind_t::Push);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Immediate: {
+        case Lexer::Kind::kind_t::Immediate:
+        {
             std::uint16_t src = parse_immediate();
             push_instruction(Opcode::PushImmediate, src);
         }
         break;
 
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t src = parse_register();
             push_instruction(Opcode::PushRegister, src);
         }
         break;
 
-        case TokenKind::OpenBracket: {
+        case Lexer::Kind::kind_t::OpenSquare:
+        {
             Operand src = parse_address();
             push_instruction(Opcode::PushAddress, src);
         }
@@ -324,7 +335,7 @@ void Parser::psh_instruction()
 
 void Parser::pop_instruction()
 {
-    expect(TokenKind::Pop);
+    expect(Lexer::Kind::kind_t::Pop);
     std::uint8_t dst = parse_register();
 
     push_instruction(Opcode::Pop, dst);
@@ -332,7 +343,7 @@ void Parser::pop_instruction()
 
 void Parser::inc_instruction()
 {
-    expect(TokenKind::Increment);
+    expect(Lexer::Kind::kind_t::Increment);
     std::uint8_t dst = parse_register();
 
     push_instruction(Opcode::Increment, dst);
@@ -340,7 +351,7 @@ void Parser::inc_instruction()
 
 void Parser::dec_instruction()
 {
-    expect(TokenKind::Decrement);
+    expect(Lexer::Kind::kind_t::Decrement);
     std::uint8_t dst = parse_register();
 
     push_instruction(Opcode::Decrement, dst);
@@ -348,29 +359,33 @@ void Parser::dec_instruction()
 
 void Parser::add_instruction()
 {
-    expect(TokenKind::Add);
+    expect(Lexer::Kind::kind_t::Add);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::AddImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::AddRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::AddAddress, dst, src);
                 }
@@ -389,29 +404,33 @@ void Parser::add_instruction()
 
 void Parser::sub_instruction()
 {
-    expect(TokenKind::Sub);
+    expect(Lexer::Kind::kind_t::Sub);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::SubImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::SubRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::SubAddress, dst, src);
                 }
@@ -430,29 +449,33 @@ void Parser::sub_instruction()
 
 void Parser::mul_instruction()
 {
-    expect(TokenKind::Mul);
+    expect(Lexer::Kind::kind_t::Mul);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::MulImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::MulRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::MulAddress, dst, src);
                 }
@@ -471,29 +494,33 @@ void Parser::mul_instruction()
 
 void Parser::div_instruction()
 {
-    expect(TokenKind::Div);
+    expect(Lexer::Kind::kind_t::Div);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::DivImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::DivRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::DivAddress, dst, src);
                 }
@@ -512,29 +539,33 @@ void Parser::div_instruction()
 
 void Parser::mod_instruction()
 {
-    expect(TokenKind::Mod);
+    expect(Lexer::Kind::kind_t::Mod);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::ModImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     std::uint8_t src = parse_register();
                     push_instruction(Opcode::ModRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::ModAddress, dst, src);
                 }
@@ -553,29 +584,33 @@ void Parser::mod_instruction()
 
 void Parser::cmp_instruction()
 {
-    expect(TokenKind::Compare);
+    expect(Lexer::Kind::kind_t::Compare);
 
-    switch (look_ahead()->kind())
+    switch (look_ahead()->kind().raw())
     {
-        case TokenKind::Register: {
+        case Lexer::Kind::kind_t::Register:
+        {
             std::uint8_t dst = parse_register();
-            expect(TokenKind::Comma);
+            expect(Lexer::Kind::kind_t::Comma);
 
-            switch (look_ahead()->kind())
+            switch (look_ahead()->kind().raw())
             {
-                case TokenKind::Immediate: {
+                case Lexer::Kind::kind_t::Immediate:
+                {
                     std::uint16_t src = parse_immediate();
                     push_instruction(Opcode::CompareImmediate, dst, src);
                 }
                 break;
 
-                case TokenKind::Register: {
+                case Lexer::Kind::kind_t::Register:
+                {
                     auto src = parse_register();
                     push_instruction(Opcode::CompareRegister, dst, src);
                 }
                 break;
 
-                case TokenKind::OpenBracket: {
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
                     Operand src = parse_address();
                     push_instruction(Opcode::CompareAddress, dst, src);
                 }
@@ -594,7 +629,7 @@ void Parser::cmp_instruction()
 
 void Parser::jmp_instruction()
 {
-    expect(TokenKind::Jump);
+    expect(Lexer::Kind::kind_t::Jump);
     Operand dst = parse_address();
 
     push_instruction(Opcode::Jump, dst);
@@ -602,7 +637,7 @@ void Parser::jmp_instruction()
 
 void Parser::jeq_instruction()
 {
-    expect(TokenKind::JumpEquals);
+    expect(Lexer::Kind::kind_t::JumpIfEquals);
     Operand dst = parse_address();
 
     push_instruction(Opcode::JumpEquals, dst);
@@ -610,7 +645,7 @@ void Parser::jeq_instruction()
 
 void Parser::jne_instruction()
 {
-    expect(TokenKind::JumpNotEquals);
+    expect(Lexer::Kind::kind_t::JumpIfNotEquals);
     Operand dst = parse_address();
 
     push_instruction(Opcode::JumpNotEquals, dst);
@@ -618,7 +653,7 @@ void Parser::jne_instruction()
 
 void Parser::jsr_instruction()
 {
-    expect(TokenKind::Subroutine);
+    expect(Lexer::Kind::kind_t::Subroutine);
     Operand dst = parse_address();
 
     push_instruction(Opcode::Subroutine, dst);
@@ -626,121 +661,121 @@ void Parser::jsr_instruction()
 
 void Parser::ret_instruction()
 {
-    expect(TokenKind::Return);
+    expect(Lexer::Kind::kind_t::Return);
 
     push_instruction(Opcode::Return);
 }
 
 void Parser::hlt_instruction()
 {
-    expect(TokenKind::Halt);
+    expect(Lexer::Kind::kind_t::Halt);
 
     push_instruction(Opcode::Halt);
 }
 
 void Parser::Parse()
 {
-    while (look_ahead()->kind() != TokenKind::END)
+    while (look_ahead()->kind().raw() != Lexer::Kind::kind_t::__EOF)
     {
-        switch (look_ahead()->kind())
+        switch (look_ahead()->kind().raw())
         {
-            case TokenKind::Label:
+            case Lexer::Kind::kind_t::Symbol:
                 parse_label();
                 break;
 
-            case TokenKind::NOP:
+            case Lexer::Kind::kind_t::Nop:
                 nop_instruction();
                 break;
 
-            case TokenKind::MovInstruction:
+            case Lexer::Kind::kind_t::Mov:
                 mov_instruction();
                 break;
 
-            case TokenKind::ShiftLeft:
+            case Lexer::Kind::kind_t::ShiftLeft:
                 shl_instruction();
                 break;
 
-            case TokenKind::ShiftRight:
+            case Lexer::Kind::kind_t::ShiftRight:
                 shr_instruction();
                 break;
 
-            case TokenKind::BitAND:
+            case Lexer::Kind::kind_t::And:
                 and_instruction();
                 break;
 
-            case TokenKind::BitOR:
+            case Lexer::Kind::kind_t::Or:
                 bor_instruction();
                 break;
 
-            case TokenKind::BitXOR:
+            case Lexer::Kind::kind_t::Xor:
                 xor_instruction();
                 break;
 
-            case TokenKind::BitNOT:
+            case Lexer::Kind::kind_t::Not:
                 not_instruction();
                 break;
 
-            case TokenKind::Push:
+            case Lexer::Kind::kind_t::Push:
                 psh_instruction();
                 break;
 
-            case TokenKind::Pop:
+            case Lexer::Kind::kind_t::Pop:
                 pop_instruction();
                 break;
 
-            case TokenKind::Increment:
+            case Lexer::Kind::kind_t::Increment:
                 inc_instruction();
                 break;
 
-            case TokenKind::Decrement:
+            case Lexer::Kind::kind_t::Decrement:
                 dec_instruction();
                 break;
 
-            case TokenKind::Add:
+            case Lexer::Kind::kind_t::Add:
                 add_instruction();
                 break;
 
-            case TokenKind::Sub:
+            case Lexer::Kind::kind_t::Sub:
                 sub_instruction();
                 break;
 
-            case TokenKind::Mul:
+            case Lexer::Kind::kind_t::Mul:
                 mul_instruction();
                 break;
 
-            case TokenKind::Div:
+            case Lexer::Kind::kind_t::Div:
                 div_instruction();
                 break;
 
-            case TokenKind::Mod:
+            case Lexer::Kind::kind_t::Mod:
                 mod_instruction();
                 break;
 
-            case TokenKind::Compare:
+            case Lexer::Kind::kind_t::Compare:
                 cmp_instruction();
                 break;
 
-            case TokenKind::Jump:
+            case Lexer::Kind::kind_t::Jump:
                 jmp_instruction();
                 break;
 
-            case TokenKind::JumpEquals:
+            case Lexer::Kind::kind_t::JumpIfEquals:
                 jeq_instruction();
                 break;
 
-            case TokenKind::JumpNotEquals:
+            case Lexer::Kind::kind_t::JumpIfNotEquals:
                 jne_instruction();
                 break;
 
-            case TokenKind::Subroutine:
+            case Lexer::Kind::kind_t::Subroutine:
                 jsr_instruction();
                 break;
 
-            case TokenKind::Return:
+            case Lexer::Kind::kind_t::Return:
                 ret_instruction();
                 break;
 
-            case TokenKind::Halt:
+            case Lexer::Kind::kind_t::Halt:
                 hlt_instruction();
                 break;
 
@@ -757,4 +792,4 @@ void Parser::Parse()
     m_asll->handle_instructions(m_instructions);
 }
 
-} // namespace Lunasm
+} // namespace Parser

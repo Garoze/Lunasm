@@ -9,7 +9,7 @@
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 using Inst = std::variant<Instruction, Label>;
 
@@ -30,4 +30,4 @@ private:
     std::unordered_map<std::string_view, std::uint16_t> m_labels;
 };
 
-} // namespace Lunasm
+} // namespace Parser

@@ -15,7 +15,7 @@
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 using Inst = std::variant<Instruction, Label>;
 
@@ -31,10 +31,10 @@ public:
 
 private:
     void step();
-    std::optional<Token> look_ahead(std::size_t);
+    std::optional<Lexer::Token> look_ahead(std::size_t);
 
 private:
-    std::uint8_t parse_register();
+    std::uint16_t parse_register();
     std::uint16_t parse_immediate();
     std::string_view parse_label();
 
@@ -80,17 +80,17 @@ private:
     void hlt_instruction();
 
 private:
-    Token expect(TokenKind);
+    Lexer::Token expect(Lexer::Kind::kind_t);
 
     template <typename... Kinds>
-    std::optional<Token> expect_any(Kinds... kinds);
+    std::optional<Lexer::Token> expect_any(Kinds... kinds);
 
 private:
     std::size_t m_index;
-    std::vector<Token> m_tokens;
+    std::vector<Lexer::Token> m_tokens;
     std::unique_ptr<ASL> m_asll;
-    std::unique_ptr<Lexer> m_lexer;
+    std::unique_ptr<Lexer::Lexer> m_lexer;
     std::vector<Inst> m_instructions;
 };
 
-} // namespace Lunasm
+} // namespace Parser

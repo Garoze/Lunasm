@@ -4,7 +4,7 @@
 
 #include "Parser/Label.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 Label::Label(std::string_view label)
     : m_label(label)
@@ -46,4 +46,4 @@ void Label::eval(
     std::unordered_map<std::string_view, std::uint16_t>& labels) const
 {}
 
-} // namespace Lunasm
+} // namespace Parser

@@ -9,8 +9,7 @@
 #include "Parser/Label.hpp"
 #include "Parser/Opcodes.hpp"
 
-
-namespace Lunasm {
+namespace Parser {
 
 using Operand =
     std::variant<std::monostate, std::uint8_t, std::uint16_t, std::string_view>;
@@ -32,7 +31,6 @@ public:
     void eval(std::vector<std::uint8_t>&,
               std::unordered_map<std::string_view, std::uint16_t>&) const;
 
-
 private:
     void split_u16(std::vector<std::uint8_t>&, std::uint16_t) const;
 
@@ -43,4 +41,4 @@ private:
     Operand m_src;
 };
 
-} // namespace Lunasm
+} // namespace Parser

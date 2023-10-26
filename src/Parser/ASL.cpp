@@ -6,7 +6,7 @@
 #include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 ASL::ASL()
     : m_index(0)
@@ -62,4 +62,4 @@ void ASL::handle_instructions(const std::vector<Inst>& instructions)
     generate("teste");
 }
 
-} // namespace Lunasm
+} // namespace Parser

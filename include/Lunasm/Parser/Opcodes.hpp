@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <sys/wait.h>
 
-namespace Lunasm {
+namespace Parser {
 
 enum class Opcode : std::uint8_t
 {
@@ -66,4 +66,4 @@ enum class Opcode : std::uint8_t
     Halt,
 };
 
-} // namespace Lunasm
+} // namespace Parser

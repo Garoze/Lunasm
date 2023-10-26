@@ -7,7 +7,7 @@
 
 #include "Parser/Opcodes.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 class Label
 {
@@ -32,4 +32,4 @@ private:
     std::uint16_t m_address;
 };
 
-} // namespace Lunasm
+} // namespace Parser

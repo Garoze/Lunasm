@@ -8,11 +8,11 @@ target_sources(${PROJECT_NAME}
 )
 
 add_subdirectory(Lexer)
-# add_subdirectory(Parser)
+add_subdirectory(Parser)
 
 target_link_libraries(${PROJECT_NAME}
   Lexer
-  # Parser
+  Parser
 )
 
 target_include_directories(${PROJECT_NAME} 

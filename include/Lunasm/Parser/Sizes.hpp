@@ -4,7 +4,7 @@
 
 #include "Parser/Opcodes.hpp"
 
-namespace Lunasm {
+namespace Parser {
 
 const std::unordered_map<Opcode, std::size_t> INST_SIZE = {
     { Opcode::NOP, 1 },
@@ -66,4 +66,4 @@ const std::unordered_map<Opcode, std::size_t> INST_SIZE = {
     { Opcode::Halt, 1 },
 };
 
-} // namespace Lunasm
+} // namespace Parser
