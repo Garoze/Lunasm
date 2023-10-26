@@ -1,7 +1,11 @@
 add_library(Parser
+  Operand.cpp
   Instruction.cpp
   Label.cpp 
-  ASL.cpp
+  Nop.cpp
+  Load.cpp
+  Store.cpp
+  # ASL.cpp
   Parser.cpp
 )
 
