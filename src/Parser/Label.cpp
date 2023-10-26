@@ -7,43 +7,25 @@
 namespace Parser {
 
 Label::Label(std::string_view label)
-    : m_label(label)
-    , m_address(0xFFFF)
+    : Instruction{ kind_t::Label }
+    , m_label(label)
+    , m_address(0)
 {}
 
-Label::Label(std::string_view label, std::uint16_t address)
-    : m_label(label)
+Label::Label(std::string_view label, std::uint16_t address = 0)
+    : Instruction{ kind_t::Label }
+    , m_label(label)
     , m_address(address)
 {}
 
-void Label::print() const
+std::string Label::as_string() const
 {
-    fmt::print("[ {} :: {:04x} ]\n", m_label, m_address);
+    return fmt::format("( Label: \"{}\" Address: \"{}\" )", m_label, m_address);
 }
 
-void Label::set_address(std::uint16_t address)
+void Label::update_address(std::uint16_t new_address)
 {
-    m_address = address;
+    m_address = new_address;
 }
-
-void Label::set_label(std::string_view label)
-{
-    m_label = label;
-}
-
-std::uint16_t Label::address() const
-{
-    return m_address;
-}
-
-std::string_view Label::label() const
-{
-    return m_label;
-}
-
-void Label::eval(
-    std::vector<std::uint8_t>& output,
-    std::unordered_map<std::string_view, std::uint16_t>& labels) const
-{}
 
 } // namespace Parser

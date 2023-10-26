@@ -5,27 +5,20 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Parser/Opcodes.hpp"
+#include "Parser/Instruction.hpp"
 
 namespace Parser {
 
-class Label
+class Label : public Instruction
 {
 public:
     Label(std::string_view);
     Label(std::string_view, std::uint16_t);
 
-public:
-    void print() const;
+    [[nodiscard]] kind_t raw() const;
+    [[nodiscard]] virtual std::string as_string() const override;
 
-    void set_address(std::uint16_t);
-    void set_label(std::string_view);
-
-    std::uint16_t address() const;
-    std::string_view label() const;
-
-    void eval(std::vector<std::uint8_t>&,
-              std::unordered_map<std::string_view, std::uint16_t>&) const;
+    void update_address(std::uint16_t);
 
 private:
     std::string_view m_label;
