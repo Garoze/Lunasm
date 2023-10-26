@@ -12,6 +12,7 @@ public:
     using value_t =
         std::variant<std::monostate, std::uint16_t, std::string_view>;
 
+    Operand();
     Operand(value_t);
 
     [[nodiscard]] value_t raw() const;
