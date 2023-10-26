@@ -11,148 +11,77 @@
 
 namespace Parser {
 
-const std::unordered_map<Opcode, std::string> OP_MNEMONICS = {
-    { Opcode::NOP, "NOP" },
-    { Opcode::LoadImmediate, "LoadImmediate" },
-    { Opcode::LoadAddress, "LoadAddress" },
-    { Opcode::LoadRegister, "LoadRegister" },
+const std::unordered_map<Instruction::kind_t, std::string> INST_AS_STR = {
+    { Instruction::kind_t::Nop, "Nop" },
+    { Instruction::kind_t::LoadImmediate, "LoadImmediate" },
+    { Instruction::kind_t::LoadAddress, "LoadAddress" },
+    { Instruction::kind_t::LoadRegister, "LoadRegister" },
 
-    { Opcode::StoreImmediate, "StoreImmediate" },
-    { Opcode::StoreAddress, "StoreAddress" },
-    { Opcode::StoreRegister, "StoreRegister" },
+    { Instruction::kind_t::StoreImmediate, "StoreImmediate" },
+    { Instruction::kind_t::StoreAddress, "StoreAddress" },
+    { Instruction::kind_t::StoreRegister, "StoreRegister" },
 
-    { Opcode::ShiftLeft, "ShiftLeft" },
-    { Opcode::ShiftRight, "ShiftRight" },
+    { Instruction::kind_t::ShiftLeft, "ShiftLeft" },
+    { Instruction::kind_t::ShiftRight, "ShiftRight" },
 
-    { Opcode::BitwiseAND, "BitwiseAND" },
-    { Opcode::BitwiseOR, "BitwiseOR" },
-    { Opcode::BitwiseNOT, "BitwiseNOT" },
-    { Opcode::BitwiseXOR, "BitwiseXOR" },
+    { Instruction::kind_t::And, "BitwiseAND" },
+    { Instruction::kind_t::Or, "BitwiseOR" },
+    { Instruction::kind_t::Not, "BitwiseNOT" },
+    { Instruction::kind_t::Xor, "BitwiseXOR" },
 
-    { Opcode::PushImmediate, "PushImmediate" },
-    { Opcode::PushAddress, "PushAddress" },
-    { Opcode::PushRegister, "PushRegister" },
-    { Opcode::Pop, "Pop" },
+    { Instruction::kind_t::PushImmediate, "PushImmediate" },
+    { Instruction::kind_t::PushAddress, "PushAddress" },
+    { Instruction::kind_t::PushRegister, "PushRegister" },
+    { Instruction::kind_t::Pop, "Pop" },
 
-    { Opcode::Increment, "Increment" },
-    { Opcode::Decrement, "Decrement" },
+    { Instruction::kind_t::Increment, "Increment" },
+    { Instruction::kind_t::Decrement, "Decrement" },
 
-    { Opcode::AddImmediate, "AddImmediate" },
-    { Opcode::AddAddress, "AddAddress" },
-    { Opcode::AddRegister, "AddRegister" },
+    { Instruction::kind_t::AddImmediate, "AddImmediate" },
+    { Instruction::kind_t::AddAddress, "AddAddress" },
+    { Instruction::kind_t::AddRegister, "AddRegister" },
 
-    { Opcode::SubImmediate, "SubImmediate" },
-    { Opcode::SubAddress, "SubAddress" },
-    { Opcode::SubRegister, "SubRegister" },
+    { Instruction::kind_t::SubImmediate, "SubImmediate" },
+    { Instruction::kind_t::SubAddress, "SubAddress" },
+    { Instruction::kind_t::SubRegister, "SubRegister" },
 
-    { Opcode::MulImmediate, "MulImmediate" },
-    { Opcode::MulAddress, "MulAddress" },
-    { Opcode::MulRegister, "MulRegister" },
+    { Instruction::kind_t::MulImmediate, "MulImmediate" },
+    { Instruction::kind_t::MulAddress, "MulAddress" },
+    { Instruction::kind_t::MulRegister, "MulRegister" },
 
-    { Opcode::DivImmediate, "DivImmediate" },
-    { Opcode::DivAddress, "DivAddress" },
-    { Opcode::DivRegister, "DivRegister" },
+    { Instruction::kind_t::DivImmediate, "DivImmediate" },
+    { Instruction::kind_t::DivAddress, "DivAddress" },
+    { Instruction::kind_t::DivRegister, "DivRegister" },
 
-    { Opcode::ModImmediate, "ModImmediate" },
-    { Opcode::ModAddress, "ModAddress" },
-    { Opcode::ModRegister, "ModRegister" },
+    { Instruction::kind_t::ModImmediate, "ModImmediate" },
+    { Instruction::kind_t::ModAddress, "ModAddress" },
+    { Instruction::kind_t::ModRegister, "ModRegister" },
 
-    { Opcode::CompareImmediate, "CompareImmediate" },
-    { Opcode::CompareAddress, "CompareAddress" },
-    { Opcode::CompareRegister, "CompareRegister" },
+    { Instruction::kind_t::CompareImmediate, "CompareImmediate" },
+    { Instruction::kind_t::CompareAddress, "CompareAddress" },
+    { Instruction::kind_t::CompareRegister, "CompareRegister" },
 
-    { Opcode::Jump, "Jump" },
-    { Opcode::JumpEquals, "JumpIfEquals" },
-    { Opcode::JumpNotEquals, "JumpIfNotEquals" },
+    { Instruction::kind_t::Jump, "Jump" },
+    { Instruction::kind_t::JumpIfEquals, "JumpIfEquals" },
+    { Instruction::kind_t::JumpIfNotEquals, "JumpIfNotEquals" },
 
-    { Opcode::Subroutine, "Subroutine" },
-    { Opcode::Return, "Return" },
-    { Opcode::Halt, "Halt" },
+    { Instruction::kind_t::Subroutine, "Subroutine" },
+    { Instruction::kind_t::Return, "Return" },
+    { Instruction::kind_t::Halt, "Halt" },
 };
 
-Instruction::Instruction(Opcode op, std::size_t size)
-    : m_opcode(op)
-    , m_size(size)
+Instruction::Instruction(kind_t kind)
+    : m_kind(kind)
 {}
 
-Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {},
-                         Operand src = {})
-    : m_opcode(op)
-    , m_size(size)
-    , m_dst(dst)
-    , m_src(src)
-{}
-
-Instruction::Instruction(Opcode op, std::size_t size, Operand dst = {})
-    : m_opcode(op)
-    , m_size(size)
-    , m_dst(dst)
-{}
-
-void Instruction::print() const
+Instruction::kind_t Instruction::raw() const
 {
-    fmt::print("( {} :: {} )\n", OP_MNEMONICS.at(m_opcode), m_size);
+    return m_kind;
 }
 
-std::size_t Instruction::size() const
+std::string Instruction::as_string() const
 {
-    return m_size;
-}
-
-void Instruction::set_dst(Operand dst)
-{
-    m_dst = dst;
-}
-
-void Instruction::set_src(Operand src)
-{
-    m_src = src;
-}
-
-void Instruction::split_u16(std::vector<std::uint8_t>& output,
-                            std::uint16_t value) const
-{
-
-    std::uint8_t LSB = (value & 0x00FF);
-    std::uint8_t MSB = (value & 0xFF00) >> 8;
-
-    output.push_back(LSB);
-    output.push_back(MSB);
-}
-
-void Instruction::eval(
-    std::vector<std::uint8_t>& output,
-    std::unordered_map<std::string_view, std::uint16_t>& labels) const
-{
-    output.push_back(static_cast<std::uint8_t>(m_opcode));
-
-    auto visitor = [&](auto arg) {
-        using T = decltype(arg);
-
-        if constexpr (std::is_same_v<T, std::uint8_t>)
-        {
-            output.push_back(arg);
-        }
-        else if constexpr (std::is_same_v<T, std::uint16_t>)
-        {
-            split_u16(output, arg);
-        }
-        else if constexpr (std::is_same_v<T, std::string_view>)
-        {
-            try
-            {
-                std::uint16_t address = labels.at(arg);
-                split_u16(output, address);
-            }
-            catch (const std::out_of_range& e)
-            {
-                throw std::runtime_error("Label not resolved.");
-            }
-        }
-    };
-
-    std::visit(visitor, m_dst);
-    std::visit(visitor, m_src);
+    return INST_AS_STR.at(m_kind);
 }
 
 } // namespace Parser
