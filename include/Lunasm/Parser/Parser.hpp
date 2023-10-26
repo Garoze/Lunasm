@@ -14,6 +14,7 @@
 #include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
+#include "Parser/Operand.hpp"
 
 namespace Parser {
 
@@ -22,26 +23,20 @@ using Inst = std::variant<Instruction, Label>;
 class Parser
 {
 public:
+    using Inst = std::unique_ptr<Instruction>;
+
     Parser();
 
     void Parse();
     void parse_file(std::filesystem::path const&, bool = false);
-
-    void debug_instruction() const;
 
 private:
     void step();
     std::optional<Lexer::Token> look_ahead(std::size_t);
 
 private:
-    std::uint16_t parse_register();
-    std::uint16_t parse_immediate();
     std::string_view parse_label();
-
-    Operand parse_address();
-
-private:
-    void push_instruction(Opcode, Operand, Operand);
+    std::optional<Operand::value_t> parse_operand();
 
 private:
     void nop_instruction();
@@ -85,10 +80,12 @@ private:
     template <typename... Kinds>
     std::optional<Lexer::Token> expect_any(Kinds... kinds);
 
+    template <typename T, typename... Args>
+    void push_instruction(Args&&... args);
+
 private:
     std::size_t m_index;
     std::vector<Lexer::Token> m_tokens;
-    std::unique_ptr<ASL> m_asll;
     std::unique_ptr<Lexer::Lexer> m_lexer;
     std::vector<Inst> m_instructions;
 };

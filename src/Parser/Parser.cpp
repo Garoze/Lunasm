@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <charconv>
 #include <cstdint>
 #include <fstream>
@@ -11,6 +12,10 @@
 #include <string_view>
 #include <variant>
 
+#include "Parser/Load.hpp"
+#include "Parser/Nop.hpp"
+#include "Parser/Operand.hpp"
+#include "Parser/Store.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
@@ -20,7 +25,6 @@
 #include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
-#include "Parser/Opcodes.hpp"
 #include "Parser/Parser.hpp"
 #include "Parser/Sizes.hpp"
 
@@ -29,7 +33,7 @@ namespace Parser {
 Parser::Parser()
     : m_index(0)
     , m_lexer(std::make_unique<Lexer::Lexer>())
-    , m_asll(std::make_unique<ASL>())
+// , m_asll(std::make_unique<ASL>())
 {}
 
 void Parser::step()
@@ -112,56 +116,64 @@ std::optional<Lexer::Token> Parser::expect_any(Kinds... kinds)
     return {};
 }
 
-uint16_t Parser::parse_register()
+template <typename T, typename... Args>
+void Parser::push_instruction(Args&&... args)
 {
-    auto r = expect(Lexer::Kind::kind_t::Register);
-
-    return std::get<std::uint16_t>(r.value().raw());
-}
-
-std::uint16_t Parser::parse_immediate()
-{
-    auto i = expect(Lexer::Kind::kind_t::Immediate);
-
-    return std::get<std::uint16_t>(i.value().raw());
+    m_instructions.push_back(
+        std::move(std::make_unique<T>(std::forward<Args>(args)...)));
 }
 
 std::string_view Parser::parse_label()
 {
-    auto l = expect(Lexer::Kind::kind_t::Symbol);
+    auto token = expect(Lexer::Kind::kind_t::Symbol);
     expect(Lexer::Kind::kind_t::Colon);
 
-    auto identifier = std::get<std::string_view>(l.value().raw());
+    auto symbol = std::get<std::string_view>(token.value().raw());
 
-    m_instructions.push_back(Label(identifier));
+    push_instruction<Label>(symbol);
 
-    // fmt::print("[Parser] Label definition: `{}`\n", identifier);
-
-    return identifier;
-}
-
-Operand Parser::parse_address()
-{
-    expect(Lexer::Kind::kind_t::OpenSquare);
-
-    auto a =
-        expect_any(Lexer::Kind::kind_t::Immediate,
-                   Lexer::Kind::kind_t::Register, Lexer::Kind::kind_t::Symbol);
-
-    expect(Lexer::Kind::kind_t::CloseSquare);
-
-    return std::get<std::string_view>(a->value().raw());
-}
-
-void Parser::push_instruction(Opcode op, Operand dst = {}, Operand src = {})
-{
-    m_instructions.push_back(Instruction{ op, INST_SIZE.at(op), dst, src });
+    return symbol;
 }
 
 void Parser::nop_instruction()
 {
     expect(Lexer::Kind::kind_t::Nop);
-    push_instruction(Opcode::NOP);
+    push_instruction<Nop>();
+}
+
+std::optional<Operand::value_t> Parser::parse_operand()
+{
+    switch (look_ahead()->kind().raw())
+    {
+        case Lexer::Kind::kind_t::Register:
+            return std::get<std::uint16_t>(
+                expect(Lexer::Kind::kind_t::Register).value().raw());
+            break;
+
+        case Lexer::Kind::kind_t::Immediate:
+            return std::get<std::uint16_t>(
+                expect(Lexer::Kind::kind_t::Immediate).value().raw());
+            break;
+
+        case Lexer::Kind::kind_t::OpenSquare:
+        {
+            expect(Lexer::Kind::kind_t::OpenSquare);
+
+            auto token = expect_any(Lexer::Kind::kind_t::Immediate,
+                                    Lexer::Kind::kind_t::Register,
+                                    Lexer::Kind::kind_t::Symbol);
+
+            expect(Lexer::Kind::kind_t::CloseSquare);
+
+            return std::get<std::string_view>(token->value().raw());
+        }
+        break;
+
+        default:
+            break;
+    }
+
+    return {};
 }
 
 void Parser::mov_instruction()
@@ -172,29 +184,29 @@ void Parser::mov_instruction()
     {
         case Lexer::Kind::kind_t::Register:
         {
-            std::uint8_t dst = parse_register();
+            auto dst = parse_operand().value();
             expect(Lexer::Kind::kind_t::Comma);
 
             switch (look_ahead()->kind().raw())
             {
                 case Lexer::Kind::kind_t::Immediate:
                 {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::LoadImmediate, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<LoadImmediate>(dst, src);
                 }
                 break;
 
                 case Lexer::Kind::kind_t::Register:
                 {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::LoadRegister, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<LoadRegister>(dst, src);
                 }
                 break;
 
                 case Lexer::Kind::kind_t::OpenSquare:
                 {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::LoadAddress, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<LoadAddress>(dst, src);
                 }
                 break;
 
@@ -206,29 +218,29 @@ void Parser::mov_instruction()
 
         case Lexer::Kind::kind_t::OpenSquare:
         {
-            Operand dst = parse_address();
+            auto dst = parse_operand().value();
             expect(Lexer::Kind::kind_t::Comma);
 
             switch (look_ahead()->kind().raw())
             {
                 case Lexer::Kind::kind_t::Immediate:
                 {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::StoreImmediate, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<StoreImmediate>(dst, src);
                 }
                 break;
 
                 case Lexer::Kind::kind_t::Register:
                 {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::StoreRegister, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<StoreRegister>(dst, src);
                 }
                 break;
 
                 case Lexer::Kind::kind_t::OpenSquare:
                 {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::StoreAddress, dst, src);
+                    auto src = parse_operand().value();
+                    push_instruction<StoreAddress>(dst, src);
                 }
                 break;
 
@@ -242,436 +254,457 @@ void Parser::mov_instruction()
             break;
     }
 }
-
-void Parser::shl_instruction()
-{
-    expect(Lexer::Kind::kind_t::ShiftLeft);
-    std::uint8_t dst = parse_register();
-    expect(Lexer::Kind::kind_t::Comma);
-    std::uint16_t src = parse_immediate();
-
-    push_instruction(Opcode::ShiftLeft, dst, src);
-}
-
-void Parser::shr_instruction()
-{
-    expect(Lexer::Kind::kind_t::ShiftRight);
-    std::uint8_t dst = parse_register();
-    expect(Lexer::Kind::kind_t::Comma);
-    std::uint16_t src = parse_immediate();
-
-    push_instruction(Opcode::ShiftRight, dst, src);
-}
-
-void Parser::and_instruction()
-{
-    expect(Lexer::Kind::kind_t::And);
-    std::uint8_t dst = parse_register();
-    expect(Lexer::Kind::kind_t::Comma);
-    std::uint16_t src = parse_immediate();
-
-    push_instruction(Opcode::BitwiseAND, dst, src);
-}
-
-void Parser::bor_instruction()
-{
-    expect(Lexer::Kind::kind_t::Or);
-    std::uint8_t dst = parse_register();
-    expect(Lexer::Kind::kind_t::Comma);
-    std::uint16_t src = parse_immediate();
-
-    push_instruction(Opcode::BitwiseOR, dst, src);
-}
-
-void Parser::xor_instruction()
-{
-    expect(Lexer::Kind::kind_t::Xor);
-    std::uint8_t dst = parse_register();
-    expect(Lexer::Kind::kind_t::Comma);
-    std::uint16_t src = parse_immediate();
-
-    push_instruction(Opcode::BitwiseXOR, dst, src);
-}
-
-void Parser::not_instruction()
-{
-    expect(Lexer::Kind::kind_t::Not);
-    std::uint8_t dst = parse_register();
-
-    push_instruction(Opcode::BitwiseNOT, dst);
-}
-
-void Parser::psh_instruction()
-{
-    expect(Lexer::Kind::kind_t::Push);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Immediate:
-        {
-            std::uint16_t src = parse_immediate();
-            push_instruction(Opcode::PushImmediate, src);
-        }
-        break;
-
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t src = parse_register();
-            push_instruction(Opcode::PushRegister, src);
-        }
-        break;
-
-        case Lexer::Kind::kind_t::OpenSquare:
-        {
-            Operand src = parse_address();
-            push_instruction(Opcode::PushAddress, src);
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::pop_instruction()
-{
-    expect(Lexer::Kind::kind_t::Pop);
-    std::uint8_t dst = parse_register();
-
-    push_instruction(Opcode::Pop, dst);
-}
-
-void Parser::inc_instruction()
-{
-    expect(Lexer::Kind::kind_t::Increment);
-    std::uint8_t dst = parse_register();
-
-    push_instruction(Opcode::Increment, dst);
-}
-
-void Parser::dec_instruction()
-{
-    expect(Lexer::Kind::kind_t::Decrement);
-    std::uint8_t dst = parse_register();
-
-    push_instruction(Opcode::Decrement, dst);
-}
-
-void Parser::add_instruction()
-{
-    expect(Lexer::Kind::kind_t::Add);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::AddImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::AddRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::AddAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::sub_instruction()
-{
-    expect(Lexer::Kind::kind_t::Sub);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::SubImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::SubRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::SubAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::mul_instruction()
-{
-    expect(Lexer::Kind::kind_t::Mul);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::MulImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::MulRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::MulAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::div_instruction()
-{
-    expect(Lexer::Kind::kind_t::Div);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::DivImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::DivRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::DivAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::mod_instruction()
-{
-    expect(Lexer::Kind::kind_t::Mod);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::ModImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    std::uint8_t src = parse_register();
-                    push_instruction(Opcode::ModRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::ModAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::cmp_instruction()
-{
-    expect(Lexer::Kind::kind_t::Compare);
-
-    switch (look_ahead()->kind().raw())
-    {
-        case Lexer::Kind::kind_t::Register:
-        {
-            std::uint8_t dst = parse_register();
-            expect(Lexer::Kind::kind_t::Comma);
-
-            switch (look_ahead()->kind().raw())
-            {
-                case Lexer::Kind::kind_t::Immediate:
-                {
-                    std::uint16_t src = parse_immediate();
-                    push_instruction(Opcode::CompareImmediate, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::Register:
-                {
-                    auto src = parse_register();
-                    push_instruction(Opcode::CompareRegister, dst, src);
-                }
-                break;
-
-                case Lexer::Kind::kind_t::OpenSquare:
-                {
-                    Operand src = parse_address();
-                    push_instruction(Opcode::CompareAddress, dst, src);
-                }
-                break;
-
-                default:
-                    break;
-            }
-        }
-        break;
-
-        default:
-            break;
-    }
-}
-
-void Parser::jmp_instruction()
-{
-    expect(Lexer::Kind::kind_t::Jump);
-    Operand dst = parse_address();
-
-    push_instruction(Opcode::Jump, dst);
-}
-
-void Parser::jeq_instruction()
-{
-    expect(Lexer::Kind::kind_t::JumpIfEquals);
-    Operand dst = parse_address();
-
-    push_instruction(Opcode::JumpEquals, dst);
-}
-
-void Parser::jne_instruction()
-{
-    expect(Lexer::Kind::kind_t::JumpIfNotEquals);
-    Operand dst = parse_address();
-
-    push_instruction(Opcode::JumpNotEquals, dst);
-}
-
-void Parser::jsr_instruction()
-{
-    expect(Lexer::Kind::kind_t::Subroutine);
-    Operand dst = parse_address();
-
-    push_instruction(Opcode::Subroutine, dst);
-}
-
-void Parser::ret_instruction()
-{
-    expect(Lexer::Kind::kind_t::Return);
-
-    push_instruction(Opcode::Return);
-}
-
-void Parser::hlt_instruction()
-{
-    expect(Lexer::Kind::kind_t::Halt);
-
-    push_instruction(Opcode::Halt);
-}
+//
+// void Parser::shl_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::ShiftLeft);
+//     std::uint8_t dst = parse_register();
+//     expect(Lexer::Kind::kind_t::Comma);
+//     std::uint16_t src = parse_immediate();
+//
+//     push_instruction(Instruction::kind_t::ShiftLeft, dst, src);
+// }
+//
+// void Parser::shr_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::ShiftRight);
+//     std::uint8_t dst = parse_register();
+//     expect(Lexer::Kind::kind_t::Comma);
+//     std::uint16_t src = parse_immediate();
+//
+//     push_instruction(Instruction::kind_t::ShiftRight, dst, src);
+// }
+//
+// void Parser::and_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::And);
+//     std::uint8_t dst = parse_register();
+//     expect(Lexer::Kind::kind_t::Comma);
+//     std::uint16_t src = parse_immediate();
+//
+//     push_instruction(Instruction::kind_t::BitwiseAND, dst, src);
+// }
+//
+// void Parser::bor_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Or);
+//     std::uint8_t dst = parse_register();
+//     expect(Lexer::Kind::kind_t::Comma);
+//     std::uint16_t src = parse_immediate();
+//
+//     push_instruction(Instruction::kind_t::BitwiseOR, dst, src);
+// }
+//
+// void Parser::xor_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Xor);
+//     std::uint8_t dst = parse_register();
+//     expect(Lexer::Kind::kind_t::Comma);
+//     std::uint16_t src = parse_immediate();
+//
+//     push_instruction(Instruction::kind_t::BitwiseXOR, dst, src);
+// }
+//
+// void Parser::not_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Not);
+//     std::uint8_t dst = parse_register();
+//
+//     push_instruction(Instruction::kind_t::BitwiseNOT, dst);
+// }
+//
+// void Parser::psh_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Push);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Immediate:
+//         {
+//             std::uint16_t src = parse_immediate();
+//             push_instruction(Instruction::kind_t::PushImmediate, src);
+//         }
+//         break;
+//
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t src = parse_register();
+//             push_instruction(Instruction::kind_t::PushRegister, src);
+//         }
+//         break;
+//
+//         case Lexer::Kind::kind_t::OpenSquare:
+//         {
+//             Operand src = parse_address();
+//             push_instruction(Instruction::kind_t::PushAddress, src);
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::pop_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Pop);
+//     std::uint8_t dst = parse_register();
+//
+//     push_instruction(Instruction::kind_t::Pop, dst);
+// }
+//
+// void Parser::inc_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Increment);
+//     std::uint8_t dst = parse_register();
+//
+//     push_instruction(Instruction::kind_t::Increment, dst);
+// }
+//
+// void Parser::dec_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Decrement);
+//     std::uint8_t dst = parse_register();
+//
+//     push_instruction(Instruction::kind_t::Decrement, dst);
+// }
+//
+// void Parser::add_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Add);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::AddImmediate, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     std::uint8_t src = parse_register();
+//                     push_instruction(Instruction::kind_t::AddRegister, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::AddAddress, dst,
+//                     src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::sub_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Sub);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::SubImmediate, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     std::uint8_t src = parse_register();
+//                     push_instruction(Instruction::kind_t::SubRegister, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::SubAddress, dst,
+//                     src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::mul_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Mul);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::MulImmediate, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     std::uint8_t src = parse_register();
+//                     push_instruction(Instruction::kind_t::MulRegister, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::MulAddress, dst,
+//                     src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::div_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Div);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::DivImmediate, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     std::uint8_t src = parse_register();
+//                     push_instruction(Instruction::kind_t::DivRegister, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::DivAddress, dst,
+//                     src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::mod_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Mod);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::ModImmediate, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     std::uint8_t src = parse_register();
+//                     push_instruction(Instruction::kind_t::ModRegister, dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::ModAddress, dst,
+//                     src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::cmp_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Compare);
+//
+//     switch (look_ahead()->kind().raw())
+//     {
+//         case Lexer::Kind::kind_t::Register:
+//         {
+//             std::uint8_t dst = parse_register();
+//             expect(Lexer::Kind::kind_t::Comma);
+//
+//             switch (look_ahead()->kind().raw())
+//             {
+//                 case Lexer::Kind::kind_t::Immediate:
+//                 {
+//                     std::uint16_t src = parse_immediate();
+//                     push_instruction(Instruction::kind_t::CompareImmediate,
+//                     dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::Register:
+//                 {
+//                     auto src = parse_register();
+//                     push_instruction(Instruction::kind_t::CompareRegister,
+//                     dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 case Lexer::Kind::kind_t::OpenSquare:
+//                 {
+//                     Operand src = parse_address();
+//                     push_instruction(Instruction::kind_t::CompareAddress,
+//                     dst,
+//                                      src);
+//                 }
+//                 break;
+//
+//                 default:
+//                     break;
+//             }
+//         }
+//         break;
+//
+//         default:
+//             break;
+//     }
+// }
+//
+// void Parser::jmp_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Jump);
+//     Operand dst = parse_address();
+//
+//     push_instruction(Instruction::kind_t::Jump, dst);
+// }
+//
+// void Parser::jeq_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::JumpIfEquals);
+//     Operand dst = parse_address();
+//
+//     push_instruction(Instruction::kind_t::JumpEquals, dst);
+// }
+//
+// void Parser::jne_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::JumpIfNotEquals);
+//     Operand dst = parse_address();
+//
+//     push_instruction(Instruction::kind_t::JumpNotEquals, dst);
+// }
+//
+// void Parser::jsr_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Subroutine);
+//     Operand dst = parse_address();
+//
+//     push_instruction(Instruction::kind_t::Subroutine, dst);
+// }
+//
+// void Parser::ret_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Return);
+//
+//     push_instruction(Instruction::kind_t::Return);
+// }
+//
+// void Parser::hlt_instruction()
+// {
+//     expect(Lexer::Kind::kind_t::Halt);
+//
+//     push_instruction(Instruction::kind_t::Halt);
+// }
 
 void Parser::Parse()
 {
@@ -690,94 +723,94 @@ void Parser::Parse()
             case Lexer::Kind::kind_t::Mov:
                 mov_instruction();
                 break;
-
-            case Lexer::Kind::kind_t::ShiftLeft:
-                shl_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::ShiftRight:
-                shr_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::And:
-                and_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Or:
-                bor_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Xor:
-                xor_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Not:
-                not_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Push:
-                psh_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Pop:
-                pop_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Increment:
-                inc_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Decrement:
-                dec_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Add:
-                add_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Sub:
-                sub_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Mul:
-                mul_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Div:
-                div_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Mod:
-                mod_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Compare:
-                cmp_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Jump:
-                jmp_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::JumpIfEquals:
-                jeq_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::JumpIfNotEquals:
-                jne_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Subroutine:
-                jsr_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Return:
-                ret_instruction();
-                break;
-
-            case Lexer::Kind::kind_t::Halt:
-                hlt_instruction();
-                break;
+                //
+                // case Lexer::Kind::kind_t::ShiftLeft:
+                //     shl_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::ShiftRight:
+                //     shr_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::And:
+                //     and_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Or:
+                //     bor_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Xor:
+                //     xor_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Not:
+                //     not_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Push:
+                //     psh_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Pop:
+                //     pop_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Increment:
+                //     inc_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Decrement:
+                //     dec_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Add:
+                //     add_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Sub:
+                //     sub_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Mul:
+                //     mul_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Div:
+                //     div_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Mod:
+                //     mod_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Compare:
+                //     cmp_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Jump:
+                //     jmp_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::JumpIfEquals:
+                //     jeq_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::JumpIfNotEquals:
+                //     jne_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Subroutine:
+                //     jsr_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Return:
+                //     ret_instruction();
+                //     break;
+                //
+                // case Lexer::Kind::kind_t::Halt:
+                //     hlt_instruction();
+                //     break;
 
             default:
                 fmt::print("[Parser] Unimplemented token kind: {}\n",
@@ -789,7 +822,12 @@ void Parser::Parse()
 
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
 
-    m_asll->handle_instructions(m_instructions);
+    // m_asll->handle_instructions(m_instructions);
+
+    for (auto const& i : m_instructions)
+    {
+        fmt::print("{}\n", i->as_string());
+    }
 }
 
 } // namespace Parser
