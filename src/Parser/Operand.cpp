@@ -3,6 +3,9 @@
 
 namespace Parser {
 
+Operand::Operand()
+{}
+
 Operand::Operand(value_t value)
     : m_value(value)
 {}
