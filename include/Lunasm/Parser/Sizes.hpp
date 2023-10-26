@@ -2,68 +2,68 @@
 
 #include <unordered_map>
 
-#include "Parser/Opcodes.hpp"
+#include "Parser/Instruction.hpp"
 
 namespace Parser {
 
-const std::unordered_map<Opcode, std::size_t> INST_SIZE = {
-    { Opcode::NOP, 1 },
+const std::unordered_map<Instruction::kind_t, std::size_t> INST_SIZE = {
+    { Instruction::kind_t::Nop, 1 },
 
-    { Opcode::LoadImmediate, 4 },
-    { Opcode::LoadAddress, 4 },
-    { Opcode::LoadRegister, 3 },
+    { Instruction::kind_t::LoadImmediate, 4 },
+    { Instruction::kind_t::LoadAddress, 4 },
+    { Instruction::kind_t::LoadRegister, 3 },
 
-    { Opcode::StoreImmediate, 5 },
-    { Opcode::StoreAddress, 5 },
-    { Opcode::StoreRegister, 4 },
+    { Instruction::kind_t::StoreImmediate, 5 },
+    { Instruction::kind_t::StoreAddress, 5 },
+    { Instruction::kind_t::StoreRegister, 4 },
 
-    { Opcode::ShiftLeft, 4 },
-    { Opcode::ShiftRight, 4 },
+    { Instruction::kind_t::ShiftLeft, 4 },
+    { Instruction::kind_t::ShiftRight, 4 },
 
-    { Opcode::BitwiseAND, 4 },
-    { Opcode::BitwiseOR, 4 },
-    { Opcode::BitwiseNOT, 2 },
-    { Opcode::BitwiseXOR, 4 },
+    { Instruction::kind_t::And, 4 },
+    { Instruction::kind_t::Or, 4 },
+    { Instruction::kind_t::Xor, 2 },
+    { Instruction::kind_t::Not, 4 },
 
-    { Opcode::PushImmediate, 3 },
-    { Opcode::PushAddress, 3 },
-    { Opcode::PushRegister, 2 },
-    { Opcode::Pop, 2 },
+    { Instruction::kind_t::PushImmediate, 3 },
+    { Instruction::kind_t::PushAddress, 3 },
+    { Instruction::kind_t::PushRegister, 2 },
+    { Instruction::kind_t::Pop, 2 },
 
-    { Opcode::Increment, 2 },
-    { Opcode::Decrement, 2 },
+    { Instruction::kind_t::Increment, 2 },
+    { Instruction::kind_t::Decrement, 2 },
 
-    { Opcode::AddImmediate, 4 },
-    { Opcode::AddAddress, 5 },
-    { Opcode::AddRegister, 3 },
+    { Instruction::kind_t::AddImmediate, 4 },
+    { Instruction::kind_t::AddAddress, 5 },
+    { Instruction::kind_t::AddRegister, 3 },
 
-    { Opcode::SubImmediate, 4 },
-    { Opcode::SubAddress, 5 },
-    { Opcode::SubRegister, 3 },
+    { Instruction::kind_t::SubImmediate, 4 },
+    { Instruction::kind_t::SubAddress, 5 },
+    { Instruction::kind_t::SubRegister, 3 },
 
-    { Opcode::MulImmediate, 4 },
-    { Opcode::MulAddress, 5 },
-    { Opcode::MulRegister, 3 },
+    { Instruction::kind_t::MulImmediate, 4 },
+    { Instruction::kind_t::MulAddress, 5 },
+    { Instruction::kind_t::MulRegister, 3 },
 
-    { Opcode::DivImmediate, 4 },
-    { Opcode::DivAddress, 5 },
-    { Opcode::DivRegister, 3 },
+    { Instruction::kind_t::DivImmediate, 4 },
+    { Instruction::kind_t::DivAddress, 5 },
+    { Instruction::kind_t::DivRegister, 3 },
 
-    { Opcode::ModImmediate, 4 },
-    { Opcode::ModAddress, 5 },
-    { Opcode::ModRegister, 3 },
+    { Instruction::kind_t::ModImmediate, 4 },
+    { Instruction::kind_t::ModAddress, 5 },
+    { Instruction::kind_t::ModRegister, 3 },
 
-    { Opcode::CompareImmediate, 4 },
-    { Opcode::CompareAddress, 5 },
-    { Opcode::CompareRegister, 3 },
+    { Instruction::kind_t::CompareImmediate, 4 },
+    { Instruction::kind_t::CompareAddress, 5 },
+    { Instruction::kind_t::CompareRegister, 3 },
 
-    { Opcode::Jump, 3 },
-    { Opcode::JumpEquals, 3 },
-    { Opcode::JumpNotEquals, 3 },
+    { Instruction::kind_t::Jump, 3 },
+    { Instruction::kind_t::JumpIfEquals, 3 },
+    { Instruction::kind_t::JumpIfNotEquals, 3 },
 
-    { Opcode::Subroutine, 2 },
-    { Opcode::Return, 1 },
-    { Opcode::Halt, 1 },
+    { Instruction::kind_t::Subroutine, 2 },
+    { Instruction::kind_t::Return, 1 },
+    { Instruction::kind_t::Halt, 1 },
 };
 
 } // namespace Parser
