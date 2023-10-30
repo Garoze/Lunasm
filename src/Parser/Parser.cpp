@@ -133,7 +133,7 @@ std::string_view Parser::parse_label()
 {
     auto token = expect(Lexer::Kind::kind_t::Symbol);
 
-    expect(Lexer::Kind::kind_t::Colon);
+    expect_any(Lexer::Kind::kind_t::Colon, Lexer::Kind::kind_t::CloseSquare);
 
     auto symbol = std::get<std::string_view>(token.value().raw());
 
@@ -228,7 +228,7 @@ void Parser::mov_instruction()
         case Lexer::Kind::kind_t::OpenSquare:
         {
             auto dst = parse_operand().value();
-            expect(Lexer::Kind::kind_t::Comma);
+            expect(Lexer::Kind::kind_t::CloseSquare);
 
             switch (look_ahead()->kind().raw())
             {
@@ -321,6 +321,7 @@ void Parser::not_instruction()
 
     push_instruction<BitwiseNot>(dst);
 }
+
 void Parser::psh_instruction()
 {
     expect(Lexer::Kind::kind_t::Push);
