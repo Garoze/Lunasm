@@ -5,6 +5,7 @@ add_library(Parser
   Nop.cpp
   Load.cpp
   Store.cpp
+  Bitwise.cpp
   # ASL.cpp
   Parser.cpp
 )
