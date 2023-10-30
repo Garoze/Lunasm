@@ -6,6 +6,7 @@ add_library(Parser
   Load.cpp
   Store.cpp
   Bitwise.cpp
+  Stack.cpp
   # ASL.cpp
   Parser.cpp
 )
