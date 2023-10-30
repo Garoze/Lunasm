@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include <initializer_list>
 #include <memory>
 #include <optional>
 #include <unordered_map>
@@ -82,6 +83,8 @@ private:
 
     template <typename T, typename... Args>
     void push_instruction(Args&&... args);
+
+    bool match(Lexer::Kind::kind_t);
 
 private:
     std::size_t m_index;
