@@ -12,6 +12,7 @@
 #include <string_view>
 #include <variant>
 
+#include "Parser/Stack.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
@@ -320,46 +321,45 @@ void Parser::not_instruction()
 
     push_instruction<BitwiseNot>(dst);
 }
-//
-// void Parser::psh_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Push);
-//
-//     switch (look_ahead()->kind().raw())
-//     {
-//         case Lexer::Kind::kind_t::Immediate:
-//         {
-//             std::uint16_t src = parse_immediate();
-//             push_instruction(Instruction::kind_t::PushImmediate, src);
-//         }
-//         break;
-//
-//         case Lexer::Kind::kind_t::Register:
-//         {
-//             std::uint8_t src = parse_register();
-//             push_instruction(Instruction::kind_t::PushRegister, src);
-//         }
-//         break;
-//
-//         case Lexer::Kind::kind_t::OpenSquare:
-//         {
-//             Operand src = parse_address();
-//             push_instruction(Instruction::kind_t::PushAddress, src);
-//         }
-//         break;
-//
-//         default:
-//             break;
-//     }
-// }
-//
-// void Parser::pop_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Pop);
-//     std::uint8_t dst = parse_register();
-//
-//     push_instruction(Instruction::kind_t::Pop, dst);
-// }
+void Parser::psh_instruction()
+{
+    expect(Lexer::Kind::kind_t::Push);
+
+    switch (look_ahead()->kind().raw())
+    {
+        case Lexer::Kind::kind_t::Immediate:
+        {
+            auto src = parse_operand().value();
+            push_instruction<PushImmediate>(src);
+        }
+        break;
+
+        case Lexer::Kind::kind_t::Register:
+        {
+            auto src = parse_operand().value();
+            push_instruction<PushRegister>(src);
+        }
+        break;
+
+        case Lexer::Kind::kind_t::OpenSquare:
+        {
+            auto src = parse_operand().value();
+            push_instruction<PushAddress>(src);
+        }
+        break;
+
+        default:
+            break;
+    }
+}
+
+void Parser::pop_instruction()
+{
+    expect(Lexer::Kind::kind_t::Pop);
+    auto dst = parse_operand().value();
+
+    push_instruction<Pop>(dst);
+}
 //
 // void Parser::inc_instruction()
 // {
@@ -755,14 +755,14 @@ void Parser::Parse()
             case Lexer::Kind::kind_t::Not:
                 not_instruction();
                 break;
-                //
-                // case Lexer::Kind::kind_t::Push:
-                //     psh_instruction();
-                //     break;
-                //
-                // case Lexer::Kind::kind_t::Pop:
-                //     pop_instruction();
-                //     break;
+
+            case Lexer::Kind::kind_t::Push:
+                psh_instruction();
+                break;
+
+            case Lexer::Kind::kind_t::Pop:
+                pop_instruction();
+                break;
                 //
                 // case Lexer::Kind::kind_t::Increment:
                 //     inc_instruction();
