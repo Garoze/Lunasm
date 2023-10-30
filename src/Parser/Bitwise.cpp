@@ -5,7 +5,7 @@
 
 namespace Parser {
 
-ShiftLeft::ShiftLeft(Operand dst, Operand src)
+ShiftLeft::ShiftLeft(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::ShiftLeft }
     , m_dst(dst)
     , m_src(src)
@@ -17,7 +17,7 @@ std::string ShiftLeft::as_string() const
                        m_dst.as_string(), m_src.as_string());
 }
 
-ShiftRight::ShiftRight(Operand dst, Operand src)
+ShiftRight::ShiftRight(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::ShiftRight }
     , m_dst(dst)
     , m_src(src)
@@ -29,7 +29,7 @@ std::string ShiftRight::as_string() const
                        m_dst.as_string(), m_src.as_string());
 }
 
-BitwiseAnd::BitwiseAnd(Operand dst, Operand src)
+BitwiseAnd::BitwiseAnd(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::And }
     , m_dst(dst)
     , m_src(src)
@@ -41,7 +41,7 @@ std::string BitwiseAnd::as_string() const
                        m_src.as_string());
 }
 
-BitwiseOr::BitwiseOr(Operand dst, Operand src)
+BitwiseOr::BitwiseOr(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::Or }
     , m_dst(dst)
     , m_src(src)
@@ -53,7 +53,7 @@ std::string BitwiseOr::as_string() const
                        m_src.as_string());
 }
 
-BitwiseXor::BitwiseXor(Operand dst, Operand src)
+BitwiseXor::BitwiseXor(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::Xor }
     , m_dst(dst)
     , m_src(src)
@@ -65,7 +65,7 @@ std::string BitwiseXor::as_string() const
                        m_src.as_string());
 }
 
-BitwiseNot::BitwiseNot(Operand dst)
+BitwiseNot::BitwiseNot(Operand::value_t dst)
     : Instruction{ kind_t::Not }
     , m_dst(dst)
 {}

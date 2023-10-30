@@ -8,7 +8,7 @@ namespace Parser {
 class ShiftLeft : public Instruction
 {
 public:
-    ShiftLeft(Operand, Operand);
+    ShiftLeft(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
@@ -21,7 +21,7 @@ private:
 class ShiftRight : public Instruction
 {
 public:
-    ShiftRight(Operand, Operand);
+    ShiftRight(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
@@ -34,7 +34,7 @@ private:
 class BitwiseAnd : public Instruction
 {
 public:
-    BitwiseAnd(Operand, Operand);
+    BitwiseAnd(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
@@ -47,7 +47,7 @@ private:
 class BitwiseOr : public Instruction
 {
 public:
-    BitwiseOr(Operand, Operand);
+    BitwiseOr(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
@@ -60,7 +60,7 @@ private:
 class BitwiseXor : public Instruction
 {
 public:
-    BitwiseXor(Operand, Operand);
+    BitwiseXor(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
@@ -73,7 +73,7 @@ private:
 class BitwiseNot : public Instruction
 {
 public:
-    BitwiseNot(Operand);
+    BitwiseNot(Operand::value_t);
 
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
