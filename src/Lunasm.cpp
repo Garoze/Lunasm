@@ -1,8 +1,11 @@
-#include <argparse/argparse.hpp>
+#include <vector>
 
 #include "fmt/core.h"
+#include <argparse/argparse.hpp>
 
 #include "Parser/Parser.hpp"
+
+#include "Assembler/Assembler.hpp"
 
 int main(int argc, char* argv[])
 {
@@ -40,7 +43,12 @@ int main(int argc, char* argv[])
         auto file = program.get<std::string>("--file");
 
         Parser::Parser p{};
-        p.parse_file(file, true);
+        auto& i = p.parse_file(file, true);
+
+        std::vector<std::uint8_t> output;
+        Assembler::Assembler a{ output };
+
+        a.compile(i);
     }
 
     return EXIT_SUCCESS;
