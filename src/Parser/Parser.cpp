@@ -12,6 +12,7 @@
 #include <string_view>
 #include <variant>
 
+#include "Parser/Compare.hpp"
 #include "Parser/Math.hpp"
 #include "Parser/Stack.hpp"
 #include "fmt/core.h"
@@ -603,58 +604,52 @@ void Parser::mod_instruction()
             break;
     }
 }
-//
-// void Parser::cmp_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Compare);
-//
-//     switch (look_ahead()->kind().raw())
-//     {
-//         case Lexer::Kind::kind_t::Register:
-//         {
-//             std::uint8_t dst = parse_register();
-//             expect(Lexer::Kind::kind_t::Comma);
-//
-//             switch (look_ahead()->kind().raw())
-//             {
-//                 case Lexer::Kind::kind_t::Immediate:
-//                 {
-//                     std::uint16_t src = parse_immediate();
-//                     push_instruction(Instruction::kind_t::CompareImmediate,
-//                     dst,
-//                                      src);
-//                 }
-//                 break;
-//
-//                 case Lexer::Kind::kind_t::Register:
-//                 {
-//                     auto src = parse_register();
-//                     push_instruction(Instruction::kind_t::CompareRegister,
-//                     dst,
-//                                      src);
-//                 }
-//                 break;
-//
-//                 case Lexer::Kind::kind_t::OpenSquare:
-//                 {
-//                     Operand src = parse_address();
-//                     push_instruction(Instruction::kind_t::CompareAddress,
-//                     dst,
-//                                      src);
-//                 }
-//                 break;
-//
-//                 default:
-//                     break;
-//             }
-//         }
-//         break;
-//
-//         default:
-//             break;
-//     }
-// }
-//
+
+void Parser::cmp_instruction()
+{
+    expect(Lexer::Kind::kind_t::Compare);
+
+    switch (look_ahead()->kind().raw())
+    {
+        case Lexer::Kind::kind_t::Register:
+        {
+            auto dst = parse_operand().value();
+            expect(Lexer::Kind::kind_t::Comma);
+
+            switch (look_ahead()->kind().raw())
+            {
+                case Lexer::Kind::kind_t::Immediate:
+                {
+                    auto src = parse_operand().value();
+                    push_instruction<CompareImmediate>(dst, src);
+                }
+                break;
+
+                case Lexer::Kind::kind_t::Register:
+                {
+                    auto src = parse_operand().value();
+                    push_instruction<CompareRegister>(dst, src);
+                }
+                break;
+
+                case Lexer::Kind::kind_t::OpenSquare:
+                {
+                    auto src = parse_operand().value();
+                    push_instruction<CompareAddress>(dst, src);
+                }
+                break;
+
+                default:
+                    break;
+            }
+        }
+        break;
+
+        default:
+            break;
+    }
+}
+
 // void Parser::jmp_instruction()
 // {
 //     expect(Lexer::Kind::kind_t::Jump);
@@ -779,9 +774,9 @@ void Parser::Parse()
                 mod_instruction();
                 break;
 
-                // case Lexer::Kind::kind_t::Compare:
-                //     cmp_instruction();
-                //     break;
+            case Lexer::Kind::kind_t::Compare:
+                cmp_instruction();
+                break;
                 //
                 // case Lexer::Kind::kind_t::Jump:
                 //     jmp_instruction();
