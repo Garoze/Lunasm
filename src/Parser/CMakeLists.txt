@@ -10,6 +10,7 @@ add_library(Parser
   Math.cpp
   Compare.cpp
   Jump.cpp
+  Subroutine.cpp
   # ASL.cpp
   Parser.cpp
 )
