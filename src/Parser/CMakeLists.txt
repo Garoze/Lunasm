@@ -9,6 +9,7 @@ add_library(Parser
   Stack.cpp
   Math.cpp
   Compare.cpp
+  Jump.cpp
   # ASL.cpp
   Parser.cpp
 )
