@@ -13,6 +13,7 @@
 #include <variant>
 
 #include "Parser/Compare.hpp"
+#include "Parser/Jump.hpp"
 #include "Parser/Math.hpp"
 #include "Parser/Stack.hpp"
 #include "fmt/core.h"
@@ -650,29 +651,29 @@ void Parser::cmp_instruction()
     }
 }
 
-// void Parser::jmp_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Jump);
-//     Operand dst = parse_address();
-//
-//     push_instruction(Instruction::kind_t::Jump, dst);
-// }
-//
-// void Parser::jeq_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::JumpIfEquals);
-//     Operand dst = parse_address();
-//
-//     push_instruction(Instruction::kind_t::JumpEquals, dst);
-// }
-//
-// void Parser::jne_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::JumpIfNotEquals);
-//     Operand dst = parse_address();
-//
-//     push_instruction(Instruction::kind_t::JumpNotEquals, dst);
-// }
+void Parser::jmp_instruction()
+{
+    expect(Lexer::Kind::kind_t::Jump);
+    auto dst = parse_operand().value();
+
+    push_instruction<Jump>(dst);
+}
+
+void Parser::jeq_instruction()
+{
+    expect(Lexer::Kind::kind_t::JumpIfEquals);
+    auto dst = parse_operand().value();
+
+    push_instruction<JumpIfEquals>(dst);
+}
+
+void Parser::jne_instruction()
+{
+    expect(Lexer::Kind::kind_t::JumpIfNotEquals);
+    auto dst = parse_operand().value();
+
+    push_instruction<JumpIfNotEquals>(dst);
+}
 //
 // void Parser::jsr_instruction()
 // {
@@ -777,18 +778,18 @@ void Parser::Parse()
             case Lexer::Kind::kind_t::Compare:
                 cmp_instruction();
                 break;
-                //
-                // case Lexer::Kind::kind_t::Jump:
-                //     jmp_instruction();
-                //     break;
-                //
-                // case Lexer::Kind::kind_t::JumpIfEquals:
-                //     jeq_instruction();
-                //     break;
-                //
-                // case Lexer::Kind::kind_t::JumpIfNotEquals:
-                //     jne_instruction();
-                //     break;
+
+            case Lexer::Kind::kind_t::Jump:
+                jmp_instruction();
+                break;
+
+            case Lexer::Kind::kind_t::JumpIfEquals:
+                jeq_instruction();
+                break;
+
+            case Lexer::Kind::kind_t::JumpIfNotEquals:
+                jne_instruction();
+                break;
                 //
                 // case Lexer::Kind::kind_t::Subroutine:
                 //     jsr_instruction();
