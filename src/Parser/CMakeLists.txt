@@ -8,6 +8,7 @@ add_library(Parser
   Bitwise.cpp
   Stack.cpp
   Math.cpp
+  Compare.cpp
   # ASL.cpp
   Parser.cpp
 )
