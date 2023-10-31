@@ -12,7 +12,6 @@ add_library(Parser
   Jump.cpp
   Subroutine.cpp
   Halt.cpp
-  # ASL.cpp
   Parser.cpp
 )
 
