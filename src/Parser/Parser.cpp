@@ -16,6 +16,7 @@
 #include "Parser/Jump.hpp"
 #include "Parser/Math.hpp"
 #include "Parser/Stack.hpp"
+#include "Parser/Subroutine.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
@@ -674,21 +675,21 @@ void Parser::jne_instruction()
 
     push_instruction<JumpIfNotEquals>(dst);
 }
-//
-// void Parser::jsr_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Subroutine);
-//     Operand dst = parse_address();
-//
-//     push_instruction(Instruction::kind_t::Subroutine, dst);
-// }
-//
-// void Parser::ret_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Return);
-//
-//     push_instruction(Instruction::kind_t::Return);
-// }
+
+void Parser::jsr_instruction()
+{
+    expect(Lexer::Kind::kind_t::Subroutine);
+    auto dst = parse_operand().value();
+
+    push_instruction<Subroutine>(dst);
+}
+
+void Parser::ret_instruction()
+{
+    expect(Lexer::Kind::kind_t::Return);
+
+    push_instruction<Return>();
+}
 //
 // void Parser::hlt_instruction()
 // {
@@ -790,14 +791,14 @@ void Parser::Parse()
             case Lexer::Kind::kind_t::JumpIfNotEquals:
                 jne_instruction();
                 break;
-                //
-                // case Lexer::Kind::kind_t::Subroutine:
-                //     jsr_instruction();
-                //     break;
-                //
-                // case Lexer::Kind::kind_t::Return:
-                //     ret_instruction();
-                //     break;
+
+            case Lexer::Kind::kind_t::Subroutine:
+                jsr_instruction();
+                break;
+
+            case Lexer::Kind::kind_t::Return:
+                ret_instruction();
+                break;
                 //
                 // case Lexer::Kind::kind_t::Halt:
                 //     hlt_instruction();
