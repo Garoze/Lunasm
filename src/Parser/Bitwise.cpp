@@ -29,48 +29,48 @@ std::string ShiftRight::as_string() const
                        m_dst.as_string(), m_src.as_string());
 }
 
-BitwiseAnd::BitwiseAnd(Operand::value_t dst, Operand::value_t src)
+And::And(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::And }
     , m_dst(dst)
     , m_src(src)
 {}
 
-std::string BitwiseAnd::as_string() const
+std::string And::as_string() const
 {
     return fmt::format("( And dst: \"{}\" value: \"{}\" )", m_dst.as_string(),
                        m_src.as_string());
 }
 
-BitwiseOr::BitwiseOr(Operand::value_t dst, Operand::value_t src)
+Or::Or(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::Or }
     , m_dst(dst)
     , m_src(src)
 {}
 
-std::string BitwiseOr::as_string() const
+std::string Or::as_string() const
 {
     return fmt::format("( Or dst: \"{}\" value: \"{}\" )", m_dst.as_string(),
                        m_src.as_string());
 }
 
-BitwiseXor::BitwiseXor(Operand::value_t dst, Operand::value_t src)
+Xor::Xor(Operand::value_t dst, Operand::value_t src)
     : Instruction{ kind_t::Xor }
     , m_dst(dst)
     , m_src(src)
 {}
 
-std::string BitwiseXor::as_string() const
+std::string Xor::as_string() const
 {
     return fmt::format("( Xor dst: \"{}\" value: \"{}\" )", m_dst.as_string(),
                        m_src.as_string());
 }
 
-BitwiseNot::BitwiseNot(Operand::value_t dst)
+Not::Not(Operand::value_t dst)
     : Instruction{ kind_t::Not }
     , m_dst(dst)
 {}
 
-std::string BitwiseNot::as_string() const
+std::string Not::as_string() const
 {
     return fmt::format("( Not dst: \"{}\" )", m_dst.as_string());
 }
