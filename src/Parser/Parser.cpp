@@ -24,7 +24,6 @@
 #include "Lexer/Mnemonics.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/ASL.hpp"
 #include "Parser/Bitwise.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"

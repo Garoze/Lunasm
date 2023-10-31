@@ -12,7 +12,6 @@
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Operand.hpp"
