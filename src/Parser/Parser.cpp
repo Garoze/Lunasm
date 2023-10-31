@@ -13,6 +13,7 @@
 #include <variant>
 
 #include "Parser/Compare.hpp"
+#include "Parser/Halt.hpp"
 #include "Parser/Jump.hpp"
 #include "Parser/Math.hpp"
 #include "Parser/Stack.hpp"
@@ -690,13 +691,13 @@ void Parser::ret_instruction()
 
     push_instruction<Return>();
 }
-//
-// void Parser::hlt_instruction()
-// {
-//     expect(Lexer::Kind::kind_t::Halt);
-//
-//     push_instruction(Instruction::kind_t::Halt);
-// }
+
+void Parser::hlt_instruction()
+{
+    expect(Lexer::Kind::kind_t::Halt);
+
+    push_instruction<Halt>();
+}
 
 void Parser::Parse()
 {
@@ -799,10 +800,10 @@ void Parser::Parse()
             case Lexer::Kind::kind_t::Return:
                 ret_instruction();
                 break;
-                //
-                // case Lexer::Kind::kind_t::Halt:
-                //     hlt_instruction();
-                //     break;
+
+            case Lexer::Kind::kind_t::Halt:
+                hlt_instruction();
+                break;
 
             default:
                 fmt::print("[Parser] Unimplemented token kind: {}\n",
