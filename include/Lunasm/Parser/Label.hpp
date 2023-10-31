@@ -15,12 +15,10 @@ public:
     Label(std::string_view);
     Label(std::string_view, std::uint16_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
     void update_address(std::uint16_t);
 
-private:
     std::string_view m_label;
     std::uint16_t m_address;
 };

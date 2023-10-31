@@ -12,7 +12,6 @@
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/ASL.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Label.hpp"
 #include "Parser/Operand.hpp"
@@ -29,7 +28,8 @@ public:
     Parser();
 
     void Parse();
-    void parse_file(std::filesystem::path const&, bool = false);
+    std::vector<std::unique_ptr<Instruction>>&
+    parse_file(std::filesystem::path const&, bool = false);
 
 private:
     void step();

@@ -13,7 +13,6 @@ public:
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
@@ -26,7 +25,6 @@ public:
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
@@ -39,7 +37,6 @@ public:
     [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };

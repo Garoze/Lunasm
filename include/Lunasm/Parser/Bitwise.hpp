@@ -10,10 +10,8 @@ class ShiftLeft : public Instruction
 public:
     ShiftLeft(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
@@ -23,62 +21,52 @@ class ShiftRight : public Instruction
 public:
     ShiftRight(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
 
-class BitwiseAnd : public Instruction
+class And : public Instruction
 {
 public:
-    BitwiseAnd(Operand::value_t, Operand::value_t);
+    And(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
 
-class BitwiseOr : public Instruction
+class Or : public Instruction
 {
 public:
-    BitwiseOr(Operand::value_t, Operand::value_t);
+    Or(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
 
-class BitwiseXor : public Instruction
+class Xor : public Instruction
 {
 public:
-    BitwiseXor(Operand::value_t, Operand::value_t);
+    Xor(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
     Operand m_src;
 };
 
-class BitwiseNot : public Instruction
+class Not : public Instruction
 {
 public:
-    BitwiseNot(Operand::value_t);
+    Not(Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
 };
 

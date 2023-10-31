@@ -12,7 +12,6 @@ public:
 
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_src;
 };
 
@@ -23,7 +22,6 @@ public:
 
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_src;
 };
 
@@ -34,7 +32,6 @@ public:
 
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_src;
 };
 
@@ -45,7 +42,6 @@ public:
 
     [[nodiscard]] virtual std::string as_string() const override;
 
-private:
     Operand m_dst;
 };
 
