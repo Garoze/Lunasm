@@ -68,7 +68,7 @@ void Assembler::compile_inst(const Parser::LoadRegister& op)
 {
     emit8(static_cast<std::uint8_t>(Arch::Luna16::LoadRegister));
     emit8(std::get<std::uint16_t>(op.m_dst.raw()));
-    emit16(std::get<std::uint16_t>(op.m_src.raw()));
+    emit8(std::get<std::uint16_t>(op.m_src.raw()));
 }
 
 void Assembler::compile_inst(const Parser::StoreImmediate& op)
@@ -91,7 +91,7 @@ void Assembler::compile_inst(const Parser::StoreRegister& op)
 {
     emit8(static_cast<std::uint8_t>(Arch::Luna16::StoreRegister));
     emit8(std::get<std::uint16_t>(op.m_dst.raw()));
-    emit16(std::get<std::uint16_t>(op.m_src.raw()));
+    emit8(std::get<std::uint16_t>(op.m_src.raw()));
 }
 
 void Assembler::compile_inst(const Parser::ShiftLeft& op)
@@ -117,7 +117,6 @@ void Assembler::compile_inst(const Parser::And& op)
 
 void Assembler::compile_inst(const Parser::Or& op)
 {
-
     emit8(static_cast<std::uint8_t>(Arch::Luna16::Or));
     emit8(std::get<std::uint16_t>(op.m_dst.raw()));
     emit8(std::get<std::uint16_t>(op.m_src.raw()));
@@ -195,7 +194,6 @@ void Assembler::compile_inst(const Parser::AddRegister& op)
     emit8(std::get<std::uint16_t>(op.m_src.raw()));
 }
 
-// SUB_START
 void Assembler::compile_inst(const Parser::SubImmediate& op)
 {
     emit8(static_cast<std::uint8_t>(Arch::Luna16::SubImmediate));
@@ -217,7 +215,6 @@ void Assembler::compile_inst(const Parser::SubRegister& op)
     emit8(std::get<std::uint16_t>(op.m_dst.raw()));
     emit8(std::get<std::uint16_t>(op.m_src.raw()));
 }
-// SUB_END
 
 void Assembler::compile_inst(const Parser::MulImmediate& op)
 {
@@ -331,7 +328,8 @@ void Assembler::compile_inst(const Parser::JumpIfNotEquals& op)
 void Assembler::compile_inst(const Parser::Subroutine& op)
 {
     emit8(static_cast<std::uint8_t>(Arch::Luna16::Subroutine));
-    emit16(std::get<std::uint16_t>(op.m_dst.raw()));
+    auto address = m_labels.at(std::get<std::string_view>(op.m_dst.raw()));
+    emit16(address);
 }
 
 void Assembler::compile_inst(const Parser::Return& op)
