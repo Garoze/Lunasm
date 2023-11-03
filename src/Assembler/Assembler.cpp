@@ -78,12 +78,29 @@ void Assembler::compile_inst(const Parser::Register& inst,
     emit8(inst.src().as_u16());
 }
 
-void Assembler::compile_inst(const Parser::Label& inst, Luna16::Opcode opcode)
+void Assembler::compile_inst(const Parser::Label& inst, Luna16::Opcode)
 {
     m_labels[inst.m_label] = m_output.size();
 }
 
-// Pattern for 8 8
-// Pattern for 8 16
+void Assembler::compile_inst(const Parser::Direct& inst, Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit8(inst.dst().as_u16());
+}
+
+void Assembler::compile_inst(const Parser::Reference& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit16(inst.src().as_u16());
+}
+
+void Assembler::compile_inst(const Parser::Absolute& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit16(m_labels.at(inst.src().as_string_view()));
+}
 
 } // namespace Assembler

@@ -62,8 +62,13 @@
     INST(LoadImmediate)                                                        \
     INST(LoadAddress)                                                          \
     INST(LoadRegister)                                                         \
+    INST(PushImmediate)                                                        \
+    INST(PushAddress)                                                          \
+    INST(PushRegister)                                                         \
+    INST(Pop)                                                                  \
     INST(Return)                                                               \
-    INST(Halt)
+    INST(Halt)                                                                 \
+    INST(Label)
 
 namespace Assembler {
 
@@ -83,6 +88,9 @@ private:
     void compile_inst(const Parser::Address&, Luna16::Opcode);
     void compile_inst(const Parser::Register&, Luna16::Opcode);
     void compile_inst(const Parser::Implicit&, Luna16::Opcode);
+    void compile_inst(const Parser::Direct&, Luna16::Opcode);
+    void compile_inst(const Parser::Absolute&, Luna16::Opcode);
+    void compile_inst(const Parser::Reference&, Luna16::Opcode);
     void compile_inst(const Parser::Label&, Luna16::Opcode);
 
 private:
