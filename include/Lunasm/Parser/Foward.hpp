@@ -12,6 +12,7 @@
 #include "Store.hpp"
 #include "Subroutine.hpp"
 
+#include "Absolute.hpp"
 #include "Address.hpp"
 #include "Direct.hpp"
 #include "Immediate.hpp"
