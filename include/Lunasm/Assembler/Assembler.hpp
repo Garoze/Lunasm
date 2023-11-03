@@ -58,9 +58,12 @@
 //
 
 #define LIST_OF_INSTRUCTIONS                                                   \
+    INST(Nop)                                                                  \
     INST(LoadImmediate)                                                        \
     INST(LoadAddress)                                                          \
-    INST(LoadRegister)
+    INST(LoadRegister)                                                         \
+    INST(Return)                                                               \
+    INST(Halt)
 
 namespace Assembler {
 
@@ -79,6 +82,7 @@ private:
     void compile_inst(const Parser::Immediate&, Luna16::Opcode);
     void compile_inst(const Parser::Address&, Luna16::Opcode);
     void compile_inst(const Parser::Register&, Luna16::Opcode);
+    void compile_inst(const Parser::Implicit&, Luna16::Opcode);
     void compile_inst(const Parser::Label&, Luna16::Opcode);
 
 private:

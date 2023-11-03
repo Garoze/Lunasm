@@ -72,6 +72,12 @@ void Assembler::compile_inst(const Parser::Register& inst,
     emit8(inst.src().as_u16());
 }
 
+void Assembler::compile_inst(const Parser::Implicit& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+}
+
 void Assembler::compile_inst(const Parser::Label& inst, Luna16::Opcode opcode)
 {
     m_labels[inst.m_label] = m_output.size();
