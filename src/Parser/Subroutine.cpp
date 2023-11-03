@@ -4,13 +4,12 @@
 namespace Parser {
 
 Subroutine::Subroutine(Operand::value_t dst)
-    : Instruction{ kind_t::Subroutine }
-    , m_dst(dst)
+    : Absolute{ kind_t::Subroutine, dst }
 {}
 
 std::string Subroutine::as_string() const
 {
-    return fmt::format("( Subroutine dst: \"{}\" )", m_dst.as_string());
+    return fmt::format("( Subroutine dst: \"{}\" )", m_src.as_string());
 }
 
 Return::Return()

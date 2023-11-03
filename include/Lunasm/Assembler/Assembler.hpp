@@ -48,10 +48,10 @@
 //     INST(CompareImmediate)                                                     \
 //     INST(CompareAddress)                                                       \
 //     INST(CompareRegister)                                                      \
-//     INST(Jump)                                                                 \
-//     INST(JumpIfEquals)                                                         \
-//     INST(JumpIfNotEquals)                                                      \
-//     INST(Subroutine)                                                           \
+    INST(Jump)                                                                 \
+    INST(JumpIfEquals)                                                         \
+    INST(JumpIfNotEquals)                                                      \
+    INST(Subroutine)                                                           \
 //     INST(Return)                                                               \
 //     INST(Halt)                                                                 \
 //     INST(Label)
@@ -86,6 +86,10 @@
     INST(CompareImmediate)                                                     \
     INST(CompareAddress)                                                       \
     INST(CompareRegister)                                                      \
+    INST(Jump)                                                                 \
+    INST(JumpIfEquals)                                                         \
+    INST(JumpIfNotEquals)                                                      \
+    INST(Subroutine)                                                           \
     INST(Return)                                                               \
     INST(Halt)                                                                 \
     INST(Label)
