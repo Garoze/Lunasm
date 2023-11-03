@@ -21,7 +21,7 @@ void Assembler::compile(
 #define INST(name)                                                             \
     case Parser::Instruction::kind_t::name:                                    \
         compile_inst(static_cast<const Parser::name&>(*i),                     \
-                     Arch::Luna16::name);                                      \
+                     Luna16::Opcode::name);                                    \
         break;
             LIST_OF_INSTRUCTIONS
 #undef INST
@@ -38,7 +38,7 @@ void Assembler::emit8(std::uint8_t value)
     m_output.push_back(value);
 }
 
-void Assembler::emit8(Arch::Luna16 op)
+void Assembler::emit8(Luna16::Opcode op)
 {
     emit8(static_cast<std::uint8_t>(op));
 }
@@ -49,28 +49,30 @@ void Assembler::emit16(std::uint16_t value)
     m_output.push_back((value >> 8) & 0xff);
 }
 
-void Assembler::compile_inst(const Parser::Immediate& inst, Arch::Luna16 opcode)
+void Assembler::compile_inst(const Parser::Immediate& inst,
+                             Luna16::Opcode opcode)
 {
     emit8(opcode);
     emit8(inst.dst().as_u16());
     emit16(inst.src().as_u16());
 }
 
-void Assembler::compile_inst(const Parser::Address& inst, Arch::Luna16 opcode)
+void Assembler::compile_inst(const Parser::Address& inst, Luna16::Opcode opcode)
 {
     emit8(opcode);
     emit8(inst.dst().as_u16());
     emit16(m_labels.at(inst.src().as_string_view()));
 }
 
-void Assembler::compile_inst(const Parser::Register& inst, Arch::Luna16 opcode)
+void Assembler::compile_inst(const Parser::Register& inst,
+                             Luna16::Opcode opcode)
 {
     emit8(opcode);
     emit8(inst.dst().as_u16());
     emit8(inst.src().as_u16());
 }
 
-void Assembler::compile_inst(const Parser::Label& inst, Arch::Luna16 opcode)
+void Assembler::compile_inst(const Parser::Label& inst, Luna16::Opcode opcode)
 {
     m_labels[inst.m_label] = m_output.size();
 }

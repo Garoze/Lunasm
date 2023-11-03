@@ -8,7 +8,7 @@
 #include "Parser/Foward.hpp"
 #include "Parser/Instruction.hpp"
 
-#include "Arch.hpp"
+#include "Luna16.hpp"
 
 // #define LIST_OF_INSTRUCTIONS                                                   \
 //     INST(Nop)                                                                  \
@@ -73,13 +73,13 @@ public:
 
 private:
     void emit8(std::uint8_t);
-    void emit8(Arch::Luna16);
+    void emit8(Luna16::Opcode);
     void emit16(std::uint16_t);
 
-    void compile_inst(const Parser::Immediate&, Arch::Luna16);
-    void compile_inst(const Parser::Address&, Arch::Luna16);
-    void compile_inst(const Parser::Register&, Arch::Luna16);
-    void compile_inst(const Parser::Label&, Arch::Luna16);
+    void compile_inst(const Parser::Immediate&, Luna16::Opcode);
+    void compile_inst(const Parser::Address&, Luna16::Opcode);
+    void compile_inst(const Parser::Register&, Luna16::Opcode);
+    void compile_inst(const Parser::Label&, Luna16::Opcode);
 
 private:
     std::vector<std::uint8_t>& m_output;

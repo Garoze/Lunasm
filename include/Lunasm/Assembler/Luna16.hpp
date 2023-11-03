@@ -1,6 +1,6 @@
-namespace Arch {
+namespace Luna16 {
 
-enum class Luna16
+enum class Opcode
 {
     Nop,
 
@@ -64,4 +64,4 @@ enum class Luna16
     Label,
 };
 
-} // namespace Arch
+} // namespace Luna16
