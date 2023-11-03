@@ -53,3 +53,6 @@ bin/Lunasm
 
 # Cache 
 .cache/
+
+#Tests
+test_*.l16
