@@ -60,6 +60,8 @@ enum class Luna16
     Return,
 
     Halt,
+
+    Label,
 };
 
 } // namespace Arch
