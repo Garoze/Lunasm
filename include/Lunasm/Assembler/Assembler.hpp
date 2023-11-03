@@ -5,19 +5,10 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Parser/Bitwise.hpp"
-#include "Parser/Compare.hpp"
-#include "Parser/Halt.hpp"
-#include "Parser/Jump.hpp"
-#include "Parser/Label.hpp"
-#include "Parser/Load.hpp"
-#include "Parser/Math.hpp"
-#include "Parser/Nop.hpp"
-#include "Parser/Stack.hpp"
-#include "Parser/Store.hpp"
-#include "Parser/Subroutine.hpp"
-
+#include "Parser/Foward.hpp"
 #include "Parser/Instruction.hpp"
+
+#include "Arch.hpp"
 
 #define LIST_OF_INSTRUCTIONS                                                   \
     INST(Nop)                                                                  \
@@ -76,11 +67,16 @@ public:
 
 private:
     void emit8(std::uint8_t);
+    void emit8(Arch::Luna16);
     void emit16(std::uint16_t);
 
-#define INST(name) void compile_inst(const Parser::name&);
+#define INST(name) void compile_inst(const Parser::name&, Arch::Luna16);
     LIST_OF_INSTRUCTIONS
 #undef INST
+
+    void compile_inst(const Parser::Immediate&, Arch::Luna16);
+    void compile_inst(const Parser::Address&, Arch::Luna16);
+    void compile_inst(const Parser::Register&, Arch::Luna16);
 
 private:
     std::vector<std::uint8_t>& m_output;
