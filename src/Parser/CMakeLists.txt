@@ -16,6 +16,8 @@ add_library(Parser
   Immediate.cpp
   Address.cpp
   Register.cpp
+  Direct.cpp
+  Reference.cpp
   Parser.cpp
 )
 
