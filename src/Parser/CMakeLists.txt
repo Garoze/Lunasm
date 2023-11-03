@@ -12,6 +12,9 @@ add_library(Parser
   Jump.cpp
   Subroutine.cpp
   Halt.cpp
+  Immediate.cpp
+  Address.cpp
+  Register.cpp
   Parser.cpp
 )
 
