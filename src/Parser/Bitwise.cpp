@@ -6,9 +6,7 @@
 namespace Parser {
 
 ShiftLeft::ShiftLeft(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::ShiftLeft }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::ShiftLeft, dst, src }
 {}
 
 std::string ShiftLeft::as_string() const
@@ -18,9 +16,7 @@ std::string ShiftLeft::as_string() const
 }
 
 ShiftRight::ShiftRight(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::ShiftRight }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::ShiftLeft, dst, src }
 {}
 
 std::string ShiftRight::as_string() const
@@ -30,9 +26,7 @@ std::string ShiftRight::as_string() const
 }
 
 And::And(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::And }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::And, dst, src }
 {}
 
 std::string And::as_string() const
@@ -42,9 +36,7 @@ std::string And::as_string() const
 }
 
 Or::Or(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::Or }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::Or, dst, src }
 {}
 
 std::string Or::as_string() const
@@ -54,9 +46,7 @@ std::string Or::as_string() const
 }
 
 Xor::Xor(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::Xor }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::Xor, dst, src }
 {}
 
 std::string Xor::as_string() const
@@ -66,8 +56,7 @@ std::string Xor::as_string() const
 }
 
 Not::Not(Operand::value_t dst)
-    : Instruction{ kind_t::Not }
-    , m_dst(dst)
+    : Direct{ kind_t::Not, dst }
 {}
 
 std::string Not::as_string() const

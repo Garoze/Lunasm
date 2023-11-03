@@ -1,73 +1,58 @@
 #pragma once
 
+#include "Parser/Direct.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+#include "Parser/Register.hpp"
 
 namespace Parser {
 
-class ShiftLeft : public Instruction
+class ShiftLeft : public Register
 {
 public:
     ShiftLeft(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class ShiftRight : public Instruction
+class ShiftRight : public Register
 {
 public:
     ShiftRight(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class And : public Instruction
+class And : public Register
 {
 public:
     And(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class Or : public Instruction
+class Or : public Register
 {
 public:
     Or(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class Xor : public Instruction
+class Xor : public Register
 {
 public:
     Xor(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class Not : public Instruction
+class Not : public Direct
 {
 public:
     Not(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
 };
 
 } // namespace Parser
