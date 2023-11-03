@@ -2,7 +2,7 @@
 
 #include "fmt/core.h"
 
-#include "Parser/Label.hpp"
+#include "Parser/Instructions/Label.hpp"
 
 namespace Parser {
 

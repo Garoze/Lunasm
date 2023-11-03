@@ -12,9 +12,10 @@
 #include "Lexer/Lexer.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/Instruction.hpp"
-#include "Parser/Label.hpp"
 #include "Parser/Operand.hpp"
+
+#include "Parser/Instructions/Instruction.hpp"
+#include "Parser/Instructions/Label.hpp"
 
 namespace Parser {
 

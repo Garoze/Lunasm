@@ -1,7 +1,8 @@
 #include "fmt/core.h"
 
-#include "Parser/Bitwise.hpp"
 #include "Parser/Operand.hpp"
+
+#include "Parser/Instructions/Bitwise.hpp"
 
 namespace Parser {
 

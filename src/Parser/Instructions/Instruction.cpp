@@ -7,7 +7,7 @@
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
-#include "Parser/Instruction.hpp"
+#include "Parser/Instructions/Instruction.hpp"
 
 namespace Parser {
 

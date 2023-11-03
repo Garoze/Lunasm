@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+
+#include "Parser/Instructions/Instruction.hpp"
 
 namespace Parser {
 

@@ -1,6 +1,6 @@
 #include "fmt/core.h"
 
-#include "Parser/Jump.hpp"
+#include "Parser/Instructions/Jump.hpp"
 
 namespace Parser {
 

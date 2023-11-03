@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
 
-#include "Modes/Address.hpp"
-#include "Modes/Immediate.hpp"
-#include "Modes/Register.hpp"
+#include "Parser/Instructions/Instruction.hpp"
+
+#include "Parser/Modes/Address.hpp"
+#include "Parser/Modes/Immediate.hpp"
+#include "Parser/Modes/Register.hpp"
 
 namespace Parser {
 

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Instruction.hpp"
-#include "Operand.hpp"
+#include "Parser/Operand.hpp"
 
-#include "Modes/Direct.hpp"
-#include "Modes/Register.hpp"
+#include "Parser/Modes/Direct.hpp"
+#include "Parser/Modes/Register.hpp"
 
 namespace Parser {
 

@@ -1,17 +1,17 @@
 add_library(Parser
   Operand.cpp
-  Instruction.cpp
-  Label.cpp 
-  Nop.cpp
-  Load.cpp
-  Store.cpp
-  Bitwise.cpp
-  Stack.cpp
-  Math.cpp
-  Compare.cpp
-  Jump.cpp
-  Subroutine.cpp
-  Halt.cpp
+  Instructions/Instruction.cpp
+  Instructions/Label.cpp 
+  Instructions/Nop.cpp
+  Instructions/Load.cpp
+  Instructions/Store.cpp
+  Instructions/Bitwise.cpp
+  Instructions/Stack.cpp
+  Instructions/Math.cpp
+  Instructions/Compare.cpp
+  Instructions/Jump.cpp
+  Instructions/Subroutine.cpp
+  Instructions/Halt.cpp
   Modes/Implicit.cpp
   Modes/Immediate.cpp
   Modes/Address.cpp

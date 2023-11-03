@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modes/Implicit.hpp"
+#include "Parser/Modes/Implicit.hpp"
 
 namespace Parser {
 

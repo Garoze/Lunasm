@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Parser/Instruction.hpp"
+#include "Parser/Instructions/Instruction.hpp"
 
 namespace Parser {
 
@@ -14,4 +14,3 @@ protected:
 };
 
 } // namespace Parser
-
