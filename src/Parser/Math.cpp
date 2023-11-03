@@ -4,8 +4,7 @@
 namespace Parser {
 
 Increment::Increment(Operand::value_t dst)
-    : Instruction{ kind_t::Increment }
-    , m_dst(dst)
+    : Direct{ kind_t::Increment, dst }
 {}
 
 std::string Increment::as_string() const
@@ -14,8 +13,7 @@ std::string Increment::as_string() const
 }
 
 Decrement::Decrement(Operand::value_t dst)
-    : Instruction{ kind_t::Decrement }
-    , m_dst(dst)
+    : Direct{ kind_t::Decrement, dst }
 {}
 
 std::string Decrement::as_string() const

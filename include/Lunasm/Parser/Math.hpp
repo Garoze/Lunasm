@@ -1,28 +1,25 @@
 #pragma once
 
+#include "Parser/Direct.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
 
 namespace Parser {
 
-class Increment : public Instruction
+class Increment : public Direct
 {
 public:
     Increment(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
 };
 
-class Decrement : public Instruction
+class Decrement : public Direct
 {
 public:
     Decrement(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
 };
 
 class AddImmediate : public Instruction

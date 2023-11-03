@@ -66,6 +66,8 @@
     INST(PushAddress)                                                          \
     INST(PushRegister)                                                         \
     INST(Pop)                                                                  \
+    INST(Increment)                                                            \
+    INST(Decrement)                                                            \
     INST(Return)                                                               \
     INST(Halt)                                                                 \
     INST(Label)
