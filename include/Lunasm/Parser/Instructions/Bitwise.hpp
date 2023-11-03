@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Instruction.hpp"
 #include "Parser/Operand.hpp"
+
+#include "Parser/Instruction.hpp"
 
 #include "Parser/Modes/Direct.hpp"
 #include "Parser/Modes/Register.hpp"

@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Parser/Instructions/Instruction.hpp"
+#include "Parser/Instruction.hpp"
 
 namespace Parser {
 

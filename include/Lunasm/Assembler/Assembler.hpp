@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "Parser/Foward.hpp"
+#include "Parser/Forward.hpp"
 
 #include "Luna16.hpp"
 

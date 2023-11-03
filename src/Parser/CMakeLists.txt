@@ -1,6 +1,6 @@
 add_library(Parser
   Operand.cpp
-  Instructions/Instruction.cpp
+  Instruction.cpp
   Instructions/Label.cpp 
   Instructions/Nop.cpp
   Instructions/Load.cpp

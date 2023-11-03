@@ -2,7 +2,7 @@
 
 #include "Parser/Operand.hpp"
 
-#include "Parser/Instructions/Instruction.hpp"
+#include "Parser/Instruction.hpp"
 
 #include "Parser/Modes/Absolute.hpp"
 #include "Parser/Modes/Implicit.hpp"

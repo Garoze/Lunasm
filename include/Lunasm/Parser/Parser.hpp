@@ -9,13 +9,9 @@
 #include <variant>
 #include <vector>
 
-#include "Lexer/Lexer.hpp"
-#include "Lexer/Token.hpp"
+#include "Lexer/Forward.hpp"
 
-#include "Parser/Operand.hpp"
-
-#include "Parser/Instructions/Instruction.hpp"
-#include "Parser/Instructions/Label.hpp"
+#include "Forward.hpp"
 
 namespace Parser {
 
