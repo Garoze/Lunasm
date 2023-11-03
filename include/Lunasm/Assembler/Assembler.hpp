@@ -30,21 +30,21 @@
 //     INST(Pop)                                                                  \
 //     INST(Increment)                                                            \
 //     INST(Decrement)                                                            \
-//     INST(AddImmediate)                                                         \
-//     INST(AddAddress)                                                           \
-//     INST(AddRegister)                                                          \
-//     INST(SubImmediate)                                                         \
-//     INST(SubAddress)                                                           \
-//     INST(SubRegister)                                                          \
-//     INST(MulImmediate)                                                         \
-//     INST(MulAddress)                                                           \
-//     INST(MulRegister)                                                          \
-//     INST(DivImmediate)                                                         \
-//     INST(DivAddress)                                                           \
-//     INST(DivRegister)                                                          \
-//     INST(ModImmediate)                                                         \
-//     INST(ModAddress)                                                           \
-//     INST(ModRegister)                                                          \
+    // INST(AddImmediate)                                                         \
+    // INST(AddAddress)                                                           \
+    // INST(AddRegister)                                                          \
+    // INST(SubImmediate)                                                         \
+    // INST(SubAddress)                                                           \
+    // INST(SubRegister)                                                          \
+    // INST(MulImmediate)                                                         \
+    // INST(MulAddress)                                                           \
+    // INST(MulRegister)                                                          \
+    // INST(DivImmediate)                                                         \
+    // INST(DivAddress)                                                           \
+    // INST(DivRegister)                                                          \
+    // INST(ModImmediate)                                                         \
+    // INST(ModAddress)                                                           \
+    // INST(ModRegister)                                                          \
 //     INST(CompareImmediate)                                                     \
 //     INST(CompareAddress)                                                       \
 //     INST(CompareRegister)                                                      \
@@ -68,6 +68,21 @@
     INST(Pop)                                                                  \
     INST(Increment)                                                            \
     INST(Decrement)                                                            \
+    INST(AddImmediate)                                                         \
+    INST(AddAddress)                                                           \
+    INST(AddRegister)                                                          \
+    INST(SubImmediate)                                                         \
+    INST(SubAddress)                                                           \
+    INST(SubRegister)                                                          \
+    INST(MulImmediate)                                                         \
+    INST(MulAddress)                                                           \
+    INST(MulRegister)                                                          \
+    INST(DivImmediate)                                                         \
+    INST(DivAddress)                                                           \
+    INST(DivRegister)                                                          \
+    INST(ModImmediate)                                                         \
+    INST(ModAddress)                                                           \
+    INST(ModRegister)                                                          \
     INST(Return)                                                               \
     INST(Halt)                                                                 \
     INST(Label)

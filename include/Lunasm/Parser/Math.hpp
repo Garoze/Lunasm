@@ -1,8 +1,11 @@
 #pragma once
 
+#include "Parser/Address.hpp"
 #include "Parser/Direct.hpp"
+#include "Parser/Immediate.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+#include "Parser/Register.hpp"
 
 namespace Parser {
 
@@ -22,39 +25,31 @@ public:
     [[nodiscard]] virtual std::string as_string() const override;
 };
 
-class AddImmediate : public Instruction
+class AddImmediate : public Immediate
 {
 public:
     AddImmediate(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class AddAddress : public Instruction
+class AddAddress : public Address
 {
 public:
     AddAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
-class AddRegister : public Instruction
+
+class AddRegister : public Register
 {
 public:
     AddRegister(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class SubImmediate : public Instruction
+class SubImmediate : public Immediate
 {
 public:
     SubImmediate(Operand::value_t, Operand::value_t);
@@ -65,125 +60,92 @@ public:
     Operand m_src;
 };
 
-class SubAddress : public Instruction
+class SubAddress : public Address
 {
 public:
     SubAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class SubRegister : public Instruction
+class SubRegister : public Register
 {
 public:
     SubRegister(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class MulImmediate : public Instruction
+class MulImmediate : public Immediate
 {
 public:
     MulImmediate(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class MulAddress : public Instruction
+class MulAddress : public Address
 {
 public:
     MulAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class MulRegister : public Instruction
+class MulRegister : public Register
 {
 public:
     MulRegister(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class DivImmediate : public Instruction
+class DivImmediate : public Immediate
 {
 public:
     DivImmediate(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class DivAddress : public Instruction
+class DivAddress : public Address
 {
 public:
     DivAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class DivRegister : public Instruction
+class DivRegister : public Register
 {
 public:
     DivRegister(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class ModImmediate : public Instruction
+class ModImmediate : public Immediate
 {
 public:
     ModImmediate(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class ModAddress : public Instruction
+class ModAddress : public Address
 {
 public:
     ModAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class ModRegister : public Instruction
+class ModRegister : public Register
 {
 public:
     ModRegister(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
 } // namespace Parser

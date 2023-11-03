@@ -22,9 +22,7 @@ std::string Decrement::as_string() const
 }
 
 AddImmediate::AddImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::AddImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::AddImmediate, dst, src }
 {}
 
 std::string AddImmediate::as_string() const
@@ -34,9 +32,7 @@ std::string AddImmediate::as_string() const
 }
 
 AddAddress::AddAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::AddAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::AddAddress, dst, src }
 {}
 
 std::string AddAddress::as_string() const
@@ -46,9 +42,7 @@ std::string AddAddress::as_string() const
 }
 
 AddRegister::AddRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::AddRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::AddRegister, dst, src }
 {}
 
 std::string AddRegister::as_string() const
@@ -58,9 +52,7 @@ std::string AddRegister::as_string() const
 }
 
 SubImmediate::SubImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::SubImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::SubImmediate, dst, src }
 {}
 
 std::string SubImmediate::as_string() const
@@ -70,9 +62,7 @@ std::string SubImmediate::as_string() const
 }
 
 SubAddress::SubAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::SubAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::SubAddress, dst, src }
 {}
 
 std::string SubAddress::as_string() const
@@ -82,9 +72,7 @@ std::string SubAddress::as_string() const
 }
 
 SubRegister::SubRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::SubRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::SubRegister, dst, src }
 {}
 
 std::string SubRegister::as_string() const
@@ -94,9 +82,7 @@ std::string SubRegister::as_string() const
 }
 
 MulImmediate::MulImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::MulImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::MulImmediate, dst, src }
 {}
 
 std::string MulImmediate::as_string() const
@@ -106,9 +92,7 @@ std::string MulImmediate::as_string() const
 }
 
 MulAddress::MulAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::MulAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::MulAddress, dst, src }
 {}
 
 std::string MulAddress::as_string() const
@@ -118,9 +102,7 @@ std::string MulAddress::as_string() const
 }
 
 MulRegister::MulRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::MulRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::MulRegister, dst, src }
 {}
 
 std::string MulRegister::as_string() const
@@ -130,9 +112,7 @@ std::string MulRegister::as_string() const
 }
 
 DivImmediate::DivImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::DivImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::DivImmediate, dst, src }
 {}
 
 std::string DivImmediate::as_string() const
@@ -142,9 +122,7 @@ std::string DivImmediate::as_string() const
 }
 
 DivAddress::DivAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::DivAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::DivAddress, dst, src }
 {}
 
 std::string DivAddress::as_string() const
@@ -154,9 +132,7 @@ std::string DivAddress::as_string() const
 }
 
 DivRegister::DivRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::DivRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::DivRegister, dst, src }
 {}
 
 std::string DivRegister::as_string() const
@@ -166,9 +142,7 @@ std::string DivRegister::as_string() const
 }
 
 ModImmediate::ModImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::ModImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::ModImmediate, dst, src }
 {}
 
 std::string ModImmediate::as_string() const
@@ -178,9 +152,7 @@ std::string ModImmediate::as_string() const
 }
 
 ModAddress::ModAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::ModAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::ModAddress, dst, src }
 {}
 
 std::string ModAddress::as_string() const
@@ -190,9 +162,7 @@ std::string ModAddress::as_string() const
 }
 
 ModRegister::ModRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::ModRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::ModRegister, dst, src }
 {}
 
 std::string ModRegister::as_string() const
