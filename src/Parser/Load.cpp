@@ -4,24 +4,18 @@
 
 namespace Parser {
 
-// LoadImmediate
 LoadImmediate::LoadImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::LoadImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::LoadImmediate, dst, src }
 {}
 
 std::string LoadImmediate::as_string() const
 {
-    return fmt::format("( LoadImmediate: \"r{}\" value: \"{}\" )",
-                       m_dst.as_string(), m_src.as_string());
+    return fmt::format("( LoadImmediate {} {} )", m_dst.as_string(),
+                       m_src.as_string());
 }
 
-// LoadRegister
 LoadRegister::LoadRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::LoadRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::LoadRegister, dst, src }
 {}
 
 std::string LoadRegister::as_string() const
@@ -30,11 +24,8 @@ std::string LoadRegister::as_string() const
                        m_dst.as_string(), m_src.as_string());
 }
 
-// LoadAddress
 LoadAddress::LoadAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::LoadAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::LoadAddress, dst, src }
 {}
 
 std::string LoadAddress::as_string() const
