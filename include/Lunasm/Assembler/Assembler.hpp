@@ -83,6 +83,9 @@
     INST(ModImmediate)                                                         \
     INST(ModAddress)                                                           \
     INST(ModRegister)                                                          \
+    INST(CompareImmediate)                                                     \
+    INST(CompareAddress)                                                       \
+    INST(CompareRegister)                                                      \
     INST(Return)                                                               \
     INST(Halt)                                                                 \
     INST(Label)

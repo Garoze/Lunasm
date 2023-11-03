@@ -4,9 +4,7 @@
 namespace Parser {
 
 CompareImmediate::CompareImmediate(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::CompareImmediate }
-    , m_dst(dst)
-    , m_src(src)
+    : Immediate{ kind_t::CompareImmediate, dst, src }
 {}
 
 std::string CompareImmediate::as_string() const
@@ -16,9 +14,7 @@ std::string CompareImmediate::as_string() const
 }
 
 CompareAddress::CompareAddress(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::CompareAddress }
-    , m_dst(dst)
-    , m_src(src)
+    : Address{ kind_t::CompareAddress, dst, src }
 {}
 
 std::string CompareAddress::as_string() const
@@ -28,9 +24,7 @@ std::string CompareAddress::as_string() const
 }
 
 CompareRegister::CompareRegister(Operand::value_t dst, Operand::value_t src)
-    : Instruction{ kind_t::CompareRegister }
-    , m_dst(dst)
-    , m_src(src)
+    : Register{ kind_t::CompareRegister, dst, src }
 {}
 
 std::string CompareRegister::as_string() const

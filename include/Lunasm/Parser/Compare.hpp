@@ -1,44 +1,35 @@
 #pragma once
 
+#include "Parser/Address.hpp"
+#include "Parser/Immediate.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+#include "Parser/Register.hpp"
 
 namespace Parser {
 
-class CompareImmediate : public Instruction
+class CompareImmediate : public Immediate
 {
 public:
     CompareImmediate(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class CompareAddress : public Instruction
+class CompareAddress : public Address
 {
 public:
     CompareAddress(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class CompareRegister : public Instruction
+class CompareRegister : public Register
 {
 public:
     CompareRegister(Operand::value_t, Operand::value_t);
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
 } // namespace Parser
