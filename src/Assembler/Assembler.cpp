@@ -59,14 +59,52 @@ void Assembler::compile_inst(const Parser::Immediate& inst,
                              Luna16::Opcode opcode)
 {
     emit8(opcode);
-    emit8(inst.dst().as_u16());
+
+    auto visitor = [&](auto& arg) -> void {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, std::monostate>)
+        {
+        }
+        else if constexpr (std::is_same_v<T, std::uint16_t>)
+        {
+            emit16(arg);
+        }
+        else if constexpr (std::is_same_v<T, std::string_view>)
+        {
+            emit16(m_labels.at(arg));
+        }
+    };
+
+    auto dst = inst.dst().raw();
+    std::visit(visitor, dst);
+
     emit16(inst.src().as_u16());
 }
 
 void Assembler::compile_inst(const Parser::Address& inst, Luna16::Opcode opcode)
 {
     emit8(opcode);
-    emit8(inst.dst().as_u16());
+
+    auto visitor = [&](auto& arg) -> void {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, std::monostate>)
+        {
+        }
+        else if constexpr (std::is_same_v<T, std::uint16_t>)
+        {
+            emit16(arg);
+        }
+        else if constexpr (std::is_same_v<T, std::string_view>)
+        {
+            emit16(m_labels.at(arg));
+        }
+    };
+
+    auto dst = inst.dst().raw();
+    std::visit(visitor, dst);
+
     emit16(m_labels.at(inst.src().as_string_view()));
 }
 
@@ -74,7 +112,26 @@ void Assembler::compile_inst(const Parser::Register& inst,
                              Luna16::Opcode opcode)
 {
     emit8(opcode);
-    emit8(inst.dst().as_u16());
+
+    auto visitor = [&](auto& arg) -> void {
+        using T = std::decay_t<decltype(arg)>;
+
+        if constexpr (std::is_same_v<T, std::monostate>)
+        {
+        }
+        else if constexpr (std::is_same_v<T, std::uint16_t>)
+        {
+            emit16(arg);
+        }
+        else if constexpr (std::is_same_v<T, std::string_view>)
+        {
+            emit16(m_labels.at(arg));
+        }
+    };
+
+    auto dst = inst.dst().raw();
+    std::visit(visitor, dst);
+
     emit8(inst.src().as_u16());
 }
 
@@ -101,31 +158,6 @@ void Assembler::compile_inst(const Parser::Absolute& inst,
 {
     emit8(opcode);
     emit16(m_labels.at(inst.src().as_string_view()));
-}
-
-// TODO: find a better way to deal with stores
-void Assembler::compile_inst(const Parser::StoreImmediate& inst,
-                             Luna16::Opcode opcode)
-{
-    emit8(opcode);
-    emit16(m_labels.at(inst.dst().as_string_view()));
-    emit16(inst.src().as_u16());
-}
-
-void Assembler::compile_inst(const Parser::StoreAddress& inst,
-                             Luna16::Opcode opcode)
-{
-    emit8(opcode);
-    emit16(m_labels.at(inst.dst().as_string_view()));
-    emit16(m_labels.at(inst.src().as_string_view()));
-}
-
-void Assembler::compile_inst(const Parser::StoreRegister& inst,
-                             Luna16::Opcode opcode)
-{
-    emit8(opcode);
-    emit16(m_labels.at(inst.dst().as_string_view()));
-    emit8(inst.src().as_u16());
 }
 
 } // namespace Assembler

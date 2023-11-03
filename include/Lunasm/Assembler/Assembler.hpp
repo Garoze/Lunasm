@@ -78,11 +78,6 @@ private:
     void compile_inst(const Parser::Reference&, Luna16::Opcode);
     void compile_inst(const Parser::Label&, Luna16::Opcode);
 
-    // TODO: find a better way to deal with stores
-    void compile_inst(const Parser::StoreImmediate&, Luna16::Opcode);
-    void compile_inst(const Parser::StoreAddress&, Luna16::Opcode);
-    void compile_inst(const Parser::StoreRegister&, Luna16::Opcode);
-
 private:
     std::vector<std::uint8_t>& m_output;
     std::unordered_map<std::string_view, std::uint16_t> m_labels;
