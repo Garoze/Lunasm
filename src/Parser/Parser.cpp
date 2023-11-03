@@ -236,7 +236,7 @@ void Parser::mov_instruction()
         case Lexer::Kind::kind_t::OpenSquare:
         {
             auto dst = parse_operand().value();
-            expect(Lexer::Kind::kind_t::CloseSquare);
+            expect(Lexer::Kind::kind_t::Comma);
 
             switch (look_ahead()->kind().raw())
             {

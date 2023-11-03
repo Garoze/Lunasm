@@ -10,16 +10,14 @@
 
 #include "Luna16.hpp"
 
-// #define LIST_OF_INSTRUCTIONS                                                   \
-//     INST(StoreImmediate)                                                       \
-//     INST(StoreAddress)                                                         \
-//     INST(StoreRegister)                                                        \
-
 #define LIST_OF_INSTRUCTIONS                                                   \
     INST(Nop)                                                                  \
     INST(LoadImmediate)                                                        \
     INST(LoadAddress)                                                          \
     INST(LoadRegister)                                                         \
+    INST(StoreImmediate)                                                       \
+    INST(StoreAddress)                                                         \
+    INST(StoreRegister)                                                        \
     INST(ShiftLeft)                                                            \
     INST(ShiftRight)                                                           \
     INST(And)                                                                  \
@@ -80,6 +78,11 @@ private:
     void compile_inst(const Parser::Absolute&, Luna16::Opcode);
     void compile_inst(const Parser::Reference&, Luna16::Opcode);
     void compile_inst(const Parser::Label&, Luna16::Opcode);
+
+    // TODO: find a better way to deal with stores
+    void compile_inst(const Parser::StoreImmediate&, Luna16::Opcode);
+    void compile_inst(const Parser::StoreAddress&, Luna16::Opcode);
+    void compile_inst(const Parser::StoreRegister&, Luna16::Opcode);
 
 private:
     std::vector<std::uint8_t>& m_output;

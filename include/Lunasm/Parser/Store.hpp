@@ -1,41 +1,35 @@
 #pragma once
 
+#include "Parser/Address.hpp"
+#include "Parser/Immediate.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+#include "Parser/Register.hpp"
 
 namespace Parser {
 
-class StoreImmediate : public Instruction
+class StoreImmediate : public Immediate
 {
 public:
     StoreImmediate(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
 };
 
-class StoreRegister : public Instruction
-{
-public:
-    StoreRegister(Operand::value_t, Operand::value_t);
-
-    [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
-    Operand m_src;
-};
-
-class StoreAddress : public Instruction
+class StoreAddress : public Address
 {
 public:
     StoreAddress(Operand::value_t, Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
+};
 
-    Operand m_dst;
-    Operand m_src;
+class StoreRegister : public Register
+{
+public:
+    StoreRegister(Operand::value_t, Operand::value_t);
+
+    [[nodiscard]] virtual std::string as_string() const override;
 };
 
 } // namespace Parser

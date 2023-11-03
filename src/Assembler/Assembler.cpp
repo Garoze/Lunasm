@@ -103,4 +103,29 @@ void Assembler::compile_inst(const Parser::Absolute& inst,
     emit16(m_labels.at(inst.src().as_string_view()));
 }
 
+// TODO: find a better way to deal with stores
+void Assembler::compile_inst(const Parser::StoreImmediate& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit16(m_labels.at(inst.dst().as_string_view()));
+    emit16(inst.src().as_u16());
+}
+
+void Assembler::compile_inst(const Parser::StoreAddress& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit16(m_labels.at(inst.dst().as_string_view()));
+    emit16(m_labels.at(inst.src().as_string_view()));
+}
+
+void Assembler::compile_inst(const Parser::StoreRegister& inst,
+                             Luna16::Opcode opcode)
+{
+    emit8(opcode);
+    emit16(m_labels.at(inst.dst().as_string_view()));
+    emit8(inst.src().as_u16());
+}
+
 } // namespace Assembler
