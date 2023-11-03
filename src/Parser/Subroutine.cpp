@@ -1,5 +1,6 @@
-#include "Parser/Subroutine.hpp"
 #include "fmt/core.h"
+
+#include "Parser/Subroutine.hpp"
 
 namespace Parser {
 

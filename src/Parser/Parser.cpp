@@ -15,24 +15,11 @@
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
+#include "Lexer/Lexer.hpp"
 #include "Lexer/Mnemonics.hpp"
 #include "Lexer/Token.hpp"
 
-#include "Parser/Bitwise.hpp"
-#include "Parser/Compare.hpp"
-#include "Parser/Halt.hpp"
-#include "Parser/Instruction.hpp"
-#include "Parser/Jump.hpp"
-#include "Parser/Label.hpp"
-#include "Parser/Load.hpp"
-#include "Parser/Math.hpp"
-#include "Parser/Nop.hpp"
-#include "Parser/Operand.hpp"
-#include "Parser/Parser.hpp"
-#include "Parser/Sizes.hpp"
-#include "Parser/Stack.hpp"
-#include "Parser/Store.hpp"
-#include "Parser/Subroutine.hpp"
+#include "Parser/Foward.hpp"
 
 namespace Parser {
 
@@ -817,13 +804,6 @@ void Parser::Parse()
     }
 
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
-
-    // m_asll->handle_instructions(m_instructions);
-
-    // for (auto const& i : m_instructions)
-    // {
-    //     fmt::print("{}\n", i->as_string());
-    // }
 }
 
 } // namespace Parser

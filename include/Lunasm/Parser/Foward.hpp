@@ -12,11 +12,13 @@
 #include "Store.hpp"
 #include "Subroutine.hpp"
 
-#include "Absolute.hpp"
-#include "Address.hpp"
-#include "Direct.hpp"
-#include "Immediate.hpp"
-#include "Reference.hpp"
-#include "Register.hpp"
+#include "Modes/Absolute.hpp"
+#include "Modes/Address.hpp"
+#include "Modes/Direct.hpp"
+#include "Modes/Immediate.hpp"
+#include "Modes/Reference.hpp"
+#include "Modes/Register.hpp"
+
+#include "Parser.hpp"
 
 namespace Parser {} // namespace Parser

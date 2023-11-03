@@ -1,6 +1,6 @@
-#include "Parser/Stack.hpp"
-#include "Parser/Reference.hpp"
 #include "fmt/core.h"
+
+#include "Parser/Stack.hpp"
 
 namespace Parser {
 

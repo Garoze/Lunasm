@@ -1,4 +1,4 @@
-#include "Parser/Absolute.hpp"
+#include "Parser/Modes/Absolute.hpp"
 
 namespace Parser {
 

@@ -1,6 +1,7 @@
-#include "Parser/Operand.hpp"
 #include <string>
 #include <variant>
+
+#include "Parser/Operand.hpp"
 
 namespace Parser {
 

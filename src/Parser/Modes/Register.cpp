@@ -1,4 +1,4 @@
-#include "Parser/Register.hpp"
+#include "Parser/Modes/Register.hpp"
 
 namespace Parser {
 

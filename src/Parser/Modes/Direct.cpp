@@ -1,4 +1,4 @@
-#include "Parser/Direct.hpp"
+#include "Parser/Modes/Direct.hpp"
 
 namespace Parser {
 

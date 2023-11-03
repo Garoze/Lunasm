@@ -12,13 +12,13 @@ add_library(Parser
   Jump.cpp
   Subroutine.cpp
   Halt.cpp
-  Implicit.cpp
-  Immediate.cpp
-  Address.cpp
-  Register.cpp
-  Direct.cpp
-  Absolute.cpp
-  Reference.cpp
+  Modes/Implicit.cpp
+  Modes/Immediate.cpp
+  Modes/Address.cpp
+  Modes/Register.cpp
+  Modes/Direct.cpp
+  Modes/Absolute.cpp
+  Modes/Reference.cpp
   Parser.cpp
 )
 

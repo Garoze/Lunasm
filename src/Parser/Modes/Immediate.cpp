@@ -1,4 +1,4 @@
-#include "Parser/Immediate.hpp"
+#include "Parser/Modes/Immediate.hpp"
 
 namespace Parser {
 
