@@ -1,5 +1,6 @@
 #include "Parser/Operand.hpp"
 #include <string>
+#include <variant>
 
 namespace Parser {
 
@@ -35,6 +36,16 @@ std::string Operand::as_string() const
     };
 
     return std::visit(visitor, m_value);
+}
+
+std::uint16_t Operand::as_u16() const
+{
+    return std::get<std::uint16_t>(m_value);
+}
+
+std::string_view Operand::as_string_view() const
+{
+    return std::get<std::string_view>(m_value);
 }
 
 } // namespace Parser
