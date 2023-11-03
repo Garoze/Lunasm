@@ -15,10 +15,7 @@
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
-#include "Lexer/Lexer.hpp"
-#include "Lexer/Mnemonics.hpp"
-#include "Lexer/Token.hpp"
-
+#include "Lexer/Foward.hpp"
 #include "Parser/Foward.hpp"
 
 namespace Parser {
