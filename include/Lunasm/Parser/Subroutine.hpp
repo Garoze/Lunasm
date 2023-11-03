@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Parser/Implicit.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
 
@@ -15,7 +16,7 @@ public:
     Operand m_dst;
 };
 
-class Return : public Instruction
+class Return : public Implicit
 {
 public:
     Return();

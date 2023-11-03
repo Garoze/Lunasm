@@ -1,15 +1,14 @@
 #pragma once
 
-#include "Parser/Instruction.hpp"
+#include "Parser/Implicit.hpp"
 
 namespace Parser {
 
-class Halt : public Instruction
+class Halt : public Implicit
 {
 public:
     Halt();
 
-    [[nodiscard]] kind_t raw() const;
     [[nodiscard]] virtual std::string as_string() const override;
 };
 

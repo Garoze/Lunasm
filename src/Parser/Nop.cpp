@@ -1,10 +1,11 @@
-#include "Parser/Nop.hpp"
 #include "fmt/core.h"
+
+#include "Parser/Nop.hpp"
 
 namespace Parser {
 
 Nop::Nop()
-    : Instruction(kind_t::Nop)
+    : Implicit{ kind_t::Nop }
 {}
 
 std::string Nop::as_string() const

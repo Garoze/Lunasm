@@ -14,7 +14,7 @@ std::string Subroutine::as_string() const
 }
 
 Return::Return()
-    : Instruction{ kind_t::Return }
+    : Implicit{ kind_t::Return }
 {}
 
 std::string Return::as_string() const

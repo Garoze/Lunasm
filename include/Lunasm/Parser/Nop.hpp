@@ -1,9 +1,10 @@
 #pragma once
 
-#include "Parser/Instruction.hpp"
+#include "Parser/Implicit.hpp"
+
 namespace Parser {
 
-class Nop : public Instruction
+class Nop : public Implicit
 {
 public:
     Nop();

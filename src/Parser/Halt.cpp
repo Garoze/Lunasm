@@ -5,7 +5,7 @@
 namespace Parser {
 
 Halt::Halt()
-    : Instruction{ kind_t::Halt }
+    : Implicit{ kind_t::Halt }
 {}
 
 std::string Halt::as_string() const
