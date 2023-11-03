@@ -1,48 +1,43 @@
 #pragma once
 
+#include "Parser/Absolute.hpp"
+#include "Parser/Direct.hpp"
 #include "Parser/Instruction.hpp"
 #include "Parser/Operand.hpp"
+#include "Parser/Reference.hpp"
 
 namespace Parser {
 
-class PushImmediate : public Instruction
+class PushImmediate : public Reference
 {
 public:
     PushImmediate(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_src;
 };
 
-class PushAddress : public Instruction
+class PushAddress : public Absolute
 {
 public:
     PushAddress(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_src;
 };
 
-class PushRegister : public Instruction
+class PushRegister : public Direct
 {
 public:
     PushRegister(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_src;
 };
 
-class Pop : public Instruction
+class Pop : public Direct
 {
 public:
     Pop(Operand::value_t);
 
     [[nodiscard]] virtual std::string as_string() const override;
-
-    Operand m_dst;
 };
 
 } // namespace Parser

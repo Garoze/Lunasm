@@ -1,21 +1,11 @@
 #include "Parser/Stack.hpp"
+#include "Parser/Reference.hpp"
 #include "fmt/core.h"
 
 namespace Parser {
 
 PushImmediate::PushImmediate(Operand::value_t src)
-    : Instruction{ kind_t::PushImmediate }
-    , m_src(src)
-{}
-
-std::string PushRegister::as_string() const
-{
-    return fmt::format("( PushRegister src: \"{}\" )", m_src.as_string());
-}
-
-PushRegister::PushRegister(Operand::value_t src)
-    : Instruction{ kind_t::PushRegister }
-    , m_src(src)
+    : Reference{ kind_t::PushImmediate, src }
 {}
 
 std::string PushImmediate::as_string() const
@@ -23,9 +13,17 @@ std::string PushImmediate::as_string() const
     return fmt::format("( PushImmediate src: \"{}\" )", m_src.as_string());
 }
 
+PushRegister::PushRegister(Operand::value_t src)
+    : Direct{ kind_t::PushRegister, src }
+{}
+
+std::string PushRegister::as_string() const
+{
+    return fmt::format("( PushRegister src: \"{}\" )", m_dst.as_string());
+}
+
 PushAddress::PushAddress(Operand::value_t src)
-    : Instruction{ kind_t::PushAddress }
-    , m_src(src)
+    : Absolute{ kind_t::PushAddress, src }
 {}
 
 std::string PushAddress::as_string() const
@@ -34,8 +32,7 @@ std::string PushAddress::as_string() const
 }
 
 Pop::Pop(Operand::value_t dst)
-    : Instruction{ kind_t::Pop }
-    , m_dst(dst)
+    : Direct{ kind_t::Pop, dst }
 {}
 
 std::string Pop::as_string() const
