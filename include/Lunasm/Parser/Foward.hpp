@@ -13,7 +13,9 @@
 #include "Subroutine.hpp"
 
 #include "Address.hpp"
+#include "Direct.hpp"
 #include "Immediate.hpp"
+#include "Reference.hpp"
 #include "Register.hpp"
 
 namespace Parser {} // namespace Parser
