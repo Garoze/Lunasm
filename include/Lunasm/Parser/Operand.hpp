@@ -18,6 +18,9 @@ public:
     [[nodiscard]] value_t raw() const;
     [[nodiscard]] std::string as_string() const;
 
+    [[nodiscard]] std::uint16_t as_u16() const;
+    [[nodiscard]] std::string_view as_string_view() const;
+
 public:
     constexpr explicit operator bool() noexcept
     {

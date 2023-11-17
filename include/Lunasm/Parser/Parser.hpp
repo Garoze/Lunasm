@@ -9,12 +9,9 @@
 #include <variant>
 #include <vector>
 
-#include "Lexer/Lexer.hpp"
-#include "Lexer/Token.hpp"
+#include "Lexer/Forward.hpp"
 
-#include "Parser/Instruction.hpp"
-#include "Parser/Label.hpp"
-#include "Parser/Operand.hpp"
+#include "Forward.hpp"
 
 namespace Parser {
 
@@ -28,7 +25,8 @@ public:
     Parser();
 
     void Parse();
-    void parse_file(std::filesystem::path const&, bool = false);
+    std::vector<std::unique_ptr<Instruction>>&
+    parse_file(std::filesystem::path const&, bool = false);
 
 private:
     void step();

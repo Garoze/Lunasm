@@ -12,27 +12,11 @@
 #include <string_view>
 #include <variant>
 
-#include "Parser/Compare.hpp"
-#include "Parser/Halt.hpp"
-#include "Parser/Jump.hpp"
-#include "Parser/Math.hpp"
-#include "Parser/Stack.hpp"
-#include "Parser/Subroutine.hpp"
 #include "fmt/core.h"
 #include "fmt/ranges.h"
 
-#include "Lexer/Mnemonics.hpp"
-#include "Lexer/Token.hpp"
-
-#include "Parser/Bitwise.hpp"
-#include "Parser/Instruction.hpp"
-#include "Parser/Label.hpp"
-#include "Parser/Load.hpp"
-#include "Parser/Nop.hpp"
-#include "Parser/Operand.hpp"
-#include "Parser/Parser.hpp"
-#include "Parser/Sizes.hpp"
-#include "Parser/Store.hpp"
+#include "Lexer/Forward.hpp"
+#include "Parser/Forward.hpp"
 
 namespace Parser {
 
@@ -61,7 +45,9 @@ std::optional<Lexer::Token> Parser::look_ahead(std::size_t pos = 0)
     return {};
 }
 
-void Parser::parse_file(std::filesystem::path const& path, bool debug)
+// void Parser::parse_file(std::filesystem::path const& path, bool debug)
+std::vector<std::unique_ptr<Instruction>>&
+Parser::parse_file(std::filesystem::path const& path, bool debug)
 {
     std::stringstream ss;
 
@@ -79,6 +65,8 @@ void Parser::parse_file(std::filesystem::path const& path, bool debug)
     m_tokens = m_lexer->Lex_source(source);
 
     Parse();
+
+    return m_instructions;
 }
 
 Lexer::Token Parser::expect(Lexer::Kind::kind_t kind)
@@ -232,7 +220,7 @@ void Parser::mov_instruction()
         case Lexer::Kind::kind_t::OpenSquare:
         {
             auto dst = parse_operand().value();
-            expect(Lexer::Kind::kind_t::CloseSquare);
+            expect(Lexer::Kind::kind_t::Comma);
 
             switch (look_ahead()->kind().raw())
             {
@@ -295,7 +283,7 @@ void Parser::and_instruction()
     expect(Lexer::Kind::kind_t::Comma);
     auto src = parse_operand().value();
 
-    push_instruction<BitwiseAnd>(dst, src);
+    push_instruction<And>(dst, src);
 }
 
 void Parser::bor_instruction()
@@ -305,7 +293,7 @@ void Parser::bor_instruction()
     expect(Lexer::Kind::kind_t::Comma);
     auto src = parse_operand().value();
 
-    push_instruction<BitwiseOr>(dst, src);
+    push_instruction<Or>(dst, src);
 }
 
 void Parser::xor_instruction()
@@ -315,7 +303,7 @@ void Parser::xor_instruction()
     expect(Lexer::Kind::kind_t::Comma);
     auto src = parse_operand().value();
 
-    push_instruction<BitwiseXor>(dst, src);
+    push_instruction<Xor>(dst, src);
 }
 
 void Parser::not_instruction()
@@ -323,7 +311,7 @@ void Parser::not_instruction()
     expect(Lexer::Kind::kind_t::Not);
     auto dst = parse_operand().value();
 
-    push_instruction<BitwiseNot>(dst);
+    push_instruction<Not>(dst);
 }
 
 void Parser::psh_instruction()
@@ -813,13 +801,6 @@ void Parser::Parse()
     }
 
     fmt::print("[Parser] Finished the parser, no errors reported.\n");
-
-    // m_asll->handle_instructions(m_instructions);
-
-    for (auto const& i : m_instructions)
-    {
-        fmt::print("{}\n", i->as_string());
-    }
 }
 
 } // namespace Parser
